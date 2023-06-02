@@ -1,10 +1,10 @@
 Package: ineapir
-Title: Obtain data published by the National Statistics Institute
+Title: Obtaining data published by the National Statistics Institute
 Version: 0.0.0.9000
 Authors@R: c(
     person("David", "Crespo", email = "david.crespo.roces@ine.es", role = c("aut", "cre")),
     person("Instituto Nacional de Estadistica, INE", role = c("cph")))
-Description: Collection of functions to obtain open data and metadata published by the
+Description: Set of functions to obtain open data and metadata published by the
     National Statistics Institute of Spain.
 License: AGPL (>= 3)
 Encoding: UTF-8
