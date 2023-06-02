@@ -36,6 +36,6 @@ Dataframe with information of the series belonging to an operation
 Get all the series present in a operation
 }
 \examples{
-get_metadata_series_operation(operation = "IPC", n = 1000)
+get_metadata_series_operation(operation = "IPC", n = 500)
 
 }

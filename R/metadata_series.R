@@ -57,7 +57,7 @@ get_metadata_series <- function(codSeries = NULL, det = 0, tip = NULL, lang = "E
 #' @return Dataframe with information of the series belonging to an operation
 #' @export
 #'
-#' @examples get_metadata_series_operation(operation = "IPC", n = 1000)
+#' @examples get_metadata_series_operation(operation = "IPC", n = 500)
 #'
 get_metadata_series_operation <- function(operation = NULL, n = 500, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
 
