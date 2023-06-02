@@ -15,9 +15,9 @@
 #'
 #' @return Dataframe with data of a series
 #'
-#' @examples get_data_series(codSeries = "IPC206449")
-#' @examples get_data_series(codSeries = "IPC206449", nlast = 5)
-#' @examples get_data_series(codSeries = "IPC206449", dateStart = "2020/01/01", dateEnd = "2021/01/01")
+#' @examples get_data_series(codSeries = "IPC251856")
+#' @examples get_data_series(codSeries = "IPC251856", nlast = 5)
+#' @examples get_data_series(codSeries = "IPC251856", dateStart = "2023/01/01", dateEnd = "2023/05/01")
 #'
 #' @export
 #'
