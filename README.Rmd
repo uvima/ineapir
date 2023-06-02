@@ -1,0 +1,203 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# ineapir <img src="man/figures/hex_logo.png" align="right" width = "120"/>
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+## Overview
+
+inepair provides a set of functions to obtain open data and metadata published
+by the National Statistics Institute of Spain 
+([INE](https://www.ine.es/en/index.htm)). The data is obtained thanks to calls
+to the INE API service which allows access via URL requests to all the
+available statistical information published by INE.
+
+## Installation
+
+You can install the development version of **ineapir** like so:
+
+```{r, eval = FALSE}
+install.packages("devtools")
+install_github("/ineapir")
+```
+
+## Data request examples
+
+The data is only associated with the series object and these can be grouped
+together into statistical tables. The field named '*Valor*' is the only one 
+that contains data. The rest of the fields are necessary for the data to be
+well defined.
+
+### Obtaining data from a series
+
+To get the last data of a series it is necessary to pass the `codSeries`
+argument which is the identification code of the series.
+
+```{r series_data}
+library(ineapir)
+series <- get_data_series(codSeries = "IPC251856")
+series$Data
+```
+
+To get the last n data from a series it is necessary to pass the `nlast`
+argument as well.
+
+```{r series_data_n}
+series <- get_data_series(codSeries = "IPC251856", nlast = 5)
+series$Data
+```
+
+Additionally, it is possible to obtain data from a series between two dates.
+The date must have and specific format (*yyyy/mm/dd*). If the end date is not
+specified we obtain all the data from the start date.
+
+```{r series_data_date}
+series <- get_data_series(codSeries = "IPC251856", dateStart = "2023/01/01", 
+                          dateEnd = "2023/04/01")
+series$Data
+```
+
+### Obtaining data from a table
+
+To get all the data of a table it is necessary to pass the `idTable`
+argument which is the identification code of the table.
+
+```{r table_data}
+table <- get_data_table(idTable = 50902)
+table[1,c("COD", "Nombre")]
+head(table$Data[[1]])
+```
+
+To get the last n data from a table it is necessary to pass the `nlast`
+argument as well.
+
+## Metadata request examples
+
+Structural metadata are objects that describe both time series and statistical
+tables and allow their definition. All these database objects have an
+associated identifier that is essential for the correct use of the service.
+
+### Obtaining statistical operations
+
+The database contains information about all short-term statistical operations,
+those with a periodicity for disseminating results of less than a year, 
+as well as some structural statistical operations.
+
+```{r operations}
+operations <- get_metadata_operations()
+head(operations)
+```
+
+An operation can be identify by a numerical code ('*Id*'), an alphabetic code
+('*Codigo*') or by the code of the statistical operation in the Inventory of
+Statistical Operations (IOE + '*Cod_IOE*'). To obtain information about only
+one operation we have to pass the `operation` argument with one of these codes.
+
+```{r operation}
+operation <- get_metadata_operations(operation = "IPC")
+as.data.frame(operation)
+```
+
+### Obtaining variables
+
+We can get all the variables of the system.
+
+```{r variables}
+variables <- get_metadata_variables(lang = "EN")
+head(variables)
+```
+
+A variable can be identify by a numerical code ('*Id*'). In addition, if we
+pass the `operation` argument we obtain the variables used in an operation.
+
+```{r variables_opertation}
+variables <- get_metadata_variables(operation = "IPC", lang = "EN")
+head(variables)
+```
+
+### Obtaining values
+
+To get all the values that a variable can take it is necessary to pass the
+`variable` argument which is the identifier of the variable.
+
+```{r values}
+values <- get_metadata_values(variable = 3, lang = "EN")
+head(values)
+```
+
+A value can be identify by a numerical code ('*Id*'). In addition, if we pass
+the `operation` argument as well we obtain the values that the variable takes
+in that particular operation.
+
+```{r values_operation}
+values <- get_metadata_values(operation = "IPC", variable = 3, lang = "EN")
+head(values)
+```
+
+### Obtaining tables
+
+We can get the tables associated with an statistical operation.
+
+```{r tables}
+tables <- get_metadata_tables(operation = "IPC")
+head(tables[,c("Id","Nombre")])
+```
+
+A table is defined by different groups or selection combo boxes and each of
+them by the values that one or several variables take. To obtain the
+variables and values present in a table first we have to query the groups
+that define the table:
+
+```{r groups}
+groups <- get_metadata_table_groups(idTable = 50902)
+head(groups)
+```
+
+Once we have the identification codes of the groups, we can query the values
+for an specific group.
+
+```{r group_values}
+values <- get_metadata_table_Values(idTable = 50902, idGroup = 110889)
+head(values, 4)
+```
+
+### Obtaining series
+
+The data is only associated with the series object. To obtain information
+about a particular series it is necessary to pass the `codSeries` argument
+which is the identification code of the series.
+
+```{r series}
+series <- get_metadata_series(codSeries = "IPC251856")
+as.data.frame(series)
+```
+
+To get the values and variables that define a series it is necessary to pass
+the `codSeries` argument as well.
+
+```{r series_values}
+values <- get_metadata_series_values(codSeries = "IPC251856")
+head(values)
+```
+
+To get all the series that define a table it is necessary to pass the
+`idTable` argument which is the identification code of the table.
+
+```{r series_table}
+series <- get_metadata_series_table(idTable = 50902)
+head(series[,c("COD", "Nombre")], 4)
+```
