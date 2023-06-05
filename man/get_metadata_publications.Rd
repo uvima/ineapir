@@ -30,7 +30,9 @@ Dataframe with information of the publications
 Get all the publications or the publications from an operation
 }
 \examples{
+\dontrun{
 get_metadata_publications()
 get_metadata_publications(operation = "IPC")
+}
 
 }

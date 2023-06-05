@@ -10,7 +10,9 @@
 #' @return Dataframe with information of a series
 #' @export
 #'
-#' @examples get_metadata_series(codSeries = "IPC206449")
+#' @examples \dontrun{
+#' get_metadata_series(codSeries = "IPC206449")
+#' }
 #'
 get_metadata_series <- function(codSeries = NULL, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
 
@@ -57,7 +59,9 @@ get_metadata_series <- function(codSeries = NULL, det = 0, tip = NULL, lang = "E
 #' @return Dataframe with information of the series belonging to an operation
 #' @export
 #'
-#' @examples get_metadata_series_operation(operation = "IPC", n = 500)
+#' @examples \dontrun{
+#' get_metadata_series_operation(operation = "IPC", n = 500)
+#' }
 #'
 get_metadata_series_operation <- function(operation = NULL, n = 500, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
 
@@ -101,7 +105,9 @@ get_metadata_series_operation <- function(operation = NULL, n = 500, det = 0, ti
 #' @return Dataframe with information of the values of a series
 #' @export
 #'
-#' @examples get_metadata_series_values(codSeries = "IPC206449")
+#' @examples \dontrun{
+#' get_metadata_series_values(codSeries = "IPC206449")
+#' }
 #'
 get_metadata_series_values <- function(codSeries = NULL, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
 
@@ -147,7 +153,9 @@ get_metadata_series_values <- function(codSeries = NULL, det = 0, tip = NULL, la
 #' @return Dataframe with information of the series belonging to a table
 #' @export
 #'
-#' @examples get_metadata_series_table(idTable = 50902)
+#' @examples \dontrun{
+#' get_metadata_series_table(idTable = 50902)
+#' }
 #'
 get_metadata_series_table <- function(idTable = NULL, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
 
@@ -196,8 +204,10 @@ get_metadata_series_table <- function(idTable = NULL, det = 0, tip = NULL, lang 
 #' @return Dataframe with information of the series that fulfill the conditions of a filter
 #' @export
 #'
-#' @examples get_metadata_series_filter(operation = "IPC", filter = list("115"= "29", "3" = "84", "762" = ""),
+#' @examples \dontrun{
+#' get_metadata_series_filter(operation = "IPC", filter = list("115"= "29", "3" = "84", "762" = ""),
 #'  period = 1)
+#'  }
 #'
 get_metadata_series_filter <- function(operation = NULL, filter = NULL, period = NULL, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, shortcut = FALSE){
 

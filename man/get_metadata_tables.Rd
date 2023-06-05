@@ -36,6 +36,8 @@ Dataframe with information of the available tables of an operation
 Get all the tables present in a operation
 }
 \examples{
+\dontrun{
 get_metadata_tables(operation = "IPC")
+}
 
 }

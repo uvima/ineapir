@@ -15,9 +15,11 @@
 #'
 #' @return Dataframe with data of a series
 #'
-#' @examples get_data_series(codSeries = "IPC251856")
-#' @examples get_data_series(codSeries = "IPC251856", nlast = 5)
-#' @examples get_data_series(codSeries = "IPC251856", dateStart = "2023/01/01", dateEnd = "2023/05/01")
+#' @examples \dontrun{
+#' get_data_series(codSeries = "IPC251856")
+#' get_data_series(codSeries = "IPC251856", nlast = 5)
+#' get_data_series(codSeries = "IPC251856", dateStart = "2023/01/01", dateEnd = "2023/05/01")
+#' }
 #'
 #' @export
 #'
@@ -73,8 +75,10 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #' @return Dataframe with data of series
 #' @export
 #'
-#' @examples get_data_series_filter(operation = "IPC", filter = list("115"= "29", "3" = "84", "762" = ""),
+#' @examples \dontrun{
+#' get_data_series_filter(operation = "IPC", filter = list("115"= "29", "3" = "84", "762" = ""),
 #'  period = 1)
+#'  }
 #'
 get_data_series_filter <- function(operation = NULL, filter = NULL, period = NULL, nlast = 1, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, unnest = FALSE, geocode = FALSE, shortcut = FALSE){
 

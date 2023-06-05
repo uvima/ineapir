@@ -27,7 +27,9 @@ Dataframe with information of the available variables
 Get all possible variables or variables used in a operation
 }
 \examples{
+\dontrun{
 get_metadata_variables()
 get_metadata_variables(operation = "IPC")
+}
 
 }

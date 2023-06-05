@@ -11,7 +11,9 @@
 #' @return Dataframe with information of the available tables of an operation
 #' @export
 #'
-#' @examples get_metadata_tables(operation = "IPC")
+#' @examples \dontrun{
+#' get_metadata_tables(operation = "IPC")
+#' }
 #'
 get_metadata_tables <- function(operation = NULL, det = 0, tip = NULL, geo = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
 
@@ -56,7 +58,9 @@ get_metadata_tables <- function(operation = NULL, det = 0, tip = NULL, geo = NUL
 #' @return Dataframe with information of the groups of a table
 #' @export
 #'
-#' @examples get_metadata_table_groups(idTable = 50902)
+#' @examples \dontrun{
+#' get_metadata_table_groups(idTable = 50902)
+#' }
 #'
 get_metadata_table_groups <- function(idTable = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
 
@@ -99,7 +103,9 @@ get_metadata_table_groups <- function(idTable = NULL, lang = "ES", validate = TR
 #' @return Dataframe with information of the values of a group of a table
 #' @export
 #'
-#' @examples get_metadata_table_Values(idTable = 50902, idGroup = 110889)
+#' @examples \dontrun{
+#' get_metadata_table_Values(idTable = 50902, idGroup = 110889)
+#' }
 #'
 get_metadata_table_Values <- function(idTable = NULL, idGroup = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
 

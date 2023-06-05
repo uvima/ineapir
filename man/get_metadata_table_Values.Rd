@@ -30,6 +30,8 @@ Dataframe with information of the values of a group of a table
 Get all the values of a group of a table
 }
 \examples{
+\dontrun{
 get_metadata_table_Values(idTable = 50902, idGroup = 110889)
+}
 
 }

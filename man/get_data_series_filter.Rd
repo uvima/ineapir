@@ -51,7 +51,9 @@ Dataframe with data of series
 Get data from series that fulfill the conditions of a filter
 }
 \examples{
+\dontrun{
 get_data_series_filter(operation = "IPC", filter = list("115"= "29", "3" = "84", "762" = ""),
  period = 1)
+ }
 
 }

@@ -27,6 +27,8 @@ Dataframe with information of the groups of a table
 Get all the groups of a table
 }
 \examples{
+\dontrun{
 get_metadata_table_groups(idTable = 50902)
+}
 
 }

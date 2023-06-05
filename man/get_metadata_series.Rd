@@ -33,6 +33,8 @@ Dataframe with information of a series
 Get a series information
 }
 \examples{
+\dontrun{
 get_metadata_series(codSeries = "IPC206449")
+}
 
 }

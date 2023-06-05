@@ -27,7 +27,9 @@ Dataframe with information of the available operations
 Get available operations
 }
 \examples{
+\dontrun{
 get_metadata_operations()
 get_metadata_operations("IPC")
+}
 
 }

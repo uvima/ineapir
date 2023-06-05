@@ -33,6 +33,8 @@ Dataframe with information of the series belonging to a table
 Get all the series belonging to a table
 }
 \examples{
+\dontrun{
 get_metadata_series_table(idTable = 50902)
+}
 
 }

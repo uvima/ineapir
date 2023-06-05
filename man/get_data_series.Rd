@@ -45,8 +45,10 @@ Dataframe with data of a series
 Retrieve data from series published by INE calling the API
 }
 \examples{
+\dontrun{
 get_data_series(codSeries = "IPC251856")
 get_data_series(codSeries = "IPC251856", nlast = 5)
 get_data_series(codSeries = "IPC251856", dateStart = "2023/01/01", dateEnd = "2023/05/01")
+}
 
 }

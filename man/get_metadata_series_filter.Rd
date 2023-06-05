@@ -42,7 +42,9 @@ Dataframe with information of the series that fulfill the conditions of a filter
 Get all the series that fulfill the conditions of a filter
 }
 \examples{
+\dontrun{
 get_metadata_series_filter(operation = "IPC", filter = list("115"= "29", "3" = "84", "762" = ""),
  period = 1)
+ }
 
 }

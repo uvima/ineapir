@@ -8,8 +8,10 @@
 #' @return Dataframe with information of the available operations
 #' @export
 #'
-#' @examples get_metadata_operations()
-#' @examples get_metadata_operations("IPC")
+#' @examples \dontrun{
+#' get_metadata_operations()
+#' get_metadata_operations("IPC")
+#' }
 #'
 get_metadata_operations <- function(operation = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
   # List of values to define the call to the API
@@ -50,8 +52,10 @@ get_metadata_operations <- function(operation = NULL, lang = "ES", validate = TR
 #' @return Dataframe with information of the available variables
 #' @export
 #'
-#' @examples get_metadata_variables()
-#' @examples get_metadata_variables(operation = "IPC")
+#' @examples \dontrun{
+#' get_metadata_variables()
+#' get_metadata_variables(operation = "IPC")
+#' }
 #'
 get_metadata_variables <- function(operation = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
   # List of values to define the call to the API
@@ -94,8 +98,10 @@ get_metadata_variables <- function(operation = NULL, lang = "ES", validate = TRU
 #' @return Dataframe with information of the available values of a variable
 #' @export
 #'
-#' @examples get_metadata_values(variable = 115)
-#' @examples get_metadata_values(operation = "IPC", variable = 115)
+#' @examples \dontrun{
+#' get_metadata_values(variable = 115)
+#' get_metadata_values(operation = "IPC", variable = 115)
+#' }
 #'
 get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lang = "ES", validate = TRUE, verbose = FALSE){
   # List of values to define the call to the API
@@ -138,8 +144,10 @@ get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lan
 #' @return Dataframe with information of the publications
 #' @export
 #'
-#' @examples get_metadata_publications()
-#' @examples get_metadata_publications(operation = "IPC")
+#' @examples \dontrun{
+#' get_metadata_publications()
+#' get_metadata_publications(operation = "IPC")
+#' }
 #'
 get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", validate = TRUE, verbose = FALSE){
   # List of values to define the call to the API
@@ -183,7 +191,9 @@ get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", va
 #' @return Dataframe with information of the dates of a publication
 #' @export
 #'
-#' @examples get_metadata_publication_dates(publication = 8)
+#' @examples \dontrun{
+#' get_metadata_publication_dates(publication = 8)
+#' }
 #'
 get_metadata_publication_dates <- function(publication = NULL, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
   # List of values to define the call to the API

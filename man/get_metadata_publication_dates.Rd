@@ -33,6 +33,8 @@ Dataframe with information of the dates of a publication
 Get the dates of a publication
 }
 \examples{
+\dontrun{
 get_metadata_publication_dates(publication = 8)
+}
 
 }

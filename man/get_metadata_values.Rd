@@ -33,7 +33,9 @@ Dataframe with information of the available values of a variable
 Get all possible values from a variable
 }
 \examples{
+\dontrun{
 get_metadata_values(variable = 115)
 get_metadata_values(operation = "IPC", variable = 115)
+}
 
 }

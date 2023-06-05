@@ -48,11 +48,13 @@ Dataframe with the data of table
 Get data from a table
 }
 \examples{
+\dontrun{
 get_data_table(idTable = 50902)
 get_data_table(idTable = 8105, filter = list("18"="454"), verbose = TRUE)
 get_data_table(idTable = 33387,
 filter = list(tipodematerial = c("extraccionnacional", "2mineralesmetalicosmineralenbruto")))
 get_data_table(idTable = "t20/e245/p08/l0/01001.px",
 filter = list(edad3gruposdeedad = "015anos", sexo = c("mujeres", "hombres")))
+}
 
 }

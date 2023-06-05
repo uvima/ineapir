@@ -15,12 +15,14 @@
 #' @return Dataframe with the data of table
 #' @export
 #'
-#' @examples get_data_table(idTable = 50902)
-#' @examples get_data_table(idTable = 8105, filter = list("18"="454"), verbose = TRUE)
-#' @examples get_data_table(idTable = 33387,
+#' @examples \dontrun{
+#' get_data_table(idTable = 50902)
+#' get_data_table(idTable = 8105, filter = list("18"="454"), verbose = TRUE)
+#' get_data_table(idTable = 33387,
 #' filter = list(tipodematerial = c("extraccionnacional", "2mineralesmetalicosmineralenbruto")))
-#' @examples get_data_table(idTable = "t20/e245/p08/l0/01001.px",
+#' get_data_table(idTable = "t20/e245/p08/l0/01001.px",
 #' filter = list(edad3gruposdeedad = "015anos", sexo = c("mujeres", "hombres")))
+#' }
 #'
 get_data_table <- function(idTable = NULL, filter = NULL, nlast = NULL, det = NULL, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, unnest = FALSE, geocode = FALSE, shortcut = FALSE){
 

@@ -33,6 +33,8 @@ Dataframe with information of the values of a series
 Get all the values used in a series
 }
 \examples{
+\dontrun{
 get_metadata_series_values(codSeries = "IPC206449")
+}
 
 }
