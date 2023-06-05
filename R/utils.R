@@ -410,7 +410,7 @@ check_addons <- function(parameters, addons){
   for(x in names(addons)){
     val <- addons[[x]]
 
-    if(!is.null(val)){
+    if(!is.null(val) && val){
       switch (x,
               "validate" = check_islogical(x, val),
               "verbose" = check_islogical(x, val),
