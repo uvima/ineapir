@@ -848,7 +848,7 @@ check_filter <- function(parameter, verbose, lang){
   if(is.element("idtable",parnames)){
 
     # Obtain table information including metadata
-    df <- get_data_table(idTable = id, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
+    df <- get_data_table(idTable = id, nlast = 1, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
 
     # The table is in px or tpx format
     if(is.pxtable(df$MetaData)){
