@@ -5,22 +5,49 @@ API_URL = "https://servicios.ine.es/wstempus/js"
 page_lenght = 500
 
 # Shortcuts used in filters
-shortcuts <- list(nac = "349", prov = "115" , ccaa = "70", mun = "19", # national, provinces, ccaa and municipalities
-                  grupos = "762", groups = "762",       # cpi groups
-                  subgrupos = "763", subgroups = "763", # cpi subgroups
-                  tipo = "3", type = "3",               # type of data
-                  sexo = "18", sex = "18",
-                  edad = c("355", "356", "360"), age = c("355", "356", "360"),
-                  edad1 = "355", age1 = "355", edadtot = "356", agetot = "356",
-                  edad5 = "360", age5 = "360",
+shortcuts_filter <- list(nac = "349",                        # national
+                  prov = "115" ,                      # provinces
+                  ccaa = "70",                        # ccaa
+                  mun = "19",                         # municipalities
+                  isla = "20", island = "20",         # islas
+                  grupo = "762", group = "762",       # cpi groups
+                  subgrupo = "763", subgroup = "763", # cpi subgroups
+                  clase = "764", class = "764",       # cpi class
+                  subclase = "765", subclass = "765", # cpi subclass
+                  rubrica = "270",                    # cpi headings
+                  heading = "270",                    # cpi headings
+                  grupoespecial = "269",              # cpi special groups
+                  specialgroup = "269",               # cpi special groups
+                  tipodato = "3", datatype = "3",             # type of data
+                  sexo = "18", sex = "18",            # sex
+                  edad1 = "355", age1 = "355",        # simple age
+                  edadt = "356", aget = "356",    # total age
+                  edadg = "360", ageg = "360",        # age groups
+                  edads = "357", ages = "357",  # semi-age intervals
+                  edad = c("355", "356", "360", "357"),
+                  age = c("355", "356", "360", "357"),
                   nacionalidad = "141", nationality = "141",
-                  generacion = "612", generation = "612",
-                  nacimiento = c("431", "432"), birth = c("431", "432"),
-                  efectos = "544", precios = "501", saldo = "482",
-                  pib = c("544", "501", "482", "495", "3"),
-                  gdp = c("544", "501", "482", "495", "3"),
-                  ipc = c("762","763", "349", "115", "70", "3"),
-                  cpi = c("762","763", "349", "115", "70", "3"))
+                  generacion = "612", generation = "612",  # generation ages
+                  paisnacimiento = c("431", "432"),   # country of birth
+                  birthcountry = c("431", "432"),     # country of birth
+                  lugarnacimiento = c("97"),          # place of birth
+                  birthplace = c("97"),               # place of birth
+                  efectoscorr = "544",                # correction of effects
+                  effectscorr = "544",                # correction of effects
+                  cnae = c("393", "389", "387"),
+                  #pob = c("349", "70", "115", "18", "19", "20", "355", "356", "360", "357", "141", "431"),
+                  #pop = c("349", "70", "115", "18", "19", "20", "355", "356", "360", "357", "141", "431"),
+                  #pib = c("544", "501", "482", "495", "481", "480", "3"),
+                  #gdp = c("544", "501", "482", "495", "481", "480", "3"),
+                  #ipc = c("762", "763", "764", "765", "349", "115", "70", "3", "269", "270"),
+                  #cpi = c("762", "763", "764", "765", "349", "115", "70", "3", "269", "270"),
+                  epa = c("349", "70", "115", "356", "360", "357", "18", "3", "141", "386", "393", "389", "387")
+                  )
+
+shortcuts_operations <- list(ipc = "IPC", cpi = "IPC",
+                             pib = "CNTR2010", gdp = "CNTR2010",
+                             pob = "ECP", pop = "ECP"
+                             )
 
 # Shortcuts used with periods
 shortcuts_periods <- list("m" = "1", # monthly
@@ -132,7 +159,7 @@ get_url <- function(request){
         val <- if(is.element(val[[x]], unlist(shortcuts_periods, use.names = FALSE))) val[[x]] else shortcuts_periods[val[[x]]]
 
       }else if (x == "filter"){
-        val <- build_filter(val, request$definition[["lang"]], request$addons[["shortcut"]])
+        val <- build_filter(val, request$definition[["lang"]], request$addons)
         x <- ""
         sep <- ""
       }
@@ -160,7 +187,7 @@ build_date <- function(date){
 }
 
 # Return the cross of variables and values in the format used by the API
-build_filter <- function(parameter, lang, shortcut){
+build_filter <- function(parameter, lang, addons){
   # Values to return
   val <- character()
 
@@ -174,19 +201,28 @@ build_filter <- function(parameter, lang, shortcut){
   parnames <- tolower(names(parameter))
 
   # Dataframe with the values
-  dfval <- get_filter_values(parameter, lang, shortcut)
+  dfval <- get_filter_values(parameter, lang, addons$shortcut, addons$verbose)
 
   # We go through all the variables
   i <- 1
   for(n in names(filter)){
 
     # check if in the filter there are shortcuts
-    short <- is.element(tolower(n), names(shortcuts))
+    short <- is.element(tolower(n), c(names(shortcuts_filter), names(shortcuts_operations)))
 
-    if(shortcut && short){
-      # id of variables
-      varid <- shortcuts[[tolower(n)]]
+    if(addons$shortcut && short){
+      # filter with ids
+      filterout <- list()
 
+      if(tolower(n) %in% names(shortcuts_operations)){
+        #varope <- get_metadata_variables(operation = shortcuts_operations[[tolower(n)]],
+        #                               validate = FALSE, verbose = TRUE)
+        varid <- unique(dfval$Fk_Variable)
+
+      }else{
+        # id of variables
+        varid <- shortcuts_filter[[tolower(n)]]
+      }
       # We select only the values of variables present in the filter
       dfvalfilter <- subset(dfval, dfval$Fk_Variable %in% varid)
 
@@ -225,44 +261,48 @@ build_filter <- function(parameter, lang, shortcut){
         # Transform the filter in a the format used by the API
         if(nchar(f) > 0){
 
-          # We go through all the matches
-          for(r in 1:nrow(dfvalgreptmp)){
-            # Variable id
-            var <- dfvalgreptmp$Fk_Variable[r]
+          # When grep found something
+          if(nrow(dfvalgreptmp) > 0){
 
-            # Value id
-            filter[[var]] <- dfvalgreptmp$Id[r]
+            # We go through all the matches
+            for(r in 1:nrow(dfvalgreptmp)){
+              # Variable id
+              var <- dfvalgreptmp$Fk_Variable[r]
 
-            if(exists("dfvalgrep") && is.data.frame(get("dfvalgrep")) ){
+              # Value id
+              filterout[[var]] <- dfvalgreptmp$Id[r]
 
-              # If the variable id has been used in the filter, set the same counter
-              if(is.element(var, dfvalgrep$Fk_Variable)){
-                i <- dfvalgrep[dfvalgrep$Fk_Variable == var,]$i[1]
-                dfvalgreptmp$i[r] <- i
-              }else{
-                i <- max(dfvalgrep$i) + 1
+              if(exists("dfvalgrep") && is.data.frame(get("dfvalgrep")) ){
+
+                # If the variable id has been used in the filter, set the same counter
+                if(is.element(var, dfvalgrep$Fk_Variable)){
+                  i <- dfvalgrep[dfvalgrep$Fk_Variable == var,]$i[1]
+                  dfvalgreptmp$i[r] <- i
+                }else{
+                  i <- max(dfvalgrep$i) + 1
+                }
               }
+              # Check the filter comes from a table or a series
+              parurl <- if(is.element("idtable",parnames)) "tv" else paste0("g", i)
+
+              # Build the filter with the format of the API
+              tmp <- paste0(parurl, "=", var, ":", filterout[[var]])
+
+              # Vector with all the values in the format of the API
+              val <- append(val, tmp)
             }
-            # Check the filter comes from a table or a series
-            parurl <- if(is.element("idtable",parnames)) "tv" else paste0("g", i)
-
-            # Build the filter with the format of the API
-            tmp <- paste0(parurl, "=", var, ":", filter[[var]])
-
-            # Vector with all the values in the format of the API
-            val <- append(val, tmp)
           }
         }else{
           # Case when the value introduced is and empty character ""
           if(length(varid) == 1){
             # value set to ""
-            filter[[varid]] <- f
+            filterout[[varid]] <- f
 
             # Check the filter comes from a table or a series
             parurl <- if(is.element("idtable",parnames)) "tv" else paste0("g", i)
 
             # Build the filter with the format of the API
-            tmp <- paste0(parurl, "=", varid, ":", filter[[varid]])
+            tmp <- paste0(parurl, "=", varid, ":", filterout[[varid]])
 
             # Vector with all the values in the format of the API
             val <- append(val, tmp)
@@ -295,7 +335,7 @@ build_filter <- function(parameter, lang, shortcut){
 }
 
 # Get the all values used in a table or operation
-get_filter_values <- function(parameter, lang, shortcut){
+get_filter_values <- function(parameter, lang, shortcut, verbose){
 
   # id to identify a table or a operation
   id <- parameter[[1]]
@@ -312,16 +352,26 @@ get_filter_values <- function(parameter, lang, shortcut){
   # The filter includes shortcuts in the names of variables and values
   if(shortcut){
 
+    if(verbose){
+      cat("- Processing filter: 0% \r")
+    }
+
     # The filter comes from a table
     if(is.element("idtable",parnames)){
 
       # We obtain the groups of the table
-      groups <- get_metadata_table_groups(idTable = id, validate = FALSE)
+      groups <- get_metadata_table_groups(idTable = id, validate = FALSE, verbose = FALSE)
 
       # We obtain the values of all the groups
+      i <- 1
       for(g in groups$Id){
-        tmp <- get_metadata_table_Values(idTable = id, idGroup = g, validate = FALSE, lang = lang)
+        tmp <- get_metadata_table_Values(idTable = id, idGroup = g, validate = FALSE, lang = lang, verbose = FALSE)
         tmp <- subset(tmp, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
+
+        if(verbose){
+          cat(sprintf("- Processing filter: %s%%        \r", round(i/nrow(groups)*100,0)))
+          i <- i + 1
+        }
 
         if (exists("dfval") && is.data.frame(get("dfval"))){
           dfval <- rbind(dfval,tmp)
@@ -336,8 +386,14 @@ get_filter_values <- function(parameter, lang, shortcut){
       opevar <- get_metadata_variables(operation = id, validate = FALSE, verbose = FALSE, lang = lang)
 
       # We obtain the values of all the variables
+      i <- 1
       for(var in opevar$Id){
         tmp <- get_metadata_values(operation = id, variable = var, validate = FALSE, verbose = FALSE, lang = lang)
+
+        if(verbose){
+          cat(sprintf("- Processing filter: %s%%        \r", round(i/nrow(opevar)*100,0)))
+          i <- i + 1
+        }
 
         if (exists("dfval") && is.data.frame(get("dfval"))){
           dfval <- rbind(dfval,tmp)
@@ -346,6 +402,10 @@ get_filter_values <- function(parameter, lang, shortcut){
         }
       }
     }
+  }
+
+  if(verbose){
+    cat("- Processing filter: 100%         \n")
   }
 
   return(dfval)
@@ -449,7 +509,7 @@ check_lang <- function(lang, verbose){
   }
 
   if(verbose){
-    cat(sprintf("- lang: OK\n"))
+    cat(sprintf("- Check lang: OK\n"))
   }
 
   return(result)
@@ -516,7 +576,7 @@ check_operation <- function(operation, active_null = FALSE, verbose){
   }
 
   if(verbose){
-    cat(sprintf("- operation: OK\n"))
+    cat(sprintf("- Check operation: OK\n"))
   }
 
   return(result)
@@ -560,7 +620,7 @@ check_variablesoperation <- function(operation, variable, verbose){
   }
 
   if(verbose){
-    cat(sprintf("- variable: OK\n"))
+    cat(sprintf("- Check variable: OK\n"))
   }
 
   return(result)
@@ -583,7 +643,7 @@ check_variable <- function(variable, verbose){
   }
 
   if(verbose){
-    cat(sprintf("- variable: OK\n"))
+    cat(sprintf("- Check variable: OK\n"))
   }
 
   return(result)
@@ -607,7 +667,7 @@ check_publication <- function(publication, verbose){
   }
 
   if(verbose){
-    cat(sprintf("- publication: OK\n"))
+    cat(sprintf("- Check publication: OK\n"))
   }
   return(result)
 }
@@ -622,7 +682,7 @@ check_isnull <- function(name, id, verbose){
   }
 
   if(verbose){
-    cat(sprintf("- %s: OK\n", name))
+    cat(sprintf("- Check %s: OK\n", name))
   }
 
   return(result)
@@ -664,7 +724,7 @@ check_dates <- function(date, verbose){
   }
 
   if(verbose){
-    cat(sprintf("- date: OK\n"))
+    cat(sprintf("- Check date: OK\n"))
   }
 
   return(result)
@@ -728,7 +788,7 @@ check_periodicity <- function(operation, p, verbose){
   }
 
   if(verbose){
-    cat(sprintf("- period: OK\n"))
+    cat(sprintf("- Check period: OK\n"))
   }
   return(result)
 }
@@ -743,7 +803,7 @@ check_nlast <- function(nlast, verbose){
   }
 
   if(verbose){
-    cat(sprintf("- nlast: OK\n"))
+    cat(sprintf("- Check nlast: OK\n"))
   }
 
   return(result)
@@ -764,7 +824,7 @@ check_det <- function(det, verbose){
   }
 
   if(verbose){
-    cat(sprintf("- det: OK\n"))
+    cat(sprintf("- Check det: OK\n"))
   }
 
   return(result)
@@ -784,7 +844,7 @@ check_tip <- function(tip, verbose){
   }
 
   if(verbose){
-    cat(sprintf("- tip: OK\n"))
+    cat(sprintf("- Check tip: OK\n"))
   }
 
   return(result)
@@ -807,7 +867,7 @@ check_geo <- function(geo, verbose){
   }
 
   if(verbose){
-    cat(sprintf("- geo: OK\n"))
+    cat(sprintf("- Check geo: OK\n"))
   }
   return(result)
 }
@@ -827,7 +887,7 @@ check_n <- function(n, verbose){
   }
 
   if(verbose){
-    cat(sprintf("- n: OK\n"))
+    cat(sprintf("- Check n: OK\n"))
   }
   return(result)
 }
@@ -923,7 +983,7 @@ check_table_px_filter <- function(idTable, pxfilter, verbose, df){
   }
 
   if(verbose){
-    cat(sprintf("- filter: OK\n"))
+    cat(sprintf("- Check filter: OK\n"))
   }
 
   return(result)
@@ -948,10 +1008,23 @@ check_table_tempus_filter <- function(idTable, filter, verbose, df){
     # Go through all the variables
     for(v in var){
       # Has been used a shortcut name for the variable or not
-      short <- is.element(tolower(v), names(shortcuts))
+      short <- is.element(tolower(v), c(names(shortcuts_filter), names(shortcuts_operations)))
+
+      if(short){
+        if(tolower(v) %in% names(shortcuts_operations)){
+          #varope <- get_metadata_variables(operation = shortcuts_operations[[tolower(v)]],
+          #                                 validate = FALSE, verbose = TRUE)
+          variable <- unique(metadata$Variable.Id)
+        }else{
+          # If there is a shortcut obtain the corresponding id
+          variable <- shortcuts_filter[[tolower(v)]]
+        }
+      }else{
+        variable <- v
+      }
 
       # If there is a shortcut obtain the corresponding id
-      variable <- if(short) shortcuts[[tolower(v)]] else v
+      #variable <- if(short) shortcuts[[tolower(v)]] else v
 
       # The variable id is in the metadata information
       validvar <- intersect(variable, metadata$Variable.Id)
@@ -998,7 +1071,7 @@ check_table_tempus_filter <- function(idTable, filter, verbose, df){
   }
 
   if(verbose){
-    cat(sprintf("- filter: OK\n"))
+    cat(sprintf("- Check filter: OK\n"))
   }
 
   return(result)
@@ -1023,10 +1096,21 @@ check_series_filter <- function(operation, filter, verbose, lang){
     # Go through all the variables
     for(v in var){
       # Has been used a shortcut name for the variable or not
-      short <- is.element(tolower(v), names(shortcuts))
+      short <- is.element(tolower(v), c(names(shortcuts_filter), names(shortcuts_operations)))
+
+      if(short){
+        if(tolower(v) %in% names(shortcuts_operations)){
+          variable <- opevar$Id
+        }else{
+          # If there is a shortcut obtain the corresponding id
+          variable <- shortcuts_filter[[tolower(v)]]
+        }
+      }else{
+        variable <- v
+      }
 
       # If there is a shortcut obtain the corresponding id
-      variable <- if(short) shortcuts[[tolower(v)]] else v
+      #variable <- if(short) shortcuts[[tolower(v)]] else v
 
       # The variable id is in the metadata information
       validvar <- intersect(variable, opevar$Id)
@@ -1062,7 +1146,6 @@ check_series_filter <- function(operation, filter, verbose, lang){
           result <- FALSE
           stop(sprintf("%s is not a valid value for variable %s", f, v))
         }
-
       }
     }
 
@@ -1072,7 +1155,7 @@ check_series_filter <- function(operation, filter, verbose, lang){
   }
 
   if(verbose){
-    cat(sprintf("- values: OK\n"))
+    cat(sprintf("- Check filter: OK\n"))
   }
 
   return(result)
@@ -1156,36 +1239,50 @@ unnest_data <- function(datain){
 
     # In case of dataframes without Data
     if(!is.null(nrow(nodata)) && nrow(nodata) > 0){
-      # index of the dataframe with more values of data
-      ind <- which.max(lapply(datacol, nrow))
 
-      # Dataframe with values
-      data <- datacol[[ind]]
+      if(length(datacol)){
+        # index of the dataframe with more values of data
+        ind <- which.max(lapply(datacol, nrow))
 
-      # Change value for NA
-      data$Valor <- NA
+        # Dataframe with values
+        data <- datacol[[ind]]
 
-      # Repeat each row by the number of data values
-      tmp <- nodata[rep(seq_len(nrow(nodata)), each = nrow(data)),]
+        # Change value for NA
+        data$Valor <- NA
 
-      # Repeat each row by the number of nodata rows
-      nodata <- data[rep(seq_len(nrow(data)), times = nrow(nodata)),]
+        # Repeat each row by the number of data values
+        tmp <- nodata[rep(seq_len(nrow(nodata)), each = nrow(data)),]
 
-      # Adding columns
-      nodata <- cbind(tmp, nodata)
+        # Repeat each row by the number of nodata rows
+        nodata <- data[rep(seq_len(nrow(data)), times = nrow(nodata)),]
 
-      # Adding rows
-      dataout <- rbind(dataout, nodata)
+        # Adding columns
+        nodata <- cbind(tmp, nodata)
+
+        # Adding rows
+        dataout <- rbind(dataout, nodata)
+
+      }else{
+        dataout <- datain
+      }
     }
   }
 
   # We have a list (series case)
   if(is.list(datain) && !is.data.frame(datain)){
     # Discard data and notas columns
-    sel <- tolower(names(datain)) != "data" & tolower(names(datain)) != "notas"
+    sel <- tolower(names(datain)) != "metadata" & tolower(names(datain)) != "data" & tolower(names(datain)) != "notas"
 
-    # Dataframe without the data and notas columns
+    # Selection of metadata
+    selmeta <- tolower(names(datain)) == "metadata"
+
+    # Dataframe without metadata, data and notas columns
     tmp <- as.data.frame(datain[sel])
+
+    # Adding metadata
+    if(sum(selmeta) > 0){
+      tmp$MetaData <- datain[selmeta]
+    }
 
     # Repeat each row by the number of data values
     tmp <- tmp[rep(seq_len(nrow(tmp)), each = max(lengths(datain$Data))),]
@@ -1211,9 +1308,9 @@ get_geocode <- function(datain){
   dataout <- datain
 
   # national, ccaa, provinces or municipalities present in the metadata
-  if(length(intersect(c(349, 115, 70, 19), varid$Variable.Id) > 0)){
+  if(length(intersect(c(349, 115, 70, 19, 20), varid$Variable.Id) > 0)){
     # obtain the code of national, ccaa, provinces or municipalities
-    sel <- lapply(metadata, function(x) subset(x, x$Variable.Id == 349 | x$Variable.Id == 115 | x$Variable.Id == 70 | x$Variable.Id == 19, select = c("Codigo")))
+    sel <- lapply(metadata, function(x) subset(x, x$Variable.Id == 349 | x$Variable.Id == 115 | x$Variable.Id == 70 | x$Variable.Id == 19 | x$Variable.Id == 20, select = c("Codigo")))
 
     # Unique dataframe of codes
     geocode <- do.call(rbind, sel)
