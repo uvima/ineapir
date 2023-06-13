@@ -53,7 +53,7 @@ filter <- list("3" = "74" ,     # variable id = 3, value id = 74
                "762" = "304092" # variable id = 762, value id = 304092
                )
 
-# Request the data using the filter
+# Request data using the filter
 ipc <- get_data_table(idTable = 50902, filter = filter, unnest = TRUE,
                     tip = "A", nlast = 5)
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
@@ -86,7 +86,7 @@ filter <- list(sexo = "ambossexos",
                edad3gruposdeedad = "totaledades" 
                ) 
 
-# Request the data using the filter
+# Request data using the filter
 poblacion <- get_data_table(idTable = "t20/e245/p08/l0/01001.px", unnest = TRUE,
                     tip = "A", nlast = 5, filter = filter)
 poblacion
@@ -98,7 +98,7 @@ It is necessary to pass the argument `filter` of the `get_data_series_filter()`
 function, which is a `list()` of variables and the values they take.
 
 1. The first step is to obtain the variables used in the operation to which 
-the series belongs.
+the series belong.
 
 ```{r series_variables}
 # Variables used in the operation IPC
@@ -106,7 +106,7 @@ variables <- get_metadata_variables(operation = "IPC")
 variables
 ```
 
-2. The second step is to obtain the values of the varibles that interest us
+2. The second step is to obtain the values of the variables that interest us
 to build the filter.
 
 ```{r series_values_1}
@@ -132,7 +132,7 @@ filter <- list("115" = "2",     # variable id = 115, value id = 2
                "762" = "304092" # variable id = 762, value id = 304092
                )
 
-# Request the data using the filter
+# Request data using the filter
 ipc <- get_data_series_filter(operation = "IPC", filter = filter, period = 1,
                        unnest = TRUE, tip = "A")
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
@@ -148,7 +148,7 @@ filter <- list("115" = c("2" ,"3", "4"), # variable id = 115, values id 2, 3, 4
                "762" = "304092"          # variable id = 762, value id = 304092
                )
 
-# Request the data using the filter
+# Request data using the filter
 ipc <- get_data_series_filter(operation = "IPC", filter = filter, period = 1, 
                         unnest = TRUE, tip = "A")
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
@@ -165,7 +165,7 @@ filter <- list("115" = "",      # variable id = 115, all values
                "762" = "304092" # variable id = 762, value id = 304092
                )
 
-# Request the data using the filter
+# Request data using the filter
 ipc <- get_data_series_filter(operation = "IPC", filter = filter, period = 1, 
                         unnest = TRUE, tip = "A")
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
