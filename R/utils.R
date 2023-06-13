@@ -910,13 +910,17 @@ check_filter <- function(parameter, verbose, lang){
     # Obtain table information including metadata
     df <- get_data_table(idTable = id, nlast = 1, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
 
-    # The table is in px or tpx format
-    if(is.pxtable(df$MetaData)){
-      check_table_px_filter(id, filter, verbose, df)
+    # Make sure we have a dataframe
+    if(!check_result_status(df)){
 
-    # The table is stored in tempus
-    }else{
-      check_table_tempus_filter(id, filter, verbose, df)
+      # The table is in px or tpx format
+      if(is.pxtable(df$MetaData)){
+        check_table_px_filter(id, filter, verbose, df)
+
+      # The table is stored in tempus
+      }else{
+        check_table_tempus_filter(id, filter, verbose, df)
+      }
     }
   # The filter comes from a series
   }else{
