@@ -1,0 +1,167 @@
+---
+title: "How to filter data using shortcut names"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Instead of using numeric codes, it is possible to use certain shortcut names
+when the `filter` argument is passed. The available shortcuts for
+variables are shown below.
+
+|Shortcut | Variable ID | Comment|
+|---------|----|--------|
+|nac             | 349 | National|
+|ccaa            | 70  | Autonomous Communities |
+|prov            | 115 | Provinces |
+|mun             | 19  | Municipalities |
+|island          | 20  | Islands |
+|isla            | 20  | Islands |
+|group           | 762 | CPI groups |
+|grupo           | 762 | CPI groups |
+|subgroup        | 763 | CPI subgroups |
+|subgrupo        | 763 | CPI subgroups |
+|class           | 764 | CPI class |
+|clase           | 764 | CPI class |
+|subclass        | 765 | CPI subclass |
+|subclase        | 765 | CPI subclass |
+|heading         | 270 | CPI headings |
+|rubrica         | 270 | CPI headings |
+|specialgroup    | 269 | CPI special groups |
+|grupoespecial   | 269 | CPI special groups |
+|datatype        | 3   | Type of data |
+|tipodato        | 3   | Type of data |
+|sex             | 18  | Sex |
+|sexo            | 18  | Sex |
+|age1            | 355 | Simple age |
+|edad1           | 355 | Simple age |
+|aget            | 356 | Age totals |
+|edadt           | 356 | Age totals |
+|ageg            | 360 | Age groups |
+|edadg           | 360 | Age groups |
+|ages            | 357 | Age semi-intervals |
+|edads           | 357 | Age semi-intervals |
+|age             |355, 356, 357, 360 | Age wrapper |
+|edad            |355, 356, 357, 360 | Age wrapper |
+|generation      | 612 | Generation/ages |
+|generacion      | 612 | Generation/ages |
+|nationality     | 141 | Nationality |
+|nationality     | 141 | Nationality |
+|birthcountry    | 431, 432 | Country of birth |
+|paisnacimiento  | 431, 432 | Country of birth |
+|birthplace      | 97  | Place of birth |
+|lugarnacimiento | 97  | Place of birth |
+|effectscorr     | 544 | Correction of effects |
+|efectoscorr     | 544 | Correction of effects |
+|cpi         | `get_metadata_variables(operation = "IPC")`    | CPI wrapper |
+|ipc         | `get_metadata_variables(operation = "IPC")`    | CPI wrapper |
+|gdp         | `get_metadata_variables(operation = "CNTR2010")` | GDP wrapper |
+|pib         | `get_metadata_variables(operation = "CNTR2010")` | GDP wrapper |
+|pop         | `get_metadata_variables(operation = "ECP"`  | Population wrapper|
+|pob         | `get_metadata_variables(operation = "ECP")` | Population wrapper|
+
+## Filtering data from tables
+
+To use a filter with shortcuts it is necessary to pass the argument
+`shortcut = TRUE` too. As variable we use a shortcut and as a value a name.
+
+### Example one
+
+```{r tabla_filter_1}
+library(ineapir)
+
+# Filter using shortcuts
+filter <- list(tipodato = "variación anual" , # variable id = 3
+               grupo = "índice general"       # variable id = 762
+               )
+
+# Request data using the filter and shortcut = TRUE
+ipc <- get_data_table(idTable = 50902, shortcut = TRUE, filter = filter,
+                      unnest = TRUE, tip = "A", nlast = 5)
+ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
+```
+
+Since the table with the id code 50902 belongs to the IPC operation, we can
+also use the *ipc* wrapper.
+
+```{r tabla_filter_2}
+# Filter with the ipc wrapper
+filter <- list(ipc = c("variación anual" , "índice general"))
+
+# Request data using the filter and shortcut = TRUE
+ipc <- get_data_table(idTable = 50902, shortcut = TRUE, filter = filter,
+                      unnest = TRUE, tip = "A", nlast = 5)
+ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
+```
+
+### Example two
+
+```{r tabla_filter_3}
+# Filter with the pib wrapper
+filter <- list(pib = c("producto interior", "datos ajustados", "variación anual"))
+
+# Request data using the filter and shortcut = TRUE
+pib <- get_data_table(idTable = 30679, shortcut = TRUE, filter = filter,
+                      unnest = TRUE, tip = "A", nlast = 5)
+pib[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
+```
+
+### Example three
+
+```{r tabla_filter_4}
+# Filter with the pob wrapper
+filter <- list(pob = c("todas las edades", "total"))
+
+# Request data using the filter and shortcut = TRUE
+pob <- get_data_table(idTable = 56934, shortcut = TRUE, filter = filter,
+                      unnest = TRUE, tip = "A", nlast = 5)
+pob[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
+```
+
+## Filtering data from series
+It is necessary to pass the arguments `shortcut = TRUE` and `filter` of the 
+`get_data_series_filter()` function. As variable we use a shortcut and as a
+value a name.
+
+### Example one
+
+```{r series_filter_1}
+# Filter with the ipc wrapper
+filter <- list(ipc = c("variación anual" , "índice general", "total nacional"))
+
+# Request data using the filter
+ipc <- get_data_series_filter(operation = "IPC", shortcut = TRUE, filter = filter,
+                              period = 1, unnest = TRUE, tip = "A")
+ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
+```
+
+### Example two
+
+```{r series_filter_2}
+# Filter with the pib wrapper
+filter <- list(pib = c("producto interior", "datos ajustados",
+                       "volumen encadenado", "variación anual"))
+
+# Request data using the filter
+pib <- get_data_series_filter(operation = "CNTR2010", shortcut = TRUE, filter = filter,
+                              period = 3, unnest = TRUE, tip = "A")
+pib[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
+```
+
+
+### Example three
+
+```{r series_filter_3}
+# Filter with the pop wrapper combine with individual shortcuts
+filter <- list(pob = c("todas las edades", "total nacional"), nacionalidad = "total",
+               sexo = "total", paisnacimiento = "total" )
+
+# Request data using the filter
+pob <- get_data_series_filter(operation = "ECP", shortcut = TRUE, filter = filter,
+                              period = 3, unnest = TRUE, tip = "A")
+pob[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
+```
