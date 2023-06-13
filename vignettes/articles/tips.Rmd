@@ -1,0 +1,87 @@
+---
+title: "Tips"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Use of `verbose`
+
+When the argument `verbose = TRUE` is passed to a function, a number of 
+information is displayed in the console, including the URL used to call the API.
+
+```{r verbose}
+library(ineapir)
+
+# Variables used in the operation IPC and verbose = TRUE
+variables <- get_metadata_variables(operation = "IPC", verbose = TRUE)
+```
+
+## Use of `validate`
+If it is not necessary to validate the values of the arguments passed to a
+function, this validation can be turned off with `validate = FALSE`.
+
+```{r validate_1}
+# Variables used in the operation IPC with verbose = TRUE and validate = FALSE
+variables <- get_metadata_variables(operation = "IPC", verbose = TRUE,
+                                    validate = TRUE)
+```
+
+This is useful when we are filtering data and the filter we are using is
+the one we want. Turning off validation means making fewer API calls
+
+```{r validate_2}
+# The filter 
+filter <- list("115" = "2",     # variable id = 115, value id = 2
+               "3" = "74" ,     # variable id = 3, value id = 74
+               "762" = "304092" # variable id = 762, value id = 304092
+               )
+
+# Request data using the filter with verbose = TRUE and validate = TRUE
+ipc <- get_data_series_filter(operation = "IPC", filter = filter, period = 1,
+                       verbose = TRUE)
+
+# Request data using the filter with verbose = TRUE and validate = FALSE
+ipc <- get_data_series_filter(operation = "IPC", filter = filter, period = 1,
+                       verbose = TRUE, validate = FALSE)
+```
+
+## Use of `lang`
+It is possible to retrieve information in English passing the argument
+`lang = "EN"` to certain functions.
+
+```{r lang_1}
+# Variables used in the operation IPC and lang = "EN"
+variables <- get_metadata_variables(operation = "IPC", lang = "EN")
+variables
+```
+
+
+We can use the English language as well filtering data using shortcuts.
+
+```{r tabla_filter_2}
+# Filter with the ipc wrapper
+filter <- list(cpi = c("annual change" , "overall index"))
+
+# Request data using the filter with shortcut = TRUE and lang = "EN"
+cpi <- get_data_table(idTable = 50902, shortcut = TRUE, filter = filter,
+                      unnest = TRUE, tip = "A", nlast = 5, lang = "EN")
+cpi[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
+```
+
+## Use of `unnest`
+
+
+## Use of `geocode`
+
+## Filter with regular expresions
+
+## periods
+
+
+
+
