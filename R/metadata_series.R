@@ -7,7 +7,7 @@
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
-#' @return Dataframe with information of a series
+#' @return Data frame with information of a series
 #' @export
 #'
 #' @examples \dontrun{
@@ -56,7 +56,7 @@ get_metadata_series <- function(codSeries = NULL, det = 0, tip = NULL, lang = "E
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
-#' @return Dataframe with information of the series belonging to an operation
+#' @return Data frame with information of the series belonging to an operation
 #' @export
 #'
 #' @examples \dontrun{
@@ -102,7 +102,7 @@ get_metadata_series_operation <- function(operation = NULL, n = 500, det = 0, ti
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
-#' @return Dataframe with information of the values of a series
+#' @return Data frame with information of the values of a series
 #' @export
 #'
 #' @examples \dontrun{
@@ -150,7 +150,7 @@ get_metadata_series_values <- function(codSeries = NULL, det = 0, tip = NULL, la
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
-#' @return Dataframe with information of the series belonging to a table
+#' @return Data frame with information of the series belonging to a table
 #' @export
 #'
 #' @examples \dontrun{
@@ -201,7 +201,7 @@ get_metadata_series_table <- function(idTable = NULL, det = 0, tip = NULL, lang 
 #' @param verbose (logical): print additional information
 #' @param shortcut (logical): enable the use of shortcut names in the filter
 #'
-#' @return Dataframe with information of the series that fulfill the conditions of a filter
+#' @return Data frame with information of the series that fulfill the conditions of a filter
 #' @export
 #'
 #' @examples \dontrun{

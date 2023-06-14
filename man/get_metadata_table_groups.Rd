@@ -21,7 +21,7 @@ get_metadata_table_groups(
 \item{verbose}{(logical): print additional information}
 }
 \value{
-Dataframe with information of the groups of a table
+Data frame with information of the groups of a table
 }
 \description{
 Get all the groups of a table

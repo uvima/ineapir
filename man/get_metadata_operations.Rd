@@ -21,7 +21,7 @@ get_metadata_operations(
 \item{verbose}{(logical): print additional information}
 }
 \value{
-Dataframe with information of the available operations
+Data frame with information of the available operations
 }
 \description{
 Get available operations

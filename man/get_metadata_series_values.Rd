@@ -27,7 +27,7 @@ get_metadata_series_values(
 \item{verbose}{(logical): print additional information}
 }
 \value{
-Dataframe with information of the values of a series
+Data frame with information of the values of a series
 }
 \description{
 Get all the values used in a series

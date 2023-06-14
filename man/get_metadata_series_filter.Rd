@@ -36,7 +36,7 @@ get_metadata_series_filter(
 \item{shortcut}{(logical): enable the use of shortcut names in the filter}
 }
 \value{
-Dataframe with information of the series that fulfill the conditions of a filter
+Data frame with information of the series that fulfill the conditions of a filter
 }
 \description{
 Get all the series that fulfill the conditions of a filter

@@ -30,7 +30,7 @@ get_metadata_series_operation(
 \item{verbose}{(logical): print additional information}
 }
 \value{
-Dataframe with information of the series belonging to an operation
+Data frame with information of the series belonging to an operation
 }
 \description{
 Get all the series present in a operation

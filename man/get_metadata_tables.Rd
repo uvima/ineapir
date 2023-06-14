@@ -30,7 +30,7 @@ get_metadata_tables(
 \item{verbose}{(logical): print additional information}
 }
 \value{
-Dataframe with information of the available tables of an operation
+Data frame with information of the available tables of an operation
 }
 \description{
 Get all the tables present in a operation

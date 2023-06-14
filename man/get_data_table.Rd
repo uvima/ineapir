@@ -35,14 +35,14 @@ get_data_table(
 
 \item{verbose}{(logical): print additional information}
 
-\item{unnest}{(logical): set to TRUE to obtain a single dataframe of data}
+\item{unnest}{(logical): set to TRUE to obtain a single data frame of data}
 
 \item{geocode}{(logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities}
 
-\item{shortcut}{(logical): enable the use of shortcut names in the filter}
+\item{shortcut}{(logical): set to TRUE to enable the use of shortcut names in the filter}
 }
 \value{
-Dataframe with the data of table
+Data frame with the data of table
 }
 \description{
 Get data from a table

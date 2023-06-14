@@ -21,7 +21,7 @@ get_metadata_variables(
 \item{verbose}{(logical): print additional information}
 }
 \value{
-Dataframe with information of the available variables
+Data frame with information of the available variables
 }
 \description{
 Get all possible variables or variables used in a operation

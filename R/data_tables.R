@@ -8,11 +8,11 @@
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
-#' @param unnest (logical): set to TRUE to obtain a single dataframe of data
+#' @param unnest (logical): set to TRUE to obtain a single data frame of data
 #' @param geocode (logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities
-#' @param shortcut (logical): enable the use of shortcut names in the filter
+#' @param shortcut (logical): set to TRUE to enable the use of shortcut names in the filter
 #'
-#' @return Dataframe with the data of table
+#' @return Data frame with the data of table
 #' @export
 #'
 #' @examples \dontrun{

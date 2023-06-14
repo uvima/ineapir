@@ -27,7 +27,7 @@ get_metadata_publication_dates(
 \item{verbose}{(logical): print additional information}
 }
 \value{
-Dataframe with information of the dates of a publication
+Data frame with information of the dates of a publication
 }
 \description{
 Get the dates of a publication

@@ -5,7 +5,7 @@
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
-#' @return Dataframe with information of the available operations
+#' @return Data frame with information of the available operations
 #' @export
 #'
 #' @examples \dontrun{
@@ -49,7 +49,7 @@ get_metadata_operations <- function(operation = NULL, lang = "ES", validate = TR
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
-#' @return Dataframe with information of the available variables
+#' @return Data frame with information of the available variables
 #' @export
 #'
 #' @examples \dontrun{
@@ -95,7 +95,7 @@ get_metadata_variables <- function(operation = NULL, lang = "ES", validate = TRU
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
-#' @return Dataframe with information of the available values of a variable
+#' @return Data frame with information of the available values of a variable
 #' @export
 #'
 #' @examples \dontrun{
@@ -141,7 +141,7 @@ get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lan
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
-#' @return Dataframe with information of the publications
+#' @return Data frame with information of the publications
 #' @export
 #'
 #' @examples \dontrun{
@@ -188,7 +188,7 @@ get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", va
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
-#' @return Dataframe with information of the dates of a publication
+#' @return Data frame with information of the dates of a publication
 #' @export
 #'
 #' @examples \dontrun{

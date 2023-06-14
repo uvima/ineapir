@@ -27,7 +27,7 @@ get_metadata_values(
 \item{verbose}{(logical): print additional information}
 }
 \value{
-Dataframe with information of the available values of a variable
+Data frame with information of the available values of a variable
 }
 \description{
 Get all possible values from a variable

@@ -24,7 +24,7 @@ get_metadata_table_Values(
 \item{verbose}{(logical): print additional information}
 }
 \value{
-Dataframe with information of the values of a group of a table
+Data frame with information of the values of a group of a table
 }
 \description{
 Get all the values of a group of a table

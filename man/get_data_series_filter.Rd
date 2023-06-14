@@ -24,9 +24,10 @@ get_data_series_filter(
 
 \item{filter}{(list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)}
 
-\item{period}{(int): id of the periodicity of the series (1:monthly, 3:quarterly, 12:annual)}
+\item{period}{(int): id of the periodicity of the series: 1 (monthly), "m" (monthly),
+3 (quarterly), "q" (quarterly), "t" (quarterly), 12 (annual) and "a" (annual).}
 
-\item{nlast}{(int): number of data or periods to retreive}
+\item{nlast}{(int): number of data or periods to retrieve}
 
 \item{det}{(int): level of detail (0, 1 ,2)}
 
@@ -38,14 +39,14 @@ get_data_series_filter(
 
 \item{verbose}{(logical): print additional information}
 
-\item{unnest}{(logical): obtain a single dataframe of data}
+\item{unnest}{(logical): obtain a single data frame of data}
 
 \item{geocode}{(logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities}
 
-\item{shortcut}{(logical): enable the use of shortcut names in the filter}
+\item{shortcut}{(logical): set to TRUE to enable the use of shortcut names in the filter}
 }
 \value{
-Dataframe with data of series
+Data frame with data of series
 }
 \description{
 Get data from series that fulfill the conditions of a filter

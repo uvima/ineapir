@@ -27,7 +27,7 @@ get_metadata_series(
 \item{verbose}{(logical): print additional information}
 }
 \value{
-Dataframe with information of a series
+Data frame with information of a series
 }
 \description{
 Get a series information

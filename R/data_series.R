@@ -11,9 +11,9 @@
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
-#' @param unnest (logical): set to TRUE to obtain a single dataframe of data
+#' @param unnest (logical): set to TRUE to obtain a single data frame of data
 #'
-#' @return Dataframe with data of a series
+#' @return Data frame with data of a series
 #'
 #' @examples \dontrun{
 #' get_data_series(codSeries = "IPC251856")
@@ -61,18 +61,19 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #'
 #' @param operation (string): Code of the operation
 #' @param filter (list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)
-#' @param period (int): id of the periodicity of the series (1:monthly, 3:quarterly, 12:annual)
-#' @param nlast (int): number of data or periods to retreive
+#' @param period (int): id of the periodicity of the series: 1 (monthly), "m" (monthly),
+#' 3 (quarterly), "q" (quarterly), "t" (quarterly), 12 (annual) and "a" (annual).
+#' @param nlast (int): number of data or periods to retrieve
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
-#' @param unnest (logical): obtain a single dataframe of data
+#' @param unnest (logical): obtain a single data frame of data
 #' @param geocode (logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities
-#' @param shortcut (logical): enable the use of shortcut names in the filter
+#' @param shortcut (logical): set to TRUE to enable the use of shortcut names in the filter
 #'
-#' @return Dataframe with data of series
+#' @return Data frame with data of series
 #' @export
 #'
 #' @examples \dontrun{

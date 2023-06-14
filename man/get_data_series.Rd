@@ -36,10 +36,10 @@ get_data_series(
 
 \item{verbose}{(logical): print additional information}
 
-\item{unnest}{(logical): set to TRUE to obtain a single dataframe of data}
+\item{unnest}{(logical): set to TRUE to obtain a single data frame of data}
 }
 \value{
-Dataframe with data of a series
+Data frame with data of a series
 }
 \description{
 Retrieve data from series published by INE calling the API

@@ -24,7 +24,7 @@ get_metadata_publications(
 \item{verbose}{(logical): print additional information}
 }
 \value{
-Dataframe with information of the publications
+Data frame with information of the publications
 }
 \description{
 Get all the publications or the publications from an operation

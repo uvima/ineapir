@@ -27,7 +27,7 @@ get_metadata_series_table(
 \item{verbose}{(logical): print additional information}
 }
 \value{
-Dataframe with information of the series belonging to a table
+Data frame with information of the series belonging to a table
 }
 \description{
 Get all the series belonging to a table
