@@ -1,0 +1,80 @@
+---
+title: "Usage"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Example 1
+
+```{r example_1}
+library(ineapir)
+library(ggplot2)
+
+# Filter cpi overall index
+filter <- list(ipc = c("variación anual" , "índice general"))
+
+# Request data of cpi
+general <- get_data_table(idTable = 50902, shortcut = TRUE, 
+                          filter = filter, unnest = TRUE, tip = "A" )
+
+# Filter core cpi
+filter <- list(ipc = c("variación anual" , 
+                       "general sin alimentos no elaborados ni productos energéticos"))
+
+# Request data of core cpi
+subyacente <- get_data_table(idTable = 50907, shortcut = TRUE, 
+                             filter = filter, unnest = TRUE, tip = "A" )
+
+# Format Fecha column as date
+general$Fecha <- as.Date(general$Fecha)
+subyacente$Fecha <- as.Date(subyacente$Fecha)
+
+# Plot both time series
+ggplot(data = general, aes(Fecha, Valor)) +
+  geom_line(aes(colour = 'General')) +
+  geom_line(data= subyacente, aes(colour = 'Subyacente')) +
+  labs(y = 'Variación anual (%)', colour = 'IPC') +
+  theme(legend.position = "bottom")
+
+```
+
+## Example 2
+
+```{r example_2}
+
+filter <- list(nacionalidad = "total", sexo = c("hombres", "mujeres"))
+poblacion <- get_data_table(idTable = 9674, shortcut = TRUE ,
+                            filter = filter, nlast = 1, validate = FALSE, 
+                            tip = "M", unnest = TRUE)
+
+poblacion$Porcentaje <- poblacion$Valor/sum(poblacion$Valor[1:2])*100
+
+poblacion <- poblacion[3:nrow(poblacion),]
+
+poblacion$Edad <- unlist(do.call(rbind,
+                          lapply(poblacion$MetaData, 
+                                 function(x) subset(x, x$Variable.Id == 356 |
+                                                       x$Variable.Id == 360 |
+                                                       x$Variable.Id == 357, 
+                                                    select = c("Nombre")))))
+poblacion$Edad <- as.factor(poblacion$Edad)
+levels(poblacion$Edad) <- unique(poblacion$Edad)
+
+poblacion$Sexo <- unlist(do.call(rbind,
+                                 lapply(poblacion$MetaData,
+                                        function(x) subset(x, x$Variable.Id == 18,
+                                                           select = c("Nombre")))))
+
+poblacion$Porcentaje <- ifelse(poblacion$Sexo == "Hombres",
+                               -poblacion$Porcentaje, poblacion$Porcentaje)
+
+ggplot(poblacion, aes(x = Edad, y = Porcentaje ,fill = Sexo)) +
+  geom_col(position = "stack", alpha = 0.8) +
+  coord_flip() + theme(legend.position = "bottom") +
+  scale_y_continuous(labels = abs) 
+```
