@@ -63,25 +63,85 @@ variables
 
 We can use the English language as well filtering data using shortcuts.
 
-```{r tabla_filter_2}
-# Filter with the ipc wrapper
+```{r lang_2}
+# Filter with the cpi wrapper
 filter <- list(cpi = c("annual change" , "overall index"))
 
 # Request data using the filter with shortcut = TRUE and lang = "EN"
 cpi <- get_data_table(idTable = 50902, shortcut = TRUE, filter = filter,
                       unnest = TRUE, tip = "A", nlast = 5, lang = "EN")
+
 cpi[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
 ## Use of `unnest`
+When we request data from tables or series using the functions
+`get_data_table()`, `get_data_series()` and `get_data_series_filter`, the
+`$Data` column containing the data values is a list of data frames, one for each
+ entry.
 
+```{r unnest_1}
+# Filter with the ipc wrapper
+filter <- list(ipc = c("variación anual" , "variación mensual", "índice general"))
+
+# Request data using the filter and unnest = FALSE
+ipc <- get_data_table(idTable = 50902, shortcut = TRUE, filter = filter,
+                      tip = "A", nlast = 3)
+
+# We have two entries
+ ipc[,c("COD","Nombre")]
+ 
+# Data column is a list of two data frames. One for each entry. 
+ ipc$Data
+```
+
+If we want to get only one data frame for all data values, we can pass
+the argument `unnest = TRUE`.
+
+```{r unnest_2}
+# Filter with the ipc wrapper
+filter <- list(ipc = c("variación anual" , "variación mensual", "índice general"))
+
+# Request data using the filter and unnest = TRUE
+ipc <- get_data_table(idTable = 50902, shortcut = TRUE, filter = filter,
+                      tip = "A", nlast = 3, unnest = TRUE)
+
+# Unique data frame with 6 rows
+ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
+```
 
 ## Use of `geocode`
+When we request data from Autonomous Communities, provinces or municipalities,
+we can get the corresponding INE code of each one by passing the argument
+`geocode=TRUE`. Including metadata with `tip="M"` is required for it to work.
 
-## Filter with regular expresions
+```{r geocode}
+# Filter with the ipc wrapper
+filter <- list(ipc = c("índice$" , "índice general"), prov = "")
 
-## periods
+# Request data using the filter with geocode = TRUE and tip = "AM"
+ipc <- get_data_table(idTable = 50918, shortcut = TRUE, filter = filter,
+                      tip = "AM", nlast = 1, unnest = TRUE, geocode = TRUE)
+
+# The Codigo column contains the INE code of the different provinces
+ipc[1:5,c("Codigo","Nombre", "T3_Periodo", "Anyo", "Valor")]
+```
 
 
+## Filtering with regular expresions
+When we use shortcuts names in the filter, we can also include as values
+regular expressions if this helps us filter the data better.
+
+```{r regexp_1}
+# Filter with a regular expression for ages between 20 and 25 years old
+filter <- list(sexo = "total", edad = "2[0-5]+")
+
+# Request data using the filter with a regular expression
+pob <- get_data_table(idTable = 56934, shortcut = TRUE, filter = filter,
+                      tip = "A", nlast = 1, unnest = TRUE)
+
+# Only ages between 20 and 25 years old
+pob[,c("Nombre", "Anyo", "Valor")]
+```
 
 
