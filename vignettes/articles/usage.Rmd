@@ -46,35 +46,66 @@ ggplot(data = general, aes(Fecha, Valor)) +
 ## Example 2
 
 ```{r example_2}
+library(dplyr, quietly = TRUE)
+library(forcats)
 
+# Filter for total population of men and women 
 filter <- list(nacionalidad = "total", sexo = c("hombres", "mujeres"))
+
+# Table: Resident population by date, sex, age group and nationality
 poblacion <- get_data_table(idTable = 9674, shortcut = TRUE ,
-                            filter = filter, nlast = 1, validate = FALSE, 
-                            tip = "M", unnest = TRUE)
+                            filter = filter, validate = FALSE, 
+                            tip = "AM", unnest = TRUE)
 
-poblacion$Porcentaje <- poblacion$Valor/sum(poblacion$Valor[1:2])*100
-
-poblacion <- poblacion[3:nrow(poblacion),]
-
+# Extract age from metadata column
 poblacion$Edad <- unlist(do.call(rbind,
                           lapply(poblacion$MetaData, 
                                  function(x) subset(x, x$Variable.Id == 356 |
                                                        x$Variable.Id == 360 |
                                                        x$Variable.Id == 357, 
                                                     select = c("Nombre")))))
-poblacion$Edad <- as.factor(poblacion$Edad)
-levels(poblacion$Edad) <- unique(poblacion$Edad)
 
+# Extract sex from metadata column
 poblacion$Sexo <- unlist(do.call(rbind,
                                  lapply(poblacion$MetaData,
                                         function(x) subset(x, x$Variable.Id == 18,
                                                            select = c("Nombre")))))
 
-poblacion$Porcentaje <- ifelse(poblacion$Sexo == "Hombres",
-                               -poblacion$Porcentaje, poblacion$Porcentaje)
+# Filter totals and calculate percentages
+poblacion %>% 
+  filter(Edad != "Total" & T3_Periodo == "1 de enero de" & Anyo == 2022) %>%
+  mutate(Total = sum(Valor), 
+         Porcentaje = Valor/Total*100, 
+         Edad = fct_inorder(Edad)) %>%
+  mutate(Porcentaje = ifelse(Sexo == "Hombres",
+                             -Porcentaje, Porcentaje)) %>%
+# Plot the pyramid
+  ggplot(aes(x = Edad, y = Porcentaje ,fill = Sexo)) +
+    geom_col(position = "stack", alpha = 0.8) +
+    coord_flip() + theme(legend.position = "bottom") +
+    scale_y_continuous(labels = abs) +
+    labs(title = 'Población residente por sexo y grupo de edad (2022)')
 
-ggplot(poblacion, aes(x = Edad, y = Porcentaje ,fill = Sexo)) +
+```
+
+## Example 3
+```{r example_3}
+library(gganimate)
+
+# Filter totals and calculate percentages
+poblacion %>% 
+  filter(Edad != "Total" & T3_Periodo == "1 de enero de") %>%
+  group_by(Anyo) %>% 
+  mutate(Total = sum(Valor), 
+         Porcentaje = Valor/Total*100, 
+         Edad = fct_inorder(Edad)) %>% ungroup() %>%
+  mutate(Porcentaje = ifelse(Sexo == "Hombres",
+                             -Porcentaje, Porcentaje)) %>%
+# Plot the pyramid
+ggplot(aes(x = Edad, y = Porcentaje ,fill = Sexo)) +
   geom_col(position = "stack", alpha = 0.8) +
   coord_flip() + theme(legend.position = "bottom") +
-  scale_y_continuous(labels = abs) 
+  scale_y_continuous(labels = abs) + transition_time(Anyo) + 
+  labs(title = 'Población residente por sexo y grupo de edad (Año: {as.integer(frame_time)})')
+
 ```
