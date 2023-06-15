@@ -1319,6 +1319,9 @@ get_geocode <- function(datain){
     # Unique dataframe of codes
     geocode <- do.call(rbind, sel)
 
+    # Rename
+    names(geocode) <- "CODIGO_INE"
+
     # Adding code to dataframe
     dataout <- cbind(dataout, geocode)
 
