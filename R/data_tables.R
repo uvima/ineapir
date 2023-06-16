@@ -9,8 +9,9 @@
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #' @param unnest (logical): set to TRUE to obtain a single data frame of data
-#' @param geocode (logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities
+#' @param inecode (logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities
 #' @param shortcut (logical): set to TRUE to enable the use of shortcut names in the filter
+#' @param extractmetadata (logical): set to TRUE to extract metadata to individual data frame columns
 #'
 #' @return Data frame with the data of table
 #' @export
@@ -24,7 +25,7 @@
 #' filter = list(edad3gruposdeedad = "015anos", sexo = c("mujeres", "hombres")))
 #' }
 #'
-get_data_table <- function(idTable = NULL, filter = NULL, nlast = NULL, det = NULL, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, unnest = FALSE, geocode = FALSE, shortcut = FALSE){
+get_data_table <- function(idTable = NULL, filter = NULL, nlast = NULL, det = NULL, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, unnest = FALSE, inecode = FALSE, shortcut = FALSE, extractmetadata = FALSE){
 
   # List of values to define the call to the API
   definition <- list()
@@ -41,7 +42,7 @@ get_data_table <- function(idTable = NULL, filter = NULL, nlast = NULL, det = NU
   parameters <- append(parameters, list(tip = tip))
 
   # List of addons
-  addons <- list(validate = validate, verbose = verbose, unnest = unnest, geocode = geocode, shortcut = shortcut)
+  addons <- list(validate = validate, verbose = verbose, unnest = unnest, inecode = inecode, shortcut = shortcut, extractmetadata = extractmetadata)
 
   # List of definitions and parameters
   request <- list(definition = definition, parameters = parameters, addons = addons)
@@ -53,7 +54,7 @@ get_data_table <- function(idTable = NULL, filter = NULL, nlast = NULL, det = NU
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, verbose = verbose, unnest = unnest, geocode = geocode)
+  data <- get_api_data(url, request, verbose = verbose, unnest = unnest, inecode = inecode, extractmetadata = extractmetadata)
 
   return(data)
 }

@@ -37,7 +37,7 @@ get_metadata_operations <- function(operation = NULL, lang = "ES", validate = TR
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, verbose = verbose)
+  data <- get_api_data(url, request, verbose = verbose)
 
   return(data)
 }
@@ -81,7 +81,7 @@ get_metadata_variables <- function(operation = NULL, lang = "ES", validate = TRU
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, verbose = verbose)
+  data <- get_api_data(url, request, verbose = verbose)
 
   return(data)
 }
@@ -128,7 +128,7 @@ get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lan
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, verbose = verbose)
+  data <- get_api_data(url, request, verbose = verbose)
 
   return(data)
 }
@@ -174,7 +174,7 @@ get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", va
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, verbose = verbose)
+  data <- get_api_data(url, request, verbose = verbose)
 
   return(data)
 }
@@ -221,7 +221,7 @@ get_metadata_publication_dates <- function(publication = NULL, det = 0, tip = NU
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, verbose = verbose)
+  data <- get_api_data(url, request, verbose = verbose)
 
   return(data)
 }

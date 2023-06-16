@@ -41,7 +41,7 @@ get_metadata_series <- function(codSeries = NULL, det = 0, tip = NULL, lang = "E
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, verbose = verbose)
+  data <- get_api_data(url, request, verbose = verbose)
 
   return(data)
 }
@@ -136,7 +136,7 @@ get_metadata_series_values <- function(codSeries = NULL, det = 0, tip = NULL, la
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, verbose = verbose)
+  data <- get_api_data(url, request, verbose = verbose)
 
   return(data)
 }
@@ -184,7 +184,7 @@ get_metadata_series_table <- function(idTable = NULL, det = 0, tip = NULL, lang 
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, verbose = verbose)
+  data <- get_api_data(url, request, verbose = verbose)
 
   return(data)
 }
@@ -238,7 +238,7 @@ get_metadata_series_filter <- function(operation = NULL, filter = NULL, period =
   url <- get_url(request)
 
   # Obtain the data retrieved calling the API
-  data <- get_api_data(url, verbose = verbose)
+  data <- get_api_data(url, request, verbose = verbose)
 
   return(data)
 }

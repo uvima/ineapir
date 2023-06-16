@@ -57,10 +57,10 @@ shortcuts_periods <- list("m" = "1", # monthly
                           )
 
 # Function to retrieve data from the aPI
-get_api_data <- function(request, verbose = FALSE, unnest = FALSE, geocode = FALSE){
+get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inecode = FALSE, extractmetadata = FALSE){
 
   if(verbose){
-    cat(sprintf("- API URL: %s\n", request))
+    cat(sprintf("- API URL: %s\n", url))
   }
 
   result <- NULL
@@ -68,7 +68,7 @@ get_api_data <- function(request, verbose = FALSE, unnest = FALSE, geocode = FAL
   # Initiate a call to the aPI
   tryCatch(
     {
-      result <- jsonlite::fromJSON(request, flatten = TRUE)
+      result <- jsonlite::fromJSON(url, flatten = TRUE)
     },
     error=function(e) {
       message('An error occurred calling the API')
@@ -84,9 +84,15 @@ get_api_data <- function(request, verbose = FALSE, unnest = FALSE, geocode = FAL
   if(!check_result_status(result)){
 
     # Include an identifying territorial code when applicable
-    if(geocode){
-      result <- get_geocode(result)
+    if(inecode){
+      result <- get_inecode(result, verbose)
     }
+
+    # extract metadata to columns
+    if(extractmetadata){
+      result <- extract_metadata(result, request)
+    }
+
 
     # Unnest the Data column in one single dataframe
     if(unnest){
@@ -475,8 +481,9 @@ check_addons <- function(parameters, addons){
               "validate" = check_islogical(x, val),
               "verbose" = check_islogical(x, val),
               "unnest" = check_islogical(x, val),
-              "geocode"= check_geocode(x, val, parameters$tip),
-              "shortcut" = check_islogical(x, val)
+              "inecode"= check_inecode(x, val, parameters$tip),
+              "shortcut" = check_islogical(x, val),
+              "extractmetadata"= check_extractmetadata(x, val, parameters$tip)
       )
     }
   }
@@ -1177,8 +1184,8 @@ check_islogical <- function(name, par){
   return(result)
 }
 
-# Check if the geocode argument is valid
-check_geocode <- function(name, val, tip){
+# Check if the inecode argument is valid
+check_inecode <- function(name, val, tip){
 
   check_islogical(name, val)
 
@@ -1189,12 +1196,36 @@ check_geocode <- function(name, val, tip){
 
     if(tip != "M" && tip != "AM"){
       result <- FALSE
-      stop("when geocode is set TRUE, tip must be equal to 'M' or 'AM'")
+      stop("when inecode is set TRUE, tip must be equal to 'M' or 'AM'")
     }
   }else{
     if(val){
       result <- FALSE
-      stop("when geocode is set TRUE, tip must be equal to 'M' or 'AM'")
+      stop("when inecode is set TRUE, tip must be equal to 'M' or 'AM'")
+    }
+  }
+
+  return(result)
+}
+
+# Check if the inecode argument is valid
+check_extractmetadata <- function(name, val, tip){
+
+  check_islogical(name, val)
+
+  result <- TRUE
+
+  if(!is.null(tip)){
+    tip <- toupper(tip)
+
+    if(tip != "M" && tip != "AM"){
+      result <- FALSE
+      stop("when extractmetadata is set TRUE, tip must be equal to 'M' or 'AM'")
+    }
+  }else{
+    if(val){
+      result <- FALSE
+      stop("when extractmetadata is set TRUE, tip must be equal to 'M' or 'AM'")
     }
   }
 
@@ -1302,31 +1333,90 @@ unnest_data <- function(datain){
 }
 
 # Return a code of the administrative entity present in the data
-get_geocode <- function(datain){
+get_inecode <- function(datain, verbose){
   # Obtain metadata
   metadata <- datain$MetaData
 
-  # Obtain variable id column from metadata
-  varid <- do.call(rbind,lapply(metadata, function(x) subset(x, select = c("Variable.Id"))))
+  dataout <- datain
+
+  if(sum(grepl("Variable.Id", names(metadata[[1]]), ignore.case = TRUE)) > 0){
+
+    # Obtain variable id column from metadata
+    varid <- do.call(rbind,lapply(metadata, function(x) subset(x, select = c("Variable.Id"))))
+
+    # national, ccaa, provinces or municipalities present in the metadata
+    if(length(intersect(c(349, 115, 70, 19, 20), varid$Variable.Id) > 0)){
+      # obtain the code of national, ccaa, provinces or municipalities
+      sel <- lapply(metadata, function(x) subset(x, x$Variable.Id == 349 | x$Variable.Id == 115 | x$Variable.Id == 70 | x$Variable.Id == 19 | x$Variable.Id == 20, select = c("Codigo")))
+
+      # Unique dataframe of codes
+      inecode <- do.call(rbind, sel)
+
+      # Rename
+      names(inecode) <- "CODIGO_INE"
+
+      # Adding code to dataframe
+      dataout <- cbind(dataout, inecode)
+
+    }else{
+      if(verbose){
+        cat("- The metadata not contains a inecode variable\n")
+      }
+    }
+  }else{
+    if(verbose){
+      cat("- The metadata not contains a inecode variable\n")
+    }
+  }
+
+  return(dataout)
+}
+
+extract_metadata <- function(datain, request){
+  # Obtain metadata
+  metadata <- datain$MetaData
 
   dataout <- datain
 
-  # national, ccaa, provinces or municipalities present in the metadata
-  if(length(intersect(c(349, 115, 70, 19, 20), varid$Variable.Id) > 0)){
-    # obtain the code of national, ccaa, provinces or municipalities
-    sel <- lapply(metadata, function(x) subset(x, x$Variable.Id == 349 | x$Variable.Id == 115 | x$Variable.Id == 70 | x$Variable.Id == 19 | x$Variable.Id == 20, select = c("Codigo")))
+  if(is.pxtable(metadata)){
 
-    # Unique dataframe of codes
-    geocode <- do.call(rbind, sel)
+    # Obtain variable codigo column from metadata
+    varcode <- unique(do.call(rbind,
+                              lapply(metadata, function(x) subset(x,
+                                                                  select = c("Variable.Codigo")))))
 
-    # Rename
-    names(geocode) <- "CODIGO_INE"
+    for(var in varcode$Variable.Codigo){
+      # Unique dataframe of codes
+      dfcodes <- do.call(rbind,
+                         lapply(metadata,
+                                function(x) subset(x,
+                                                   x$Variable.Codigo == var,
+                                                   select = c("Nombre"))))
+      # Rename column
+      names(dfcodes) <- var
 
-    # Adding code to dataframe
-    dataout <- cbind(dataout, geocode)
-
+      # Adding code to dataframe
+      dataout <- cbind(dataout, dfcodes)
+    }
   }else{
-    cat("- The metadata not contains a geo variable\n")
+    if(grepl("IdTable",request$definition$tag, ignore.case = TRUE)){
+      groups <- get_metadata_table_groups(idTable = request$definition$input, validate = FALSE, lang = request$definition$lang)
+
+      for (g in groups$Id){
+        values <- get_metadata_table_Values(idTable = request$definition$input, idGroup = g, validate = FALSE, lang = request$definition$lang)
+
+        dfcodes <- do.call(rbind,
+                           lapply(poblacion$MetaData,
+                                  function(x) subset(x,
+                                                     x$Variable.Id %in% unique(values$Fk_Variable),
+                                                     select = c("Nombre"))))
+        # Rename column
+        names(dfcodes) <- unlist(subset(groups, Id == g, select = c("Nombre")))
+
+        # Adding code to dataframe
+        dataout <- cbind(dataout, dfcodes)
+      }
+    }
   }
 
   return(dataout)

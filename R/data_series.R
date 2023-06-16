@@ -52,7 +52,7 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, verbose = verbose, unnest = unnest)
+  data <- get_api_data(url, request, verbose = verbose, unnest = unnest)
 
   return(data)
 }
@@ -70,7 +70,7 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #' @param unnest (logical): obtain a single data frame of data
-#' @param geocode (logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities
+#' @param inecode (logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities
 #' @param shortcut (logical): set to TRUE to enable the use of shortcut names in the filter
 #'
 #' @return Data frame with data of series
@@ -81,7 +81,7 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #'  period = 1)
 #'  }
 #'
-get_data_series_filter <- function(operation = NULL, filter = NULL, period = NULL, nlast = 1, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, unnest = FALSE, geocode = FALSE, shortcut = FALSE){
+get_data_series_filter <- function(operation = NULL, filter = NULL, period = NULL, nlast = 1, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, unnest = FALSE, inecode = FALSE, shortcut = FALSE){
 
   # List of values to define the call to the API
   definition <- list()
@@ -99,7 +99,7 @@ get_data_series_filter <- function(operation = NULL, filter = NULL, period = NUL
   parameters <- append(parameters, list(tip = tip))
 
   # List of addons
-  addons <- list(validate = validate, verbose = verbose, unnest = unnest, geocode = geocode, shortcut = shortcut)
+  addons <- list(validate = validate, verbose = verbose, unnest = unnest, inecode = inecode, shortcut = shortcut)
 
   # List of definitions and parameters
   request <- list(definition = definition, parameters = parameters, addons = addons)
@@ -111,7 +111,7 @@ get_data_series_filter <- function(operation = NULL, filter = NULL, period = NUL
   url <- get_url(request)
 
   # Obtain the data retrieved calling the API
-  data <- get_api_data(url, verbose = verbose, unnest = unnest, geocode = geocode)
+  data <- get_api_data(url, request, verbose = verbose, unnest = unnest, inecode = inecode)
 
   return(data)
 

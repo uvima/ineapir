@@ -43,7 +43,7 @@ get_metadata_tables <- function(operation = NULL, det = 0, tip = NULL, geo = NUL
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, verbose = verbose)
+  data <- get_api_data(url, request, verbose = verbose)
 
   return(data)
 }
@@ -87,7 +87,7 @@ get_metadata_table_groups <- function(idTable = NULL, lang = "ES", validate = TR
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, verbose = verbose)
+  data <- get_api_data(url, request, verbose = verbose)
 
   return(data)
 }
@@ -132,7 +132,7 @@ get_metadata_table_Values <- function(idTable = NULL, idGroup = NULL, lang = "ES
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, verbose = verbose)
+  data <- get_api_data(url, request, verbose = verbose)
 
   return(data)
 }
