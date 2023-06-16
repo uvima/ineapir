@@ -15,7 +15,7 @@ get_data_series_filter(
   validate = TRUE,
   verbose = FALSE,
   unnest = FALSE,
-  geocode = FALSE,
+  inecode = FALSE,
   shortcut = FALSE
 )
 }
@@ -41,7 +41,7 @@ get_data_series_filter(
 
 \item{unnest}{(logical): obtain a single data frame of data}
 
-\item{geocode}{(logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities}
+\item{inecode}{(logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities}
 
 \item{shortcut}{(logical): set to TRUE to enable the use of shortcut names in the filter}
 }

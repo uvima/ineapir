@@ -14,8 +14,9 @@ get_data_table(
   validate = TRUE,
   verbose = FALSE,
   unnest = FALSE,
-  geocode = FALSE,
-  shortcut = FALSE
+  inecode = FALSE,
+  shortcut = FALSE,
+  extractmetadata = FALSE
 )
 }
 \arguments{
@@ -37,9 +38,11 @@ get_data_table(
 
 \item{unnest}{(logical): set to TRUE to obtain a single data frame of data}
 
-\item{geocode}{(logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities}
+\item{inecode}{(logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities}
 
 \item{shortcut}{(logical): set to TRUE to enable the use of shortcut names in the filter}
+
+\item{extractmetadata}{(logical): set to TRUE to extract metadata to individual data frame columns}
 }
 \value{
 Data frame with the data of table
