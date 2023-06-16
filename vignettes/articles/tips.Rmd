@@ -110,21 +110,22 @@ ipc <- get_data_table(idTable = 50902, shortcut = TRUE, filter = filter,
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
-## Use of `geocode`
-When we request data from Autonomous Communities, provinces or municipalities,
-we can get the corresponding INE code of each one by passing the argument
-`geocode=TRUE`. Including metadata with `tip="M"` is required for it to work.
+## Use of `inecode`
+When we request data which involve administrative units (Autonomous Communities,
+provinces or municipalities), we can get the corresponding INE code of each
+one by passing the argument `inecode=TRUE`. Including metadata with `tip="M"` 
+is required for it to work.
 
-```{r geocode}
+```{r inecode}
 # Filter with the ipc wrapper
 filter <- list(ipc = c("índice$" , "índice general"), prov = "")
 
 # Request data using the filter with geocode = TRUE and tip = "AM"
 ipc <- get_data_table(idTable = 50918, shortcut = TRUE, filter = filter,
-                      tip = "AM", nlast = 1, unnest = TRUE, geocode = TRUE)
+                      tip = "AM", nlast = 1, unnest = TRUE, inecode = TRUE)
 
 # The Codigo column contains the INE code of the different provinces
-ipc[1:5,c("Codigo","Nombre", "T3_Periodo", "Anyo", "Valor")]
+ipc[1:5,c("CODIGO_INE","Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
 
