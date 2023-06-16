@@ -1396,7 +1396,9 @@ extract_metadata <- function(datain, request){
       names(dfcodes) <- var
 
       # Adding code to dataframe
-      dataout <- cbind(dataout, dfcodes)
+      if(nrow(dfcodes) == nrow(dataout)){
+        dataout <- cbind(dataout, dfcodes)
+      }
     }
   }else{
     if(grepl("IdTable",request$definition$tag, ignore.case = TRUE)){
@@ -1406,12 +1408,12 @@ extract_metadata <- function(datain, request){
         values <- get_metadata_table_Values(idTable = request$definition$input, idGroup = g, validate = FALSE, lang = request$definition$lang)
 
         dfcodes <- do.call(rbind,
-                           lapply(poblacion$MetaData,
+                           lapply(metadata,
                                   function(x) subset(x,
                                                      x$Variable.Id %in% unique(values$Fk_Variable),
                                                      select = c("Nombre"))))
         # Rename column
-        names(dfcodes) <- unlist(subset(groups, Id == g, select = c("Nombre")))
+        names(dfcodes) <- unlist(subset(groups, groups$Id == g, select = c("Nombre")))
 
         # Adding code to dataframe
         dataout <- cbind(dataout, dfcodes)
