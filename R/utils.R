@@ -1412,8 +1412,14 @@ extract_metadata <- function(datain, request){
                                   function(x) subset(x,
                                                      x$Variable.Id %in% unique(values$Fk_Variable),
                                                      select = c("Nombre"))))
+        # New name of the column
+        newname <- unlist(subset(groups, groups$Id == g, select = c("Nombre")))
+
+        # In case of a column of ages, simplify name to Edad
+        newname <- if(grepl("edad", newname, ignore.case = TRUE)) "Edad" else newname
+
         # Rename column
-        names(dfcodes) <- unlist(subset(groups, groups$Id == g, select = c("Nombre")))
+        names(dfcodes) <- newname
 
         # Adding code to dataframe
         dataout <- cbind(dataout, dfcodes)
