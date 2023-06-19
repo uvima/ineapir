@@ -111,16 +111,16 @@ ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
 ## Use of `inecode`
-When we request data which involve administrative units (Autonomous Communities,
-provinces or municipalities), we can get the corresponding INE code of each
-one by passing the argument `inecode=TRUE`. Including metadata with `tip="M"` 
+When we request data that involves administrative units (Autonomous Communities,
+provinces or municipalities), we can obtain the INE code corresponding to each
+one by passing the argument `inecode=TRUE`. Including metadata with `tip="M"`
 is required for it to work.
 
 ```{r inecode}
 # Filter with the ipc wrapper
 filter <- list(ipc = c("índice$" , "índice general"), prov = "")
 
-# Request data using the filter with geocode = TRUE and tip = "AM"
+# Request data using the filter with inecode = TRUE and tip = "AM"
 ipc <- get_data_table(idTable = 50918, shortcut = TRUE, filter = filter,
                       tip = "AM", nlast = 1, unnest = TRUE, inecode = TRUE)
 
@@ -128,6 +128,30 @@ ipc <- get_data_table(idTable = 50918, shortcut = TRUE, filter = filter,
 ipc[1:5,c("CODIGO_INE","Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
+## Use of `extractmetadata`
+When we pass the argument `extractmetada=TRUE` we get additional columns in
+the data frame with the metadata information about the variables and their values.
+
+```{r extractmetadata}
+# Filter for total population of men and women 
+filter <- list(nacionalidad = "total", sexo = c("hombres", "mujeres"))
+
+# Table: Resident population by date, sex, age group and nationality
+poblacion <- get_data_table(idTable = 9674, shortcut = TRUE ,
+                            filter = filter, validate = FALSE, 
+                            tip = "AM", unnest = TRUE, nlast = 1)
+# Names of columns
+names(poblacion)
+
+# Request data with extractmetadata = TRUE
+poblacion <- get_data_table(idTable = 9674, shortcut = TRUE ,
+                            filter = filter, validate = FALSE, 
+                            tip = "AM", unnest = TRUE, nlast = 1,
+                            extractmetadata = TRUE)
+
+# Additional columns of Nacionalidad, Edad and Sexo
+names(poblacion)
+```
 
 ## Filtering with regular expresions
 When we use shortcuts names in the filter, we can also include as values

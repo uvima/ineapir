@@ -50,7 +50,7 @@ variables are shown below.
 |generation      | 612 | Generation/ages |
 |generacion      | 612 | Generation/ages |
 |nationality     | 141 | Nationality |
-|nationality     | 141 | Nationality |
+|nacionalidad    | 141 | Nationality |
 |birthcountry    | 431, 432 | Country of birth |
 |paisnacimiento  | 431, 432 | Country of birth |
 |birthplace      | 97  | Place of birth |

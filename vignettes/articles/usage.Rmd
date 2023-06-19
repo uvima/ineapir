@@ -1,5 +1,5 @@
 ---
-title: "Usage"
+title: "Usage examples"
 ---
 
 ```{r, include = FALSE}
@@ -9,7 +9,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Example 1
+## Example 1. Plot time series
 
 ```{r example_1}
 library(ineapir)
@@ -43,7 +43,7 @@ ggplot(data = general, aes(Fecha, Valor)) +
 
 ```
 
-## Example 2
+## Example 2. Population pyramid
 
 ```{r example_2}
 library(dplyr, quietly = TRUE)
@@ -55,21 +55,8 @@ filter <- list(nacionalidad = "total", sexo = c("hombres", "mujeres"))
 # Table: Resident population by date, sex, age group and nationality
 poblacion <- get_data_table(idTable = 9674, shortcut = TRUE ,
                             filter = filter, validate = FALSE, 
-                            tip = "AM", unnest = TRUE)
-
-# Extract age from metadata column
-poblacion$Edad <- unlist(do.call(rbind,
-                          lapply(poblacion$MetaData, 
-                                 function(x) subset(x, x$Variable.Id == 356 |
-                                                       x$Variable.Id == 360 |
-                                                       x$Variable.Id == 357, 
-                                                    select = c("Nombre")))))
-
-# Extract sex from metadata column
-poblacion$Sexo <- unlist(do.call(rbind,
-                                 lapply(poblacion$MetaData,
-                                        function(x) subset(x, x$Variable.Id == 18,
-                                                           select = c("Nombre")))))
+                            tip = "AM", unnest = TRUE,
+                            extractmetadata = TRUE)
 
 # Filter totals and calculate percentages
 poblacion %>% 
@@ -88,7 +75,7 @@ poblacion %>%
 
 ```
 
-## Example 3
+## Example 3. Animate polulation pyramids
 ```{r example_3}
 library(gganimate)
 
@@ -109,3 +96,9 @@ ggplot(aes(x = Edad, y = Porcentaje ,fill = Sexo)) +
   labs(title = 'Población residente por sexo y grupo de edad (Año: {as.integer(frame_time)})')
 
 ```
+
+
+
+
+
+
