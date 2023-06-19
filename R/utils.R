@@ -1378,6 +1378,7 @@ extract_metadata <- function(datain, request){
 
   dataout <- datain
 
+  # Case one: tpx or px table
   if(is.pxtable(metadata)){
 
     # Obtain variable codigo column from metadata
@@ -1385,28 +1386,35 @@ extract_metadata <- function(datain, request){
                               lapply(metadata, function(x) subset(x,
                                                                   select = c("Variable.Codigo")))))
 
+    # Loop through all variables
     for(var in varcode$Variable.Codigo){
-      # Unique dataframe of codes
+
+      # Select a variable code and build a Unique dataframe of variable names
       dfcodes <- do.call(rbind,
                          lapply(metadata,
                                 function(x) subset(x,
                                                    x$Variable.Codigo == var,
                                                    select = c("Nombre"))))
-      # Rename column
+      # Rename column with variable code
       names(dfcodes) <- var
 
-      # Adding code to dataframe
+      # Adding column to dataframe
       if(nrow(dfcodes) == nrow(dataout)){
         dataout <- cbind(dataout, dfcodes)
       }
     }
   }else{
+    # Case two: tempus table
     if(grepl("IdTable",request$definition$tag, ignore.case = TRUE)){
+      # Get groups of the table
       groups <- get_metadata_table_groups(idTable = request$definition$input, validate = FALSE, lang = request$definition$lang)
 
+      # Loop through all groups
       for (g in groups$Id){
+        # Get th values of the group
         values <- get_metadata_table_Values(idTable = request$definition$input, idGroup = g, validate = FALSE, lang = request$definition$lang)
 
+        # Select a variable id and build a Unique dataframe of variable names
         dfcodes <- do.call(rbind,
                            lapply(metadata,
                                   function(x) subset(x,
@@ -1421,7 +1429,7 @@ extract_metadata <- function(datain, request){
         # Rename column
         names(dfcodes) <- newname
 
-        # Adding code to dataframe
+        # Adding column to dataframe
         dataout <- cbind(dataout, dfcodes)
       }
     }
