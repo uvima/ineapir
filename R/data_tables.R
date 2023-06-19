@@ -1,8 +1,8 @@
 #' Get data from a table
 #'
-#' @param idTable (int): Id of the table
+#' @param idTable (int): id of the table
 #' @param filter (list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)
-#' @param nlast (int): number of data or periods to retrieve
+#' @param nlast (int): number of periods to retrieve
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
@@ -13,7 +13,7 @@
 #' @param shortcut (logical): set to TRUE to enable the use of shortcut names in the filter
 #' @param extractmetadata (logical): set to TRUE to extract metadata to individual data frame columns
 #'
-#' @return Data frame with the data of table
+#' @return Data frame with data of a table
 #' @export
 #'
 #' @examples \dontrun{

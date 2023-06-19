@@ -88,8 +88,8 @@ get_metadata_variables <- function(operation = NULL, lang = "ES", validate = TRU
 
 #' Get all possible values from a variable
 #'
-#' @param operation (string): Code of the operation
-#' @param variable (int): Id of a variable
+#' @param operation (string): code of the operation
+#' @param variable (int): id of a variable
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
@@ -135,7 +135,7 @@ get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lan
 
 #' Get all the publications or the publications from an operation
 #'
-#' @param operation (string): Code of the operation
+#' @param operation (string): code of the operation
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
@@ -183,7 +183,7 @@ get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", va
 #'
 #' @param publication (int): id of the publication
 #' @param det (int): level of detail (0, 1 ,2)
-#' @param tip (string): Set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
+#' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information

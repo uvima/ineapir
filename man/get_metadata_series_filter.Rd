@@ -21,11 +21,13 @@ get_metadata_series_filter(
 
 \item{filter}{(list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)}
 
-\item{period}{(int): periodicity of the series (1:monthly, 3:quarterly, 12:annual)}
+\item{period}{(int): id of the periodicity of the series. Most common periodicities:
+1 (monthly), "m" (monthly), 3 (quarterly), "q" (quarterly), "t" (quarterly),
+12 (annual) and "a" (annual).}
 
 \item{det}{(int): level of detail (0, 1 ,2)}
 
-\item{tip}{(string): Set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both}
+\item{tip}{(string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both}
 
 \item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 

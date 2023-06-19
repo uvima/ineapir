@@ -13,7 +13,7 @@ get_metadata_publications(
 )
 }
 \arguments{
-\item{operation}{(string): Code of the operation}
+\item{operation}{(string): code of the operation}
 
 \item{det}{(int): level of detail (0, 1 ,2)}
 

@@ -14,9 +14,9 @@ get_metadata_values(
 )
 }
 \arguments{
-\item{operation}{(string): Code of the operation}
+\item{operation}{(string): code of the operation}
 
-\item{variable}{(int): Id of a variable}
+\item{variable}{(int): id of a variable}
 
 \item{det}{(int): level of detail (0, 1 ,2)}
 

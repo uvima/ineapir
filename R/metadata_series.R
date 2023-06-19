@@ -1,8 +1,8 @@
 #' Get a series information
 #'
-#' @param codSeries (string): Code of the series
-#' @param det (int): Level of detail (0, 1 ,2)
-#' @param tip (string): Set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
+#' @param codSeries (string): code of the series
+#' @param det (int): level of detail (0, 1 ,2)
+#' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
@@ -48,7 +48,7 @@ get_metadata_series <- function(codSeries = NULL, det = 0, tip = NULL, lang = "E
 
 #' Get all the series present in a operation
 #'
-#' @param operation (string): Code of the operation
+#' @param operation (string): code of the operation
 #' @param n (int): number of series to retrieve
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
@@ -193,9 +193,11 @@ get_metadata_series_table <- function(idTable = NULL, det = 0, tip = NULL, lang 
 #'
 #' @param operation (string): code of the operation
 #' @param filter (list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)
-#' @param period (int): periodicity of the series (1:monthly, 3:quarterly, 12:annual)
+#' @param period (int): id of the periodicity of the series. Most common periodicities:
+#' 1 (monthly), "m" (monthly), 3 (quarterly), "q" (quarterly), "t" (quarterly),
+#' 12 (annual) and "a" (annual).
 #' @param det (int): level of detail (0, 1 ,2)
-#' @param tip (string): Set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
+#' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information

@@ -15,7 +15,7 @@ get_metadata_series_operation(
 )
 }
 \arguments{
-\item{operation}{(string): Code of the operation}
+\item{operation}{(string): code of the operation}
 
 \item{n}{(int): number of series to retrieve}
 

@@ -14,11 +14,11 @@ get_metadata_series(
 )
 }
 \arguments{
-\item{codSeries}{(string): Code of the series}
+\item{codSeries}{(string): code of the series}
 
-\item{det}{(int): Level of detail (0, 1 ,2)}
+\item{det}{(int): level of detail (0, 1 ,2)}
 
-\item{tip}{(string): Set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both}
+\item{tip}{(string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both}
 
 \item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 

@@ -20,11 +20,11 @@ get_data_table(
 )
 }
 \arguments{
-\item{idTable}{(int): Id of the table}
+\item{idTable}{(int): id of the table}
 
 \item{filter}{(list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)}
 
-\item{nlast}{(int): number of data or periods to retrieve}
+\item{nlast}{(int): number of periods to retrieve}
 
 \item{det}{(int): level of detail (0, 1 ,2)}
 
@@ -45,7 +45,7 @@ get_data_table(
 \item{extractmetadata}{(logical): set to TRUE to extract metadata to individual data frame columns}
 }
 \value{
-Data frame with the data of table
+Data frame with data of a table
 }
 \description{
 Get data from a table
