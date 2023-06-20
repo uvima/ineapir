@@ -28,7 +28,7 @@ function, this validation can be turned off with `validate = FALSE`.
 ```{r validate_1}
 # Variables used in the operation IPC with verbose = TRUE and validate = FALSE
 variables <- get_metadata_variables(operation = "IPC", verbose = TRUE,
-                                    validate = TRUE)
+                                    validate = FALSE)
 ```
 
 This is useful when we are filtering data and the filter we are using is
@@ -113,7 +113,7 @@ ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ## Use of `inecode`
 When we request data that involves administrative units (Autonomous Communities,
 provinces or municipalities), we can obtain the INE code corresponding to each
-one by passing the argument `inecode=TRUE`. Including metadata with `tip="M"`
+one by passing the argument `inecode = TRUE`. Including metadata with `tip="M"`
 is required for it to work.
 
 ```{r inecode}
@@ -124,12 +124,12 @@ filter <- list(ipc = c("índice$" , "índice general"), prov = "")
 ipc <- get_data_table(idTable = 50918, shortcut = TRUE, filter = filter,
                       tip = "AM", nlast = 1, unnest = TRUE, inecode = TRUE)
 
-# The Codigo column contains the INE code of the different provinces
+# The CODIGO_INE column contains the INE code of the different provinces
 ipc[1:5,c("CODIGO_INE","Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
 ## Use of `extractmetadata`
-When we pass the argument `extractmetada=TRUE` we get additional columns in
+When we pass the argument `extractmetadata = TRUE` we get additional columns in
 the data frame with the metadata information about the variables and their values.
 
 ```{r extractmetadata}

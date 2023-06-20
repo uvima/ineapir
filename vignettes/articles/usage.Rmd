@@ -9,7 +9,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Example 1. Plot time series
+## Example 1. Time series
 
 ```{r example_1}
 library(ineapir)
@@ -69,7 +69,8 @@ poblacion %>%
 # Plot the pyramid
   ggplot(aes(x = Edad, y = Porcentaje ,fill = Sexo)) +
     geom_col(position = "stack", alpha = 0.8) +
-    coord_flip() + theme(legend.position = "bottom") +
+    coord_flip() + theme(legend.position = "bottom", 
+                         plot.title = element_text(hjust = 0.5)) +
     scale_y_continuous(labels = abs) +
     labs(title = 'Población residente por sexo y grupo de edad (2022)')
 
@@ -91,14 +92,37 @@ poblacion %>%
 # Plot the pyramid
 ggplot(aes(x = Edad, y = Porcentaje ,fill = Sexo)) +
   geom_col(position = "stack", alpha = 0.8) +
-  coord_flip() + theme(legend.position = "bottom") +
+  coord_flip() + theme(legend.position = "bottom",
+                       plot.title = element_text(hjust = 0.5)) +
   scale_y_continuous(labels = abs) + transition_time(Anyo) + 
   labs(title = 'Población residente por sexo y grupo de edad (Año: {as.integer(frame_time)})')
 
 ```
 
 
+## Example 4. Interactive bar chart.
+```{r example_4}
+library(plotly)
 
+# Filter for unemployment rates
+filter = list(tipodato = "tasa de paro", ccaa = "", sexo = "ambos", edad = "total")
+
+# Table: Unemployment rates by different age groups, sex and Autonomous Community
+paro <- get_data_table(idTable = 4247, shortcut = TRUE, filter = filter,
+                       nlast = 1, unnest = TRUE, extractmetadata = TRUE,
+                       tip = "AM")
+
+# Bar chart using plotly library
+fig <- plot_ly(paro, 
+               x = ~paro$`Comunidades y Ciudades Autónomas`,
+               y = ~Valor, type = "bar") %>%
+       layout(xaxis = list(title="", tickangle = -45),
+              yaxis = list(title = "Tasa de paro (%)"),
+              title = "Tasa de paro por Comunidad Autónoma (T1 2023)")
+
+fig
+  
+```
 
 
 
