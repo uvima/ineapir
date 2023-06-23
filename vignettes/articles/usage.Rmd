@@ -19,6 +19,7 @@ library(ggplot2)
 filter <- list(ipc = c("variación anual" , "índice general"))
 
 # Request data of cpi
+# Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=50902&L=0
 general <- get_data_table(idTable = 50902, shortcut = TRUE, 
                           filter = filter, unnest = TRUE, tip = "A" )
 
@@ -27,6 +28,7 @@ filter <- list(ipc = c("variación anual" ,
                        "general sin alimentos no elaborados ni productos energéticos"))
 
 # Request data of core cpi
+# Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=50907&L=0
 subyacente <- get_data_table(idTable = 50907, shortcut = TRUE, 
                              filter = filter, unnest = TRUE, tip = "A" )
 
@@ -53,6 +55,7 @@ library(forcats)
 filter <- list(nacionalidad = "total", sexo = c("hombres", "mujeres"))
 
 # Table: Resident population by date, sex, age group and nationality
+# Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=9674&L=0
 poblacion <- get_data_table(idTable = 9674, shortcut = TRUE ,
                             filter = filter, validate = FALSE, 
                             tip = "AM", unnest = TRUE,
@@ -108,6 +111,7 @@ library(plotly)
 filter = list(tipodato = "tasa de paro", ccaa = "", sexo = "ambos", edad = "total")
 
 # Table: Unemployment rates by different age groups, sex and Autonomous Community
+# Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=4247&L=0
 paro <- get_data_table(idTable = 4247, shortcut = TRUE, filter = filter,
                        nlast = 1, unnest = TRUE, extractmetadata = TRUE,
                        tip = "AM")
@@ -116,6 +120,7 @@ paro <- get_data_table(idTable = 4247, shortcut = TRUE, filter = filter,
 fig <- plot_ly(paro, 
                x = ~paro$`Comunidades y Ciudades Autónomas`,
                y = ~Valor, type = "bar") %>%
+       config(displayModeBar = FALSE) %>%
        layout(xaxis = list(title="", tickangle = -45),
               yaxis = list(title = "Tasa de paro (%)"),
               title = "Tasa de paro por Comunidad Autónoma (T1 2023)")
@@ -124,5 +129,28 @@ fig
   
 ```
 
+## Example 5. Interactive time series.
+```{r example_5}
+# we reuse the data from example 1.
+# cpi overall index
+fig <- plot_ly(general, x = ~Fecha, y = ~Valor, name = 'General',
+               type = 'scatter', mode = 'lines')
+
+# Core cpi
+fig <- fig %>% add_trace(y = ~subyacente$Valor, name = 'Subyacente',
+                         mode = 'lines') %>%
+  layout(yaxis = list(title="Variación anual (%)"),
+         legend = list(title=list(text='<b> IPC </b>'),
+                       x = 0.25,
+                       y = -0.25,
+                       orientation = 'h'),
+         hovermode = 'x') %>%
+  config(displayModeBar = FALSE)
+  
+                       
+
+fig
+
+```
 
 
