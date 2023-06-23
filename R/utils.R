@@ -53,6 +53,8 @@ shortcuts_operations <- list(ipc = "IPC", cpi = "IPC",
 shortcuts_periods <- list("m" = "1", # monthly
                           "t" = "3", # trimestral (Spanish)
                           "q" = "3", # quarterly
+                          "s" = "6", # semestral (Spanish)
+                          "b" = "6", # bi-annual
                           "a" = "12" # annual
                           )
 
