@@ -26,7 +26,7 @@ get_data_series_filter(
 
 \item{period}{(int): id of the periodicity of the series. Most common periodicities:
 1 (monthly), "m" (monthly), 3 (quarterly), "q" (quarterly), "t" (quarterly),
-12 (annual) and "a" (annual).}
+6 (bi-annual), "b" (bi-annual), "s" (bi-annual), 12 (annual) and "a" (annual).}
 
 \item{nlast}{(int): number of periods to retrieve}
 

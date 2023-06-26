@@ -65,7 +65,7 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #' @param filter (list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)
 #' @param period (int): id of the periodicity of the series. Most common periodicities:
 #' 1 (monthly), "m" (monthly), 3 (quarterly), "q" (quarterly), "t" (quarterly),
-#' 12 (annual) and "a" (annual).
+#' 6 (bi-annual), "b" (bi-annual), "s" (bi-annual), 12 (annual) and "a" (annual).
 #' @param nlast (int): number of periods to retrieve
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both

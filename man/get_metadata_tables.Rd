@@ -21,7 +21,8 @@ get_metadata_tables(
 
 \item{tip}{(string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both}
 
-\item{geo}{(int): set to 0 for national tables or set to 1}
+\item{geo}{(int): set to 0 for national tables or set to 1 for tables with
+a greater disaggregation level}
 
 \item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 

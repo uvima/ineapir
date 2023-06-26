@@ -3,7 +3,8 @@
 #' @param operation (string): code of the operation
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
-#' @param geo (int): set to 0 for national tables or set to 1
+#' @param geo (int): set to 0 for national tables or set to 1 for tables with
+#' a greater disaggregation level
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
