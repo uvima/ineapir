@@ -509,11 +509,11 @@ check_lang <- function(lang, verbose){
 
   if(!is.character(lang)){
     result <- FALSE
-    stop("lang must be a string equal to 'ES' for spanish or equal to 'EN' for english")
+    stop("lang must be a string equal to 'ES' for Spanish or equal to 'EN' for English")
   }else{
     if(lang != "ES" && lang != "EN"){
       result <- FALSE
-      stop("lang must be a string equal to 'ES' for spanish or equal to 'EN' for english")
+      stop("lang must be a string equal to 'ES' for Spanish or equal to 'EN' for English")
     }
   }
 
@@ -742,10 +742,10 @@ check_dates <- function(date, verbose){
 # Check the input format of the date
 check_date_format <- function(name, date){
   # Remove white spaces
-  date <- gsub("\\s+", "", date)
+  date <- if(!is.null(date)) gsub("\\s+", "", date) else date
 
   # Input format must be yyyy/mm/dd
-  format <- grepl("[0-9]{4}/[0-9]{2}/[0-9]{2}", date)
+  format <- if(!is.null(date)) grepl("[0-9]{4}/[0-9]{2}/[0-9]{2}", date) else FALSE
 
   if(format){
     y <- substr(date, 1, 4)
@@ -760,7 +760,9 @@ check_date_format <- function(name, date){
       stop(sprintf("%s day can not be greater than 31", name))
     }
   }else{
-    stop(sprintf("%s format is not correct. Date format must be as follow: yyyy/mm/dd", name))
+    if(!is.null(date)){
+      stop(sprintf("%s format is not correct. Date format must be as follow: yyyy/mm/dd", name))
+    }
   }
 }
 
@@ -1277,7 +1279,7 @@ unnest_data <- function(datain){
     # In case of dataframes without Data
     if(!is.null(nrow(nodata)) && nrow(nodata) > 0){
 
-      if(length(datacol)){
+      if(length(datacol) > 0){
         # index of the dataframe with more values of data
         ind <- which.max(lapply(datacol, nrow))
 
@@ -1308,17 +1310,28 @@ unnest_data <- function(datain){
   # We have a list (series case)
   if(is.list(datain) && !is.data.frame(datain)){
     # Discard data and notas columns
-    sel <- tolower(names(datain)) != "metadata" & tolower(names(datain)) != "data" & tolower(names(datain)) != "notas"
+    #sel <- tolower(names(datain)) != "metadata" & tolower(names(datain)) != "data" & tolower(names(datain)) != "notas"
 
     # Selection of metadata
-    selmeta <- tolower(names(datain)) == "metadata"
+    #selmeta <- tolower(names(datain)) == "metadata"
+
+    # Selection of single columns
+    sel <- lengths(datain) == 1
+
+    # Selection of metadata
+    selmeta <- lengths(datain) > 1 & tolower(names(datain)) != "data"
 
     # Dataframe without metadata, data and notas columns
     tmp <- as.data.frame(datain[sel])
 
     # Adding metadata
     if(sum(selmeta) > 0){
-      tmp$MetaData <- datain[selmeta]
+      for(n in names(selmeta)){
+        if(selmeta[[n]]){
+        tmp[[n]] <- datain[n]
+        #tmp$MetaData <- datain[selmeta]
+        }
+      }
     }
 
     # Repeat each row by the number of data values
