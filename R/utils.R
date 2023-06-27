@@ -466,7 +466,7 @@ check_parameters <- function(parameters, addons, definition){
                 "tip" = check_tip(val, addons$verbose),
                 "geo" = check_geo(val, addons$verbose),
                 "page" = check_n(val, addons$verbose),
-                "filter" = check_filter(val, addons$verbose, definition$lang)
+                "filter" = check_filter(val, addons$verbose, definition$lang, addons$shortcut)
         )
       }
     }
@@ -904,7 +904,7 @@ check_n <- function(n, verbose){
 }
 
 # Check if the filter argument is valid
-check_filter <- function(parameter, verbose, lang){
+check_filter <- function(parameter, verbose, lang, shortcut){
 
   # id to identify a table or a operation
   id <- parameter[[1]]
@@ -930,12 +930,12 @@ check_filter <- function(parameter, verbose, lang){
 
       # The table is stored in tempus
       }else{
-        check_table_tempus_filter(id, filter, verbose, df)
+        check_table_tempus_filter(id, filter, verbose, df, shortcut)
       }
     }
   # The filter comes from a series
   }else{
-    check_series_filter(id, filter, verbose, lang)
+    check_series_filter(id, filter, verbose, lang, shortcut)
   }
 }
 
@@ -1005,7 +1005,7 @@ check_table_px_filter <- function(idTable, pxfilter, verbose, df){
 }
 
 # Check if the filter argument is valid for a tempus table
-check_table_tempus_filter <- function(idTable, filter, verbose, df){
+check_table_tempus_filter <- function(idTable, filter, verbose, df, shortcut){
   result <- TRUE
 
   # The filter must be a list
@@ -1025,17 +1025,26 @@ check_table_tempus_filter <- function(idTable, filter, verbose, df){
       # Has been used a shortcut name for the variable or not
       short <- is.element(tolower(v), c(names(shortcuts_filter), names(shortcuts_operations)))
 
-      if(short){
-        if(tolower(v) %in% names(shortcuts_operations)){
-          #varope <- get_metadata_variables(operation = shortcuts_operations[[tolower(v)]],
-          #                                 validate = FALSE, verbose = TRUE)
-          variable <- unique(metadata$Variable.Id)
+      if(shortcut){
+        if(short){
+          if(tolower(v) %in% names(shortcuts_operations)){
+            #varope <- get_metadata_variables(operation = shortcuts_operations[[tolower(v)]],
+            #                                 validate = FALSE, verbose = TRUE)
+            variable <- unique(metadata$Variable.Id)
+          }else{
+            # If there is a shortcut obtain the corresponding id
+            variable <- shortcuts_filter[[tolower(v)]]
+          }
         }else{
-          # If there is a shortcut obtain the corresponding id
-          variable <- shortcuts_filter[[tolower(v)]]
+          variable <- v
         }
       }else{
-        variable <- v
+        if(short){
+          result <- FALSE
+          stop("It is neccessary to set shortcut = TRUE")
+        }else{
+          variable <- v
+        }
       }
 
       # If there is a shortcut obtain the corresponding id
@@ -1093,7 +1102,7 @@ check_table_tempus_filter <- function(idTable, filter, verbose, df){
 }
 
 # Check if the filter argument is valid for a series
-check_series_filter <- function(operation, filter, verbose, lang){
+check_series_filter <- function(operation, filter, verbose, lang, shortcut){
 
   result <- TRUE
 
@@ -1113,15 +1122,24 @@ check_series_filter <- function(operation, filter, verbose, lang){
       # Has been used a shortcut name for the variable or not
       short <- is.element(tolower(v), c(names(shortcuts_filter), names(shortcuts_operations)))
 
-      if(short){
-        if(tolower(v) %in% names(shortcuts_operations)){
-          variable <- opevar$Id
+      if(shortcut){
+        if(short){
+          if(tolower(v) %in% names(shortcuts_operations)){
+            variable <- opevar$Id
+          }else{
+            # If there is a shortcut obtain the corresponding id
+            variable <- shortcuts_filter[[tolower(v)]]
+          }
         }else{
-          # If there is a shortcut obtain the corresponding id
-          variable <- shortcuts_filter[[tolower(v)]]
+          variable <- v
         }
       }else{
-        variable <- v
+        if(short){
+          result <- FALSE
+          stop("It is neccessary to set shortcut = TRUE")
+        }else{
+          variable <- v
+        }
       }
 
       # If there is a shortcut obtain the corresponding id
@@ -1387,6 +1405,7 @@ get_inecode <- function(datain, verbose){
   return(dataout)
 }
 
+# Extract metadata information from tables into columns
 extract_metadata <- function(datain, request){
   # Obtain metadata
   metadata <- datain$MetaData
