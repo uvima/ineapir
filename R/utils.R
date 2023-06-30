@@ -50,13 +50,13 @@ shortcuts_operations <- list(ipc = "IPC", cpi = "IPC",
                              )
 
 # Shortcuts used with periodicities
-shortcuts_periodicity <- list("m" = "1", # monthly
-                              "t" = "3", # trimestral (Spanish)
-                              "q" = "3", # quarterly
-                              "s" = "6", # semestral (Spanish)
-                              "b" = "6", # bi-annual
-                              "a" = "12" # annual
-                              )
+#shortcuts_periodicity <- list("m" = "1", # monthly
+#                              "t" = "3", # trimestral (Spanish)
+#                              "q" = "3", # quarterly
+#                              "s" = "6", # semestral (Spanish)
+#                              "b" = "6", # bi-annual
+#                              "a" = "12" # annual
+#                              )
 
 # Function to retrieve data from the aPI
 get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inecode = FALSE, extractmetadata = FALSE){
@@ -1119,7 +1119,7 @@ check_series_filter <- function(operation, filter, verbose, lang, shortcut){
     val <- unlist(filter, use.names = FALSE)
 
     # The list must contain at least two values in the filter
-    if(length(val) > 1){
+    if(length(var) > 1 || (length(var) < 2 && length(val) > 1)){
       # Obtain the possible variables for an operation
       opevar <- get_metadata_variables(operation = operation, validate = FALSE, verbose = verbose, lang = lang)
 
@@ -1346,7 +1346,7 @@ unnest_data <- function(datain){
     sel <- lengths(datain) == 1
 
     # Selection of metadata
-    selmeta <- lengths(datain) > 1 & tolower(names(datain)) != "data"
+    selmeta <- lengths(datain) > 1 & tolower(names(datain)) != "data" & tolower(names(datain)) != "notas"
 
     # Dataframe without metadata, data and notas columns
     tmp <- as.data.frame(datain[sel])
@@ -1501,14 +1501,19 @@ extract_metadata <- function(datain, request){
 
     # Obtain variable codes for each row in metadata information
     varcode <- list()
+    varname <- list()
 
     for(i in 1:nummeta){
       varcode <- append(varcode,
                         as.data.frame(unique(do.call(rbind,
                                                      lapply(metadata, '[',c(i),))$Variable.Id)))
-    }
+      varname <- append(varname,
+                        as.data.frame(unique(do.call(rbind,
+                                                     lapply(metadata, '[',c(i),))$Variable.Nombre)))
+      }
 
     # Loop through all variables
+    k <- 1
     for(var in varcode){
 
       # Select a variable code and build a Unique dataframe of variable names
@@ -1519,12 +1524,13 @@ extract_metadata <- function(datain, request){
                                                    select = c("Nombre"))))
 
       # Rename column with variable code
-      names(dfcodes) <- var[1]
+      names(dfcodes) <- varname[k][1]
 
       # Adding column to dataframe
       if(nrow(dfcodes) == nrow(dataout)){
         dataout <- cbind(dataout, dfcodes)
       }
+      k <- k + 1
     }
   }
 
