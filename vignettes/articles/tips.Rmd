@@ -42,11 +42,11 @@ filter <- list("115" = "2",     # variable id = 115, value id = 2
                )
 
 # Request data using the filter with verbose = TRUE and validate = TRUE
-ipc <- get_data_series_filter(operation = "IPC", filter = filter, period = 1,
+ipc <- get_data_series_filter(operation = "IPC", filter = filter, periodicity = 1,
                        verbose = TRUE)
 
 # Request data using the filter with verbose = TRUE and validate = FALSE
-ipc <- get_data_series_filter(operation = "IPC", filter = filter, period = 1,
+ipc <- get_data_series_filter(operation = "IPC", filter = filter, periodicity = 1,
                        verbose = TRUE, validate = FALSE)
 ```
 
@@ -122,7 +122,7 @@ filter <- list(ipc = c("índice$" , "índice general"), prov = "")
 
 # Request data using the filter with inecode = TRUE and tip = "AM"
 ipc <- get_data_table(idTable = 50918, shortcut = TRUE, filter = filter,
-                      tip = "AM", nlast = 1, unnest = TRUE, inecode = TRUE)
+                      tip = "AM", nlast = 2, unnest = TRUE, inecode = TRUE)
 
 # The CODIGO_INE column contains the INE code of the different provinces
 ipc[1:5,c("CODIGO_INE","Nombre", "T3_Periodo", "Anyo", "Valor")]

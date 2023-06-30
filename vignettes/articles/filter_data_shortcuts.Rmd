@@ -135,7 +135,7 @@ filter <- list(ipc = c("variación anual" , "índice general", "total nacional")
 
 # Request data using the filter
 ipc <- get_data_series_filter(operation = "IPC", shortcut = TRUE, filter = filter,
-                              period = 1, unnest = TRUE, tip = "A")
+                              periodicity = 1, unnest = TRUE, tip = "A")
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
@@ -148,7 +148,7 @@ filter <- list(pib = c("producto interior", "datos ajustados",
 
 # Request data using the filter
 pib <- get_data_series_filter(operation = "CNTR2010", shortcut = TRUE, filter = filter,
-                              period = 3, unnest = TRUE, tip = "A")
+                              periodicity = 3, unnest = TRUE, tip = "A")
 pib[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
@@ -162,6 +162,6 @@ filter <- list(pob = c("todas las edades", "total nacional"), nacionalidad = "to
 
 # Request data using the filter
 pob <- get_data_series_filter(operation = "ECP", shortcut = TRUE, filter = filter,
-                              period = 3, unnest = TRUE, tip = "A")
+                              periodicity = 3, unnest = TRUE, tip = "A")
 pob[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```

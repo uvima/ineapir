@@ -133,7 +133,7 @@ filter <- list("115" = "2",     # variable id = 115, value id = 2
                )
 
 # Request data using the filter
-ipc <- get_data_series_filter(operation = "IPC", filter = filter, period = 1,
+ipc <- get_data_series_filter(operation = "IPC", filter = filter, periodicity = 1,
                        unnest = TRUE, tip = "A")
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
@@ -149,7 +149,7 @@ filter <- list("115" = c("2" ,"3", "4"), # variable id = 115, values id 2, 3, 4
                )
 
 # Request data using the filter
-ipc <- get_data_series_filter(operation = "IPC", filter = filter, period = 1, 
+ipc <- get_data_series_filter(operation = "IPC", filter = filter, periodicity = 1, 
                         unnest = TRUE, tip = "A")
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
@@ -166,7 +166,7 @@ filter <- list("115" = "",      # variable id = 115, all values
                )
 
 # Request data using the filter
-ipc <- get_data_series_filter(operation = "IPC", filter = filter, period = 1, 
+ipc <- get_data_series_filter(operation = "IPC", filter = filter, periodicity = 1, 
                         unnest = TRUE, tip = "A")
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
