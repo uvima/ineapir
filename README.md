@@ -19,7 +19,6 @@ the available statistical information published by INE.
 You can install the development version of **ineapir** like so:
 
 ``` r
-#install.packages("remotes")
 remotes::install_github("uvima/ineapir")
 ```
 
@@ -39,8 +38,8 @@ argument which is the identification code of the series.
 library(ineapir)
 series <- get_data_series(codSeries = "IPC251856")
 series$Data
-#>          Fecha FK_TipoDato FK_Periodo Anyo Valor Secreto
-#> 1 1.682892e+12           3          5 2023   3.2   FALSE
+#>         Fecha FK_TipoDato FK_Periodo Anyo Valor Secreto
+#> 1 1.68557e+12           3          6 2023   1.9   FALSE
 ```
 
 To get the last n data from a series it is necessary to pass the `nlast`
@@ -50,11 +49,11 @@ argument as well.
 series <- get_data_series(codSeries = "IPC251856", nlast = 5)
 series$Data
 #>          Fecha FK_TipoDato FK_Periodo Anyo Valor Secreto
-#> 1 1.672528e+12           1          1 2023   5.9   FALSE
-#> 2 1.675206e+12           1          2 2023   6.0   FALSE
-#> 3 1.677625e+12           1          3 2023   3.3   FALSE
-#> 4 1.680300e+12           1          4 2023   4.1   FALSE
-#> 5 1.682892e+12           3          5 2023   3.2   FALSE
+#> 1 1.675206e+12           1          2 2023   6.0   FALSE
+#> 2 1.677625e+12           1          3 2023   3.3   FALSE
+#> 3 1.680300e+12           1          4 2023   4.1   FALSE
+#> 4 1.682892e+12           1          5 2023   3.2   FALSE
+#> 5 1.685570e+12           3          6 2023   1.9   FALSE
 ```
 
 Additionally, it is possible to obtain data from a series between two
@@ -84,12 +83,12 @@ table[1,c("COD", "Nombre")]
 #> 1 IPC251852 Total Nacional. Índice general. Índice.
 head(table$Data[[1]])
 #>          Fecha FK_TipoDato FK_Periodo Anyo   Valor Secreto
-#> 1 1.680300e+12           1          4 2023 111.773   FALSE
-#> 2 1.677625e+12           1          3 2023 111.111   FALSE
-#> 3 1.675206e+12           1          2 2023 110.703   FALSE
-#> 4 1.672528e+12           1          1 2023 109.668   FALSE
-#> 5 1.669849e+12           1         12 2022 109.899   FALSE
-#> 6 1.667257e+12           1         11 2022 109.734   FALSE
+#> 1 1.682892e+12           1          5 2023 111.719   FALSE
+#> 2 1.680300e+12           1          4 2023 111.773   FALSE
+#> 3 1.677625e+12           1          3 2023 111.111   FALSE
+#> 4 1.675206e+12           1          2 2023 110.703   FALSE
+#> 5 1.672528e+12           1          1 2023 109.668   FALSE
+#> 6 1.669849e+12           1         12 2022 109.899   FALSE
 ```
 
 To get the last n data from a table it is necessary to pass the `nlast`

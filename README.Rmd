@@ -31,7 +31,6 @@ available statistical information published by INE.
 You can install the development version of **ineapir** like so:
 
 ```{r, eval = FALSE}
-#install.packages("remotes")
 remotes::install_github("uvima/ineapir")
 ```
 
