@@ -919,7 +919,8 @@ check_filter <- function(parameter, verbose, lang, shortcut){
   if(is.element("idtable",parnames)){
 
     # Obtain table information including metadata
-    df <- get_data_table(idTable = id, nlast = 1, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
+    #df <- get_data_table(idTable = id, nlast = 1, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
+    df <- get_metadata_series_table(idTable = id, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
 
     # Make sure we have a dataframe
     if(!check_result_status(df)){
@@ -1114,74 +1115,79 @@ check_series_filter <- function(operation, filter, verbose, lang, shortcut){
     # Values of the filter
     val <- unlist(filter, use.names = FALSE)
 
-    # Obtain the possible variables for an operation
-    opevar <- get_metadata_variables(operation = operation, validate = FALSE, verbose = verbose, lang = lang)
+    # The list must contain at least two values in the filter
+    if(length(val) > 1){
+      # Obtain the possible variables for an operation
+      opevar <- get_metadata_variables(operation = operation, validate = FALSE, verbose = verbose, lang = lang)
 
-    # Go through all the variables
-    for(v in var){
-      # Has been used a shortcut name for the variable or not
-      short <- is.element(tolower(v), c(names(shortcuts_filter), names(shortcuts_operations)))
+      # Go through all the variables
+      for(v in var){
+        # Has been used a shortcut name for the variable or not
+        short <- is.element(tolower(v), c(names(shortcuts_filter), names(shortcuts_operations)))
 
-      if(shortcut){
-        if(short){
-          if(tolower(v) %in% names(shortcuts_operations)){
-            variable <- opevar$Id
+        if(shortcut){
+          if(short){
+            if(tolower(v) %in% names(shortcuts_operations)){
+              variable <- opevar$Id
+            }else{
+              # If there is a shortcut obtain the corresponding id
+              variable <- shortcuts_filter[[tolower(v)]]
+            }
           }else{
-            # If there is a shortcut obtain the corresponding id
-            variable <- shortcuts_filter[[tolower(v)]]
+            variable <- v
           }
         }else{
-          variable <- v
+          if(short){
+            result <- FALSE
+            stop("It is neccessary to set shortcut = TRUE")
+          }else{
+            variable <- v
+          }
         }
-      }else{
-        if(short){
+
+        # If there is a shortcut obtain the corresponding id
+        # variable <- if(short) shortcuts[[tolower(v)]] else v
+
+        # The variable id is in the metadata information
+        validvar <- intersect(variable, opevar$Id)
+
+        if(!(is.element(v, opevar$Id) || length(validvar) > 0)){
           result <- FALSE
-          stop("It is neccessary to set shortcut = TRUE")
-        }else{
-          variable <- v
+          stop(sprintf("%s is not a valid variable for %s operation",v,operation))
+        }
+
+        # If the shortcut name includes more than one variable
+        # obtain the metadata information for all the variables
+        opeval <- NULL
+        for(i in validvar){
+          tmp <- get_metadata_values(operation = operation, variable = i, validate = FALSE, verbose = verbose, lang = lang)
+
+          if (exists("opeval") && is.data.frame(get("opeval"))){
+            opeval <- rbind(opeval,tmp)
+          }else{
+            opeval <- tmp
+          }
+        }
+
+        # Go through all the values of an specific variable
+        for(f in filter[[v]]){
+          # Split the value
+          valshort <- if(nchar(f) > 0 ) unlist(strsplit(f, "\\s+")) else f
+
+          # Obtain the largest element
+          valshort <- valshort[which.max(nchar(valshort))]
+
+          # The id or the shortcut name of the value must exist in the metadata information
+          if(f != "" && !(is.element(f, opeval$Id) || sum(grepl(valshort, opeval$Nombre, ignore.case = TRUE)) > 0)){
+            result <- FALSE
+            stop(sprintf("%s is not a valid value for variable %s", f, v))
+          }
         }
       }
-
-      # If there is a shortcut obtain the corresponding id
-      #variable <- if(short) shortcuts[[tolower(v)]] else v
-
-      # The variable id is in the metadata information
-      validvar <- intersect(variable, opevar$Id)
-
-      if(!(is.element(v, opevar$Id) || length(validvar) > 0)){
-        result <- FALSE
-        stop(sprintf("%s is not a valid variable for %s operation",v,operation))
-      }
-
-      # If the shortcut name includes more than one variable
-      # obtain the metadata information for all the variables
-      opeval <- NULL
-      for(i in validvar){
-        tmp <- get_metadata_values(operation = operation, variable = i, validate = FALSE, verbose = verbose, lang = lang)
-
-        if (exists("opeval") && is.data.frame(get("opeval"))){
-          opeval <- rbind(opeval,tmp)
-        }else{
-          opeval <- tmp
-        }
-      }
-
-      # Go through all the values of an specific variable
-      for(f in filter[[v]]){
-        # Split the value
-        valshort <- if(nchar(f) > 0 ) unlist(strsplit(f, "\\s+")) else f
-
-        # Obtain the largest element
-        valshort <- valshort[which.max(nchar(valshort))]
-
-        # The id or the shortcut name of the value must exist in the metadata information
-        if(f != "" && !(is.element(f, opeval$Id) || sum(grepl(valshort, opeval$Nombre, ignore.case = TRUE)) > 0)){
-          result <- FALSE
-          stop(sprintf("%s is not a valid value for variable %s", f, v))
-        }
-      }
+    }else{
+      result <- FALSE
+      stop("The list must contain at least two values in the filter")
     }
-
   }else{
     result <- FALSE
     stop("Values must be a list")
@@ -1412,34 +1418,51 @@ extract_metadata <- function(datain, request){
 
   dataout <- datain
 
-  # Case one: tpx or px table
-  if(is.pxtable(metadata)){
+  # Tables
+  if(grepl("IdTable",request$definition$tag, ignore.case = TRUE)){
 
-    # Obtain variable codigo column from metadata
-    varcode <- unique(do.call(rbind,
-                              lapply(metadata, function(x) subset(x,
-                                                                  select = c("Variable.Codigo")))))
+    # Case one: tpx or px table
+    if(is.pxtable(metadata)){
 
-    # Loop through all variables
-    for(var in varcode$Variable.Codigo){
+      # Obtain variable codigo column from metadata
+      #varcode <- unique(do.call(rbind,
+      #                          lapply(metadata, function(x) subset(x,
+      #                                                              select = c("Variable.Codigo")))))
 
-      # Select a variable code and build a Unique dataframe of variable names
-      dfcodes <- do.call(rbind,
-                         lapply(metadata,
-                                function(x) subset(x,
-                                                   x$Variable.Codigo == var,
-                                                   select = c("Nombre"))))
-      # Rename column with variable code
-      names(dfcodes) <- var
+      # Number of variables in metadata information
+      nummeta <- min(unique(do.call(rbind,lapply(metadata,nrow))))
 
-      # Adding column to dataframe
-      if(nrow(dfcodes) == nrow(dataout)){
-        dataout <- cbind(dataout, dfcodes)
+      # Obtain variable codes for each row in metadata information
+      varcode <- list()
+
+      for(i in 1:nummeta){
+        varcode <- append(varcode,
+                          as.data.frame(unique(do.call(rbind,
+                                                       lapply(metadata, '[',c(i),))$Variable.Codigo)))
       }
-    }
-  }else{
+
+      # Loop through all variables
+      for(var in varcode){
+
+        # Select a variable code and build a Unique dataframe of variable names
+        dfcodes <- do.call(rbind,
+                           lapply(metadata,
+                                  function(x) subset(x,
+                                                     x$Variable.Codigo %in% var,
+                                                     select = c("Nombre"))))
+
+        # Rename column with variable code
+        names(dfcodes) <- var[1]
+
+        # Adding column to dataframe
+        if(nrow(dfcodes) == nrow(dataout)){
+          dataout <- cbind(dataout, dfcodes)
+        }
+      }
     # Case two: tempus table
-    if(grepl("IdTable",request$definition$tag, ignore.case = TRUE)){
+    }else{
+
+      #if(grepl("IdTable",request$definition$tag, ignore.case = TRUE)){
       # Get groups of the table
       groups <- get_metadata_table_groups(idTable = request$definition$input, validate = FALSE, lang = request$definition$lang)
 
@@ -1464,6 +1487,39 @@ extract_metadata <- function(datain, request){
         names(dfcodes) <- newname
 
         # Adding column to dataframe
+        dataout <- cbind(dataout, dfcodes)
+      }
+    }
+  # Series
+  }else{
+
+    # Number of variables in metadata information
+    nummeta <- min(unique(do.call(rbind,lapply(metadata,nrow))))
+
+    # Obtain variable codes for each row in metadata information
+    varcode <- list()
+
+    for(i in 1:nummeta){
+      varcode <- append(varcode,
+                        as.data.frame(unique(do.call(rbind,
+                                                     lapply(metadata, '[',c(i),))$Variable.Id)))
+    }
+
+    # Loop through all variables
+    for(var in varcode){
+
+      # Select a variable code and build a Unique dataframe of variable names
+      dfcodes <- do.call(rbind,
+                         lapply(metadata,
+                                function(x) subset(x,
+                                                   x$Variable.Id %in% var,
+                                                   select = c("Nombre"))))
+
+      # Rename column with variable code
+      names(dfcodes) <- var[1]
+
+      # Adding column to dataframe
+      if(nrow(dfcodes) == nrow(dataout)){
         dataout <- cbind(dataout, dfcodes)
       }
     }
