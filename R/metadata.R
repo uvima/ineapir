@@ -226,6 +226,50 @@ get_metadata_publication_dates <- function(publication = NULL, det = 0, tip = NU
   return(data)
 }
 
+#' Get all possible periodicities or periodicities used in a operation
+#'
+#' @param operation (string): Code of the operation
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
+#' @param verbose (logical): print additional information
+#'
+#' @return Data frame with information of the available periodicities
+#' @export
+#'
+#' @examples \dontrun{
+#' get_metadata_periodicity()
+#' get_metadata_periodicity(operation = "IPC")
+#' }
+#'
+get_metadata_periodicity <- function(operation = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
+    # List of values to define the call to the API
+    definition <- list()
+    definition <- append(definition, list(lang = lang))
+    definition <- append(definition, if(is.null(operation)) list(fun = "PERIODICIDADES") else list(fun = "PERIODICIDAD_OPERACION"))
+    definition <- append(definition, list(input = operation))
+    definition <- append(definition, list(tag = "operation_active_null"))
+
+    # List of parameters to call the API
+    parameters <- list()
+
+    # List of addons
+    addons <- list(validate = validate, verbose = verbose)
+
+    # List of definitions and parameters
+    request <- list(definition = definition, parameters = parameters, addons = addons)
+
+    # Check request
+    check_request(request)
+
+    # Build the complete URL to call the API
+    url <- get_url(request)
+
+    # Obtain the retrieved data calling the API
+    data <- get_api_data(url, request, verbose = verbose)
+
+    return(data)
+  }
+
 
 
 

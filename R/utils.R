@@ -49,14 +49,14 @@ shortcuts_operations <- list(ipc = "IPC", cpi = "IPC",
                              pob = "ECP", pop = "ECP"
                              )
 
-# Shortcuts used with periods
-shortcuts_periods <- list("m" = "1", # monthly
-                          "t" = "3", # trimestral (Spanish)
-                          "q" = "3", # quarterly
-                          "s" = "6", # semestral (Spanish)
-                          "b" = "6", # bi-annual
-                          "a" = "12" # annual
-                          )
+# Shortcuts used with periodicities
+shortcuts_periodicity <- list("m" = "1", # monthly
+                              "t" = "3", # trimestral (Spanish)
+                              "q" = "3", # quarterly
+                              "s" = "6", # semestral (Spanish)
+                              "b" = "6", # bi-annual
+                              "a" = "12" # annual
+                              )
 
 # Function to retrieve data from the aPI
 get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inecode = FALSE, extractmetadata = FALSE){
@@ -164,7 +164,8 @@ get_url <- function(request){
         val <- build_date(val)
 
       }else if(x == "p"){
-        val <- if(is.element(val[[x]], unlist(shortcuts_periods, use.names = FALSE))) val[[x]] else shortcuts_periods[val[[x]]]
+        #val <- if(is.element(val[[x]], unlist(shortcuts_periodicity, use.names = FALSE))) val[[x]] else shortcuts_periodicity[val[[x]]]
+        val <- val[[x]]
 
       }else if (x == "filter"){
         val <- build_filter(val, request$definition[["lang"]], request$addons)
@@ -766,32 +767,34 @@ check_date_format <- function(name, date){
   }
 }
 
-# check if the period argument is valid
+# check if the periodicity argument is valid
 check_periodicity <- function(operation, p, verbose){
 
   result <- TRUE
 
-  # Admissible shortcuts for periods
-  shortp <- list("1" = "m", # monthly
-                 "3" = c("t", "q"),  # quarterly
-                 "12" = "a" #annual
-                 )
+  # Admissible shortcuts for periodicities
+  #shortp <- list("1" = "m", # monthly
+  #               "3" = c("t", "q"),  # quarterly
+  #               "12" = "a" #annual
+  #               )
 
   if(!is.null(p)){
     # Get all the publications of the operation
-    pub <- get_metadata_publications(operation= operation, validate = FALSE, verbose = verbose)
+    #pub <- get_metadata_publications(operation= operation, validate = FALSE, verbose = verbose)
+
+    periodicity <- get_metadata_periodicity(operation = operation, validate = FALSE, verbose = verbose)
 
     # Periodicity of the publications
-    period <- pub$FK_Periodicidad
+    #periodicity <- pub$FK_Periodicidad
 
     # We add the possible shortcuts
-    for(i in pub$FK_Periodicidad){
-      period <- append(period, shortp[[as.character(i)]])
-    }
+    #for(i in pub$FK_Periodicidad){
+    #  periodicity <- append(periodicity, shortp[[as.character(i)]])
+    #}
 
-    if(!is.element(p, period)){
+    if(!is.element(p, periodicity$Id)){
       result <- FALSE
-      stop(sprintf("%s is not a valid periodicity for operation %s", p, operation))
+      stop(sprintf("%s is not a valid periodicity for operation %s. Valid ids: %s", p, operation, paste0(periodicity$Id, collapse = ", ")))
     }
   }else{
     result <- FALSE
@@ -799,7 +802,7 @@ check_periodicity <- function(operation, p, verbose){
   }
 
   if(verbose){
-    cat(sprintf("- Check period: OK\n"))
+    cat(sprintf("- Check periodicity: OK\n"))
   }
   return(result)
 }

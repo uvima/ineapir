@@ -7,7 +7,7 @@
 get_metadata_series_filter(
   operation = NULL,
   filter = NULL,
-  period = NULL,
+  periodicity = NULL,
   det = 0,
   tip = NULL,
   lang = "ES",
@@ -21,9 +21,8 @@ get_metadata_series_filter(
 
 \item{filter}{(list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)}
 
-\item{period}{(int): id of the periodicity of the series. Most common periodicities:
-1 (monthly), "m" (monthly), 3 (quarterly), "q" (quarterly), "t" (quarterly),
-12 (annual) and "a" (annual).}
+\item{periodicity}{(int): id of the periodicity of the series. Common periodicities:
+1 (monthly), 3 (quarterly), 6 (bi-annual), 12 (annual).}
 
 \item{det}{(int): level of detail (0, 1 ,2)}
 
@@ -46,7 +45,7 @@ Get all the series that fulfill the conditions of a filter
 \examples{
 \dontrun{
 get_metadata_series_filter(operation = "IPC", filter = list("115"= "29", "3" = "84", "762" = ""),
- period = 1)
+ periodicity = 1)
  }
 
 }

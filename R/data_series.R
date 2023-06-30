@@ -63,9 +63,8 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #'
 #' @param operation (string): Code of the operation
 #' @param filter (list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)
-#' @param period (int): id of the periodicity of the series. Most common periodicities:
-#' 1 (monthly), "m" (monthly), 3 (quarterly), "q" (quarterly), "t" (quarterly),
-#' 6 (bi-annual), "b" (bi-annual), "s" (bi-annual), 12 (annual) and "a" (annual).
+#' @param periodicity (int): id of the periodicity of the series. Common periodicities:
+#' 1 (monthly), 3 (quarterly), 6 (bi-annual), 12 (annual).
 #' @param nlast (int): number of periods to retrieve
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
@@ -81,10 +80,10 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #'
 #' @examples \dontrun{
 #' get_data_series_filter(operation = "IPC", filter = list("115"= "29", "3" = "84", "762" = ""),
-#'  period = 1)
+#'  periodicity = 1)
 #'  }
 #'
-get_data_series_filter <- function(operation = NULL, filter = NULL, period = NULL, nlast = 1, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, unnest = FALSE, inecode = FALSE, shortcut = FALSE){
+get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity = NULL, nlast = 1, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, unnest = FALSE, inecode = FALSE, shortcut = FALSE){
 
   # List of values to define the call to the API
   definition <- list()
@@ -96,7 +95,7 @@ get_data_series_filter <- function(operation = NULL, filter = NULL, period = NUL
   # List of parameters to call the API
   parameters <- list()
   parameters <- append(parameters, list(filter = list(operation = operation, filter = filter)))
-  parameters <- append(parameters, list(p = list(operation = operation, p = period)))
+  parameters <- append(parameters, list(p = list(operation = operation, p = periodicity)))
   parameters <- append(parameters, list(nult = nlast))
   parameters <- append(parameters, list(det = det))
   parameters <- append(parameters, list(tip = tip))

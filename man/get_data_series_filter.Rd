@@ -7,7 +7,7 @@
 get_data_series_filter(
   operation = NULL,
   filter = NULL,
-  period = NULL,
+  periodicity = NULL,
   nlast = 1,
   det = 0,
   tip = NULL,
@@ -24,9 +24,8 @@ get_data_series_filter(
 
 \item{filter}{(list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)}
 
-\item{period}{(int): id of the periodicity of the series. Most common periodicities:
-1 (monthly), "m" (monthly), 3 (quarterly), "q" (quarterly), "t" (quarterly),
-6 (bi-annual), "b" (bi-annual), "s" (bi-annual), 12 (annual) and "a" (annual).}
+\item{periodicity}{(int): id of the periodicity of the series. Common periodicities:
+1 (monthly), 3 (quarterly), 6 (bi-annual), 12 (annual).}
 
 \item{nlast}{(int): number of periods to retrieve}
 
@@ -55,7 +54,7 @@ Get data from series that fulfill the conditions of a filter
 \examples{
 \dontrun{
 get_data_series_filter(operation = "IPC", filter = list("115"= "29", "3" = "84", "762" = ""),
- period = 1)
+ periodicity = 1)
  }
 
 }
