@@ -61,16 +61,44 @@ shortcuts_operations <- list(ipc = "IPC", cpi = "IPC",
 # Function to retrieve data from the aPI
 get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inecode = FALSE, extractmetadata = FALSE){
 
-  if(verbose){
-    cat(sprintf("- API URL: %s\n", url))
-  }
-
   result <- NULL
 
   # Initiate a call to the aPI
   tryCatch(
     {
-      result <- jsonlite::fromJSON(url, flatten = TRUE)
+      #url <- get_url2(request)
+
+      # if the url is too large we used the method POST
+      if(nchar(url$complete) > 2000){
+
+        if(verbose){
+          cat(sprintf("- API URL: %s\n", url$partialpar))
+        }
+
+        response <- httr::VERB("POST",
+                               url = url$partial,
+                               query = url$parameters,
+                               body = url$filter,
+                               encode = "form",
+                               content_type("application/x-www-form-urlencoded"),
+                               add_headers(Content_Length = '[0-9]*')
+                              )
+
+      # we use the GET method
+      }else{
+        if(verbose){
+          cat(sprintf("- API URL: %s\n", url$complete))
+        }
+
+        response <- httr::VERB("GET",
+                               url = url$partial,
+                               query = url$totalpar
+                              )
+
+      }
+
+      result <- jsonlite::fromJSON(content(response, "text"), flatten = TRUE)
+      #result <- jsonlite::fromJSON(url, flatten = TRUE)
     },
     error=function(e) {
       message('An error occurred calling the API')
@@ -142,8 +170,99 @@ get_api_data_pages <- function(request, verbose = FALSE){
   return(data[1:n,])
 }
 
-# Build the URL to call the API
+get_definition_path <- function(request){
+
+  path <- ""
+
+  # Build the definition part. We remove tag (last one) from definition
+  for(x in unlist(request$definition[-length(request$definition)])){
+    if(!is.null(x)){
+      path <- paste0(path,"/", x)
+    }
+  }
+
+  return(path)
+}
+
+get_parameters_query <- function(request){
+
+  parameters <- list()
+
+  for(x in names(request$parameters)){
+    val <- request$parameters[[x]]
+
+    if(x != "filter" && !is.null(val)){
+      if(x == "date"){
+        val <- build_date(val)
+
+      }else if(x == "p"){
+        val <- val[[x]]
+      }
+
+      parameters[[x]] <- val
+    }
+  }
+
+  return(parameters)
+
+}
+
+get_parameters_filter <- function(request){
+
+  val <- request$parameters[["filter"]]
+
+  if(!is.null(val)){
+    val <- build_filter(val, request$definition[["lang"]], request$addons)
+  }
+
+  return(val)
+
+}
+
 get_url <- function(request){
+  # APU url
+  url <- httr::parse_url(API_URL)
+
+  # Get the definition part
+  definition <- get_definition_path(request)
+
+  # Get the parameters of the query
+  parameters <- get_parameters_query(request)
+
+  # Get the filter of the query
+  parfilter <- get_parameters_filter(request)
+
+  # Update the path with the definition part
+  url$path <- paste0(url$path, definition)
+
+  # Build the partial url
+  partial <- build_url(url)
+
+  # Update the query of the url
+  url$query <- parameters
+
+  # Build the partial url with parameters
+  partialpar <- build_url(url)
+
+  # Update the query of the url
+  url$query <- append(parameters, parfilter)
+
+  # Build the complete url
+  complete <- build_url(url)
+
+  result <- list(complete = complete,
+                 partial = partial,
+                 partialpar = partialpar,
+                 parameters = parameters,
+                 filter = parfilter,
+                 totalpar = append(parameters, parfilter)
+                 )
+
+  return(result)
+}
+
+# Build the URL to call the API
+get_url2 <- function(request){
   # API url
   url <- API_URL
 
@@ -200,6 +319,7 @@ build_date <- function(date){
 build_filter <- function(parameter, lang, addons){
   # Values to return
   val <- character()
+  lval <- list()
 
   # id to identify a table or a operation
   id <- parameter[[1]]
@@ -300,6 +420,12 @@ build_filter <- function(parameter, lang, addons){
 
               # Vector with all the values in the format of the API
               val <- append(val, tmp)
+
+              if(is.element("idtable",parnames)){
+                lval <- append(lval, list(tv = paste0(var, ":", filterout[[var]])))
+              }else{
+                lval[[parurl]] <- paste0(var, ":", filterout[[var]])
+              }
             }
           }
         }else{
@@ -316,6 +442,12 @@ build_filter <- function(parameter, lang, addons){
 
             # Vector with all the values in the format of the API
             val <- append(val, tmp)
+
+            if(is.element("idtable",parnames)){
+              lval <- append(lval, list(tv = paste0(varid, ":", filterout[[varid]])))
+            }else{
+              lval[[parurl]] <- paste0(varid, ":", filterout[[varid]])
+            }
           }
         }
 
@@ -337,11 +469,21 @@ build_filter <- function(parameter, lang, addons){
 
       # Vector with all the values in the format of the API
       val <- append(val, tmp)
+
+      for(f in filter[[n]]){
+        if(is.element("idtable",parnames)){
+          lval <- append(lval, list(tv = paste0(n, ":", f)))
+        }else{
+          lval[[parurl]] <- paste0(n, ":", f)
+        }
+      }
+
       i <- i + 1
     }
   }
 
-  return(paste(val, collapse = "&"))
+  #return(paste(val, collapse = "&"))
+  return(lval)
 }
 
 # Get the all values used in a table or operation
@@ -1183,7 +1325,7 @@ check_table_tempus_filter <- function(idTable, filter, verbose, df, shortcut){
         # permitir multiples valores
         for(f in val){
           # Split the value
-          valshort <- if(nchar(f) > 0 ) unlist(strsplit(f, "\\s+")) else f
+          valshort <- if(nchar(f) > 0 ) unlist(strsplit(as.character(f), "\\s+")) else f
 
           # Obtain the largest element
           valshort <- valshort[which.max(nchar(valshort))]
