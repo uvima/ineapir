@@ -395,10 +395,44 @@ get_filter_values <- function(parameter, lang, shortcut, verbose){
       # We obtain the variables from the operation of the series
       opevar <- get_metadata_variables(operation = id, validate = FALSE, verbose = FALSE, lang = lang)
 
+      # Number of rows
+      numrows <- nrow(opevar)
+
+      # Page counter
+      numpage <- 1
+
+      # if the number of rows is equal to the length of a page, we query the next page
+      while (numrows == page_lenght){
+        numpage <- numpage + 1
+
+        opevarpage <- get_metadata_variables(operation = operation, validate = FALSE, page = numpage, verbose = verbose, lang = lang)
+
+        numrows <- nrow(opevarpage)
+
+        opevar <- rbind(opevar, opevarpage)
+      }
+
       # We obtain the values of all the variables
       i <- 1
       for(var in opevar$Id){
         tmp <- get_metadata_values(operation = id, variable = var, validate = FALSE, verbose = FALSE, lang = lang)
+
+        # Number of rows
+        numrows <- nrow(tmp)
+
+        # Page counter
+        numpage <- 1
+
+        # if the number of rows is equal to the length of a page, we query the next page
+        while (numrows == page_lenght){
+          numpage <- numpage + 1
+
+          tmpage <- get_metadata_values(operation = id, variable = var, page = numpage, validate = FALSE, verbose = FALSE, lang = lang)
+
+          numrows <- nrow(tmpage)
+
+          tmp <- rbind(tmp, tmpage)
+        }
 
         if(verbose){
           cat(sprintf("- Processing filter: %s%%        \r", round(i/nrow(opevar)*100,0)))
@@ -548,6 +582,23 @@ check_operation <- function(operation, active_null = FALSE, verbose){
     # Get all aperations
     opes <- get_metadata_operations(validate = FALSE, verbose = verbose)
 
+    # Number of rows
+    numrows <- nrow(opes)
+
+    # Page counter
+    numpage <- 1
+
+    # if the number of rows is equal to the length of a page, we query the next page
+    while (numrows == page_lenght){
+      numpage <- numpage + 1
+
+      opespage <- get_metadata_operations(validate = FALSE, page = numpage, verbose = verbose)
+
+      numrows <- nrow(opespage)
+
+      opes <- rbind(opes, opespage)
+    }
+
     # Logical controls
     id <- FALSE
     ioe <- FALSE
@@ -619,7 +670,24 @@ check_variablesoperation <- function(operation, variable, verbose){
   result <- TRUE
 
   if(!is.null(variable)){
-    vars <- get_metadata_variables(operation = operation, validate = FALSE)
+    vars <- get_metadata_variables(operation = operation, validate = FALSE, verbose = verbose)
+
+    # Number of rows
+    numrows <- nrow(vars)
+
+    # Page counter
+    numpage <- 1
+
+    # if the number of rows is equal to the length of a page, we query the next page
+    while (numrows == page_lenght){
+      numpage <- numpage + 1
+
+      varspage <- get_metadata_variables(operation = operation, page = numpage, validate = FALSE, verbose = verbose)
+
+      numrows <- nrow(varspage)
+
+      vars <- rbind(vars, varspage)
+    }
 
     if(!is.element(variable, vars$Id)){
       result <- FALSE
@@ -642,7 +710,24 @@ check_variable <- function(variable, verbose){
   result <- TRUE
 
   if(!is.null(variable)){
-    vars <- get_metadata_variables(validate = FALSE)
+    vars <- get_metadata_variables(validate = FALSE, verbose = verbose)
+
+    # Number of rows
+    numrows <- nrow(vars)
+
+    # Page counter
+    numpage <- 1
+
+    # if the number of rows is equal to the length of a page, we query the next page
+    while (numrows == page_lenght){
+      numpage <- numpage + 1
+
+      varspage <- get_metadata_variables(page = numpage, validate = FALSE, verbose = verbose)
+
+      numrows <- nrow(varspage)
+
+      vars <- rbind(vars, varspage)
+    }
 
     if(!is.element(variable, vars$Id)){
       result <- FALSE
@@ -667,6 +752,23 @@ check_publication <- function(publication, verbose){
   if(!is.null(publication)){
     # Get all the publications
     pubs <- get_metadata_publications(validate = FALSE, verbose = verbose)
+
+    # Number of rows
+    numrows <- nrow(pubs)
+
+    # Page counter
+    numpage <- 1
+
+    # if the number of rows is equal to the length of a page, we query the next page
+    while (numrows == page_lenght){
+      numpage <- numpage + 1
+
+      pubspage <- get_metadata_publications(page = numpage, validate = FALSE, verbose = verbose)
+
+      numrows <- nrow(pubspage)
+
+      pubs <- rbind(pubs, pubspage)
+    }
 
     if(!is.element(publication, pubs$Id)){
       result <- FALSE
@@ -1124,6 +1226,23 @@ check_series_filter <- function(operation, filter, verbose, lang, shortcut){
       # Obtain the possible variables for an operation
       opevar <- get_metadata_variables(operation = operation, validate = FALSE, verbose = verbose, lang = lang)
 
+      # Number of files
+      numrows <- nrow(opevar)
+
+      # Page counter
+      numpage <- 1
+
+      # if the number of rows is equal to the length of a page, we query the next page
+      while (numrows == page_lenght){
+        numpage <- numpage + 1
+
+        opevarpage <- get_metadata_variables(operation = operation, validate = FALSE, page = numpage, verbose = verbose, lang = lang)
+
+        numrows <- nrow(opevarpage)
+
+        opevar <- rbind(opevar, opevarpage)
+      }
+
       # Go through all the variables
       for(v in var){
         # Has been used a shortcut name for the variable or not
@@ -1165,6 +1284,24 @@ check_series_filter <- function(operation, filter, verbose, lang, shortcut){
         opeval <- NULL
         for(i in validvar){
           tmp <- get_metadata_values(operation = operation, variable = i, validate = FALSE, verbose = verbose, lang = lang)
+
+          # Number of files
+          numrows <- nrow(tmp)
+
+          # Page counter
+          numpage <- 1
+
+          # if the number of rows is equal to the length of a page, we query the next page
+          while (numrows == page_lenght){
+            numpage <- numpage + 1
+
+            tmpage <- get_metadata_values(operation = operation, variable = i, page = numpage, validate = FALSE, verbose = verbose, lang = lang)
+
+            numrows <- nrow(tmpage)
+
+            tmp <- rbind(tmp, tmpage)
+          }
+
 
           if (exists("opeval") && is.data.frame(get("opeval"))){
             opeval <- rbind(opeval,tmp)
