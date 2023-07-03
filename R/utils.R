@@ -110,6 +110,7 @@ get_api_data_pages <- function(request, verbose = FALSE){
 
   definition <- request$definition
   parameters <- request$parameters
+  addons     <- request$addons
 
   # Number of entries to retrieve
   n <- parameters$page
@@ -123,7 +124,7 @@ get_api_data_pages <- function(request, verbose = FALSE){
     parameters[["page"]] <- i
 
     # List of definitions and parameters
-    request <- list(definition = definition, parameters = parameters)
+    request <- list(definition = definition, parameters = parameters, addons = addons)
 
     # Build the complete URL to call the API
     url <- get_url(request)
@@ -466,7 +467,7 @@ check_parameters <- function(parameters, addons, definition){
                 "det" = check_det(val, addons$verbose),
                 "tip" = check_tip(val, addons$verbose),
                 "geo" = check_geo(val, addons$verbose),
-                "page" = check_n(val, addons$verbose),
+                "page" = check_page(val, addons$verbose),
                 "filter" = check_filter(val, addons$verbose, definition$lang, addons$shortcut)
         )
       }
@@ -887,7 +888,7 @@ check_geo <- function(geo, verbose){
 }
 
 # check if the n argument is valid
-check_n <- function(n, verbose){
+check_page <- function(n, verbose){
   result <- TRUE
 
   if(!is.numeric(n)){
@@ -901,7 +902,7 @@ check_n <- function(n, verbose){
   }
 
   if(verbose){
-    cat(sprintf("- Check n: OK\n"))
+    cat(sprintf("- Check page: OK\n"))
   }
   return(result)
 }

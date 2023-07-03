@@ -14,7 +14,7 @@ get_metadata_periodicity(
 \arguments{
 \item{operation}{(string): Code of the operation}
 
-\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
+\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
 
 \item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
 

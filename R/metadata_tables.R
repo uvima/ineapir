@@ -5,7 +5,8 @@
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
 #' @param geo (int): set to 0 for national tables or set to 1 for tables with
 #' a greater level of disaggregation
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
+#' @param page (int): page number. The retrieved result of the query is paginated
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
@@ -16,7 +17,7 @@
 #' get_metadata_tables(operation = "IPC")
 #' }
 #'
-get_metadata_tables <- function(operation = NULL, det = 0, tip = NULL, geo = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
+get_metadata_tables <- function(operation = NULL, det = 0, tip = NULL, geo = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){
 
   # List of values to define the call to the API
   definition <- list()
@@ -30,6 +31,7 @@ get_metadata_tables <- function(operation = NULL, det = 0, tip = NULL, geo = NUL
   parameters <- append(parameters, list(det = det))
   parameters <- append(parameters, list(tip = tip))
   parameters <- append(parameters, list(geo = geo))
+  parameters <- append(parameters, list(page = page))
 
   # List of addons
   addons <- list(validate = validate, verbose = verbose)
@@ -52,7 +54,7 @@ get_metadata_tables <- function(operation = NULL, det = 0, tip = NULL, geo = NUL
 #' Get all the groups of a table
 #'
 #' @param idTable (int): code of the table
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
@@ -97,7 +99,7 @@ get_metadata_table_groups <- function(idTable = NULL, lang = "ES", validate = TR
 #'
 #' @param idTable (int): code of the table
 #' @param idGroup (int): code of the group of variables
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'

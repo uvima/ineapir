@@ -7,6 +7,7 @@
 get_metadata_operations(
   operation = NULL,
   lang = "ES",
+  page = 1,
   validate = TRUE,
   verbose = FALSE
 )
@@ -14,7 +15,9 @@ get_metadata_operations(
 \arguments{
 \item{operation}{(string): code of the operation}
 
-\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
+\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
+
+\item{page}{(int): page number. The retrieved result of the query is paginated}
 
 \item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
 

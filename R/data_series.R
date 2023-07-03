@@ -10,7 +10,7 @@
 #' format is yyyy/mm/dd
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #' @param unnest (logical): set to TRUE to obtain a single data frame of data
@@ -68,7 +68,8 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #' @param nlast (int): number of periods to retrieve
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
+#' @param page (int): page number. The retrieved result of the query is paginated
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #' @param unnest (logical): obtain a single data frame of data
@@ -83,7 +84,7 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #'  periodicity = 1)
 #'  }
 #'
-get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity = NULL, nlast = 1, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, unnest = FALSE, inecode = FALSE, shortcut = FALSE){
+get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity = NULL, nlast = 1, det = 0, tip = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE, unnest = FALSE, inecode = FALSE, shortcut = FALSE){
 
   # List of values to define the call to the API
   definition <- list()
@@ -99,6 +100,7 @@ get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity 
   parameters <- append(parameters, list(nult = nlast))
   parameters <- append(parameters, list(det = det))
   parameters <- append(parameters, list(tip = tip))
+  parameters <- append(parameters, list(page = page))
 
   # List of addons
   addons <- list(validate = validate, verbose = verbose, unnest = unnest, inecode = inecode, shortcut = shortcut)

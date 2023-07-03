@@ -9,6 +9,7 @@ get_metadata_publication_dates(
   det = 0,
   tip = NULL,
   lang = "ES",
+  page = 1,
   validate = TRUE,
   verbose = FALSE
 )
@@ -20,7 +21,9 @@ get_metadata_publication_dates(
 
 \item{tip}{(string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both}
 
-\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
+\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
+
+\item{page}{(int): page number. The retrieved result of the query is paginated}
 
 \item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
 

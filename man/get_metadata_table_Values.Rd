@@ -17,7 +17,7 @@ get_metadata_table_Values(
 
 \item{idGroup}{(int): code of the group of variables}
 
-\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
+\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
 
 \item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
 

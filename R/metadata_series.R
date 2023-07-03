@@ -3,7 +3,7 @@
 #' @param codSeries (string): code of the series
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
@@ -49,10 +49,11 @@ get_metadata_series <- function(codSeries = NULL, det = 0, tip = NULL, lang = "E
 #' Get all the series present in a operation
 #'
 #' @param operation (string): code of the operation
-#' @param n (int): number of series to retrieve
+
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
+#' @param page (int): page number. The retrieved result of the query is paginated
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
@@ -60,10 +61,10 @@ get_metadata_series <- function(codSeries = NULL, det = 0, tip = NULL, lang = "E
 #' @export
 #'
 #' @examples \dontrun{
-#' get_metadata_series_operation(operation = "IPC", n = 500)
+#' get_metadata_series_operation(operation = "IPC")
 #' }
 #'
-get_metadata_series_operation <- function(operation = NULL, n = 500, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
+get_metadata_series_operation <- function(operation = NULL, det = 0, tip = NULL, lang = "ES", page = 1 ,validate = TRUE, verbose = FALSE){
 
   # List of values to define the call to the API
   definition <- list()
@@ -74,9 +75,9 @@ get_metadata_series_operation <- function(operation = NULL, n = 500, det = 0, ti
 
   # List of parameters to call the API
   parameters <- list()
-  parameters <- append(parameters, list(page = n))
   parameters <- append(parameters, list(det = det))
   parameters <- append(parameters, list(tip = tip))
+  parameters <- append(parameters, list(page = page))
 
   # List of addons
   addons <- list(validate = validate, verbose = verbose)
@@ -87,8 +88,14 @@ get_metadata_series_operation <- function(operation = NULL, n = 500, det = 0, ti
   # Check request
   check_request(request)
 
+  # Build the complete URL to call the API
+  url <- get_url(request)
+
   # Obtain the retrieved data calling the API
-  data <- get_api_data_pages(request, verbose = verbose)
+  data <- get_api_data(url, request, verbose = verbose)
+
+  # Obtain the retrieved data calling the API
+  #data <- get_api_data_pages(request, verbose = verbose)
 
   return(data)
 }
@@ -98,7 +105,7 @@ get_metadata_series_operation <- function(operation = NULL, n = 500, det = 0, ti
 #' @param codSeries (string): code of the series
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
@@ -146,7 +153,7 @@ get_metadata_series_values <- function(codSeries = NULL, det = 0, tip = NULL, la
 #' @param idTable (int): code of the table
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
@@ -197,7 +204,8 @@ get_metadata_series_table <- function(idTable = NULL, det = 0, tip = NULL, lang 
 #' 1 (monthly), 3 (quarterly), 6 (bi-annual), 12 (annual).
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
+#' @param page (int): page number. The retrieved result of the query is paginated
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #' @param shortcut (logical): enable the use of shortcut names in the filter
@@ -210,7 +218,7 @@ get_metadata_series_table <- function(idTable = NULL, det = 0, tip = NULL, lang 
 #'  periodicity = 1)
 #'  }
 #'
-get_metadata_series_filter <- function(operation = NULL, filter = NULL, periodicity = NULL, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, shortcut = FALSE){
+get_metadata_series_filter <- function(operation = NULL, filter = NULL, periodicity = NULL, det = 0, tip = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE, shortcut = FALSE){
 
   # List of values to define the call to the API
   definition <- list()
@@ -225,6 +233,7 @@ get_metadata_series_filter <- function(operation = NULL, filter = NULL, periodic
   parameters <- append(parameters, list(p = list(operation = operation, p = periodicity)))
   parameters <- append(parameters, list(det = det))
   parameters <- append(parameters, list(tip = tip))
+  parameters <- append(parameters, list(page = page))
 
   # List of addons
   addons <- list(validate = validate, verbose = verbose,  shortcut = shortcut)

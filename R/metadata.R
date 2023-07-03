@@ -1,7 +1,8 @@
 #' Get available operations
 #'
 #' @param operation (string): code of the operation
-#' @param lang  (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param lang  (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
+#' @param page (int): page number. The retrieved result of the query is paginated
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
@@ -13,7 +14,7 @@
 #' get_metadata_operations("IPC")
 #' }
 #'
-get_metadata_operations <- function(operation = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
+get_metadata_operations <- function(operation = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){
   # List of values to define the call to the API
   definition <- list()
   definition <- append(definition, list(lang = lang))
@@ -23,6 +24,7 @@ get_metadata_operations <- function(operation = NULL, lang = "ES", validate = TR
 
   # List of parameters to call the API
   parameters <- list()
+  parameters <- append(parameters, list(page = page))
 
   # List of addons
   addons <- list(validate = validate, verbose = verbose)
@@ -45,7 +47,8 @@ get_metadata_operations <- function(operation = NULL, lang = "ES", validate = TR
 #' Get all possible variables or variables used in a operation
 #'
 #' @param operation (string): Code of the operation
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
+#' @param page (int): page number. The retrieved result of the query is paginated
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
@@ -57,7 +60,7 @@ get_metadata_operations <- function(operation = NULL, lang = "ES", validate = TR
 #' get_metadata_variables(operation = "IPC")
 #' }
 #'
-get_metadata_variables <- function(operation = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
+get_metadata_variables <- function(operation = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){
   # List of values to define the call to the API
   definition <- list()
   definition <- append(definition, list(lang = lang))
@@ -67,6 +70,7 @@ get_metadata_variables <- function(operation = NULL, lang = "ES", validate = TRU
 
   # List of parameters to call the API
   parameters <- list()
+  parameters <- append(parameters, list(page = page))
 
   # List of addons
   addons <- list(validate = validate, verbose = verbose)
@@ -91,7 +95,8 @@ get_metadata_variables <- function(operation = NULL, lang = "ES", validate = TRU
 #' @param operation (string): code of the operation
 #' @param variable (int): id of a variable
 #' @param det (int): level of detail (0, 1 ,2)
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
+#' @param page (int): page number. The retrieved result of the query is paginated
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
@@ -103,7 +108,7 @@ get_metadata_variables <- function(operation = NULL, lang = "ES", validate = TRU
 #' get_metadata_values(operation = "IPC", variable = 115)
 #' }
 #'
-get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lang = "ES", validate = TRUE, verbose = FALSE){
+get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){
   # List of values to define the call to the API
   definition <- list()
   definition <- append(definition, list(lang = lang))
@@ -114,6 +119,7 @@ get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lan
   # List of parameters to call the API
   parameters <- list()
   parameters <- append(parameters, list(det = det))
+  parameters <- append(parameters, list(page = page))
 
   # List of addons
   addons <- list(validate = validate, verbose = verbose)
@@ -137,7 +143,8 @@ get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lan
 #'
 #' @param operation (string): code of the operation
 #' @param det (int): level of detail (0, 1 ,2)
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
+#' @param page (int): page number. The retrieved result of the query is paginated
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
@@ -149,7 +156,7 @@ get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lan
 #' get_metadata_publications(operation = "IPC")
 #' }
 #'
-get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", validate = TRUE, verbose = FALSE){
+get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){
   # List of values to define the call to the API
   definition <- list()
   definition <- append(definition, list(lang = lang))
@@ -160,6 +167,7 @@ get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", va
   # List of parameters to call the API
   parameters <- list()
   parameters <- append(parameters, list(det = det))
+  parameters <- append(parameters, list(page = page))
 
   # List of addons
   addons <- list(validate = validate, verbose = verbose)
@@ -184,7 +192,8 @@ get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", va
 #' @param publication (int): id of the publication
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
+#' @param page (int): page number. The retrieved result of the query is paginated
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
@@ -195,7 +204,7 @@ get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", va
 #' get_metadata_publication_dates(publication = 8)
 #' }
 #'
-get_metadata_publication_dates <- function(publication = NULL, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
+get_metadata_publication_dates <- function(publication = NULL, det = 0, tip = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){
   # List of values to define the call to the API
   definition <- list()
   definition <- append(definition, list(lang = lang))
@@ -207,6 +216,7 @@ get_metadata_publication_dates <- function(publication = NULL, det = 0, tip = NU
   parameters <- list()
   parameters <- append(parameters, list(det = det))
   parameters <- append(parameters, list(tip = tip))
+  parameters <- append(parameters, list(page = page))
 
   # List of addons
   addons <- list(validate = validate, verbose = verbose)
@@ -229,7 +239,7 @@ get_metadata_publication_dates <- function(publication = NULL, det = 0, tip = NU
 #' Get all possible periodicities or periodicities used in a operation
 #'
 #' @param operation (string): Code of the operation
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'

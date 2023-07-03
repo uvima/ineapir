@@ -10,6 +10,7 @@ get_metadata_tables(
   tip = NULL,
   geo = NULL,
   lang = "ES",
+  page = 1,
   validate = TRUE,
   verbose = FALSE
 )
@@ -24,7 +25,9 @@ get_metadata_tables(
 \item{geo}{(int): set to 0 for national tables or set to 1 for tables with
 a greater level of disaggregation}
 
-\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
+\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
+
+\item{page}{(int): page number. The retrieved result of the query is paginated}
 
 \item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
 
