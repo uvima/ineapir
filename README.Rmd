@@ -200,3 +200,4 @@ To get all the series that define a table it is necessary to pass the
 series <- get_metadata_series_table(idTable = 50902)
 head(series[,c("COD", "Nombre")], 4)
 ```
+

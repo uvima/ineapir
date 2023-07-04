@@ -237,6 +237,11 @@ head(values, 4)
 #> 2 304093         762 Alimentos y bebidas no alcohólicas     01
 #> 3 304094         762       Bebidas alcohólicas y tabaco     02
 #> 4 304095         762                  Vestido y calzado     03
+#>   FK_JerarquiaPadres
+#> 1               NULL
+#> 2             304092
+#> 3             304092
+#> 4             304092
 ```
 
 ### Obtaining series
