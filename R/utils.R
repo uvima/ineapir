@@ -74,14 +74,15 @@ get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inecode 
         if(verbose){
           cat(sprintf("- API URL: %s\n", url$partialpar))
         }
-
+print(url$)
         response <- httr::VERB("POST",
                                url = url$partial,
                                query = url$parameters,
                                body = url$filter,
                                encode = "form",
-                               content_type("application/x-www-form-urlencoded"),
-                               add_headers(Content_Length = '[0-9]*')
+                               httr::content_type("application/x-www-form-urlencoded"),
+                               httr::user_agent("ineapir"),
+                               httr::verbose()
                               )
 
       # we use the GET method
@@ -92,12 +93,13 @@ get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inecode 
 
         response <- httr::VERB("GET",
                                url = url$partial,
-                               query = url$totalpar
+                               query = url$totalpar,
+                               httr::user_agent("ineapir")
                               )
 
       }
 
-      result <- jsonlite::fromJSON(content(response, "text"), flatten = TRUE)
+      result <- jsonlite::fromJSON(httr::content(response, "text"), flatten = TRUE)
       #result <- jsonlite::fromJSON(url, flatten = TRUE)
     },
     error=function(e) {
@@ -236,19 +238,19 @@ get_url <- function(request){
   url$path <- paste0(url$path, definition)
 
   # Build the partial url
-  partial <- build_url(url)
+  partial <- httr::build_url(url)
 
   # Update the query of the url
   url$query <- parameters
 
   # Build the partial url with parameters
-  partialpar <- build_url(url)
+  partialpar <- httr::build_url(url)
 
   # Update the query of the url
   url$query <- append(parameters, parfilter)
 
   # Build the complete url
-  complete <- build_url(url)
+  complete <- httr::build_url(url)
 
   result <- list(complete = complete,
                  partial = partial,
@@ -421,11 +423,17 @@ build_filter <- function(parameter, lang, addons){
               # Vector with all the values in the format of the API
               val <- append(val, tmp)
 
-              if(is.element("idtable",parnames)){
-                lval <- append(lval, list(tv = paste0(var, ":", filterout[[var]])))
-              }else{
-                lval[[parurl]] <- paste0(var, ":", filterout[[var]])
-              }
+              # List with all the values
+              lval <- append(lval, list(paste0(var, ":", filterout[[var]])))
+              names(lval)[length(lval)] <- parurl
+
+              #if(is.element("idtable",parnames)){
+              #  lval <- append(lval, list(tv = paste0(var, ":", filterout[[var]])))
+              #}else{
+              #  lval <- append(lval, list(paste0(var, ":", filterout[[var]])))
+              #  names(lval)[length(lval)] <- parurl
+                #lval[[parurl]] <- paste0(var, ":", filterout[[var]])
+              #}
             }
           }
         }else{
@@ -443,11 +451,17 @@ build_filter <- function(parameter, lang, addons){
             # Vector with all the values in the format of the API
             val <- append(val, tmp)
 
-            if(is.element("idtable",parnames)){
-              lval <- append(lval, list(tv = paste0(varid, ":", filterout[[varid]])))
-            }else{
-              lval[[parurl]] <- paste0(varid, ":", filterout[[varid]])
-            }
+            # List with all the values
+            lval <- append(lval, list(paste0(varid, ":", filterout[[varid]])))
+            names(lval)[length(lval)] <- parurl
+
+            #if(is.element("idtable",parnames)){
+            #  lval <- append(lval, list(tv = paste0(varid, ":", filterout[[varid]])))
+            #}else{
+            #  lval <- append(lval, list(paste0(var, ":", filterout[[var]])))
+            #  names(lval)[length(lval)] <- parurl
+              #lval[[parurl]] <- paste0(varid, ":", filterout[[varid]])
+            #}
           }
         }
 
@@ -558,6 +572,7 @@ get_filter_values <- function(parameter, lang, shortcut, verbose){
       i <- 1
       for(var in opevar$Id){
         tmp <- get_metadata_values(operation = id, variable = var, validate = FALSE, verbose = FALSE, lang = lang)
+        tmp <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
 
         # Number of rows
         numrows <- nrow(tmp)
@@ -570,6 +585,7 @@ get_filter_values <- function(parameter, lang, shortcut, verbose){
           numpage <- numpage + 1
 
           tmpage <- get_metadata_values(operation = id, variable = var, page = numpage, validate = FALSE, verbose = FALSE, lang = lang)
+          tmpage <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
 
           numrows <- nrow(tmpage)
 
@@ -1426,6 +1442,7 @@ check_series_filter <- function(operation, filter, verbose, lang, shortcut){
         opeval <- NULL
         for(i in validvar){
           tmp <- get_metadata_values(operation = operation, variable = i, validate = FALSE, verbose = verbose, lang = lang)
+          tmp <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
 
           # Number of files
           numrows <- nrow(tmp)
@@ -1438,12 +1455,12 @@ check_series_filter <- function(operation, filter, verbose, lang, shortcut){
             numpage <- numpage + 1
 
             tmpage <- get_metadata_values(operation = operation, variable = i, page = numpage, validate = FALSE, verbose = verbose, lang = lang)
+            tmpage <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
 
             numrows <- nrow(tmpage)
 
             tmp <- rbind(tmp, tmpage)
           }
-
 
           if (exists("opeval") && is.data.frame(get("opeval"))){
             opeval <- rbind(opeval,tmp)
