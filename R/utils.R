@@ -74,15 +74,14 @@ get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inecode 
         if(verbose){
           cat(sprintf("- API URL: %s\n", url$partialpar))
         }
-print(url$)
+
         response <- httr::VERB("POST",
                                url = url$partial,
                                query = url$parameters,
                                body = url$filter,
                                encode = "form",
                                httr::content_type("application/x-www-form-urlencoded"),
-                               httr::user_agent("ineapir"),
-                               httr::verbose()
+                               httr::user_agent("ineapir")
                               )
 
       # we use the GET method
@@ -485,11 +484,15 @@ build_filter <- function(parameter, lang, addons){
       val <- append(val, tmp)
 
       for(f in filter[[n]]){
-        if(is.element("idtable",parnames)){
-          lval <- append(lval, list(tv = paste0(n, ":", f)))
-        }else{
-          lval[[parurl]] <- paste0(n, ":", f)
-        }
+        # List with all the values
+        lval <- append(lval, list(paste0(n, ":", f)))
+        names(lval)[length(lval)] <- parurl
+
+        #if(is.element("idtable",parnames)){
+        #  lval <- append(lval, list(tv = paste0(n, ":", f)))
+        #}else{
+        #  lval[[parurl]] <- paste0(n, ":", f)
+        #}
       }
 
       i <- i + 1
