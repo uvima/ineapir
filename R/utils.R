@@ -66,17 +66,15 @@ get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inecode 
   # Initiate a call to the aPI
   tryCatch(
     {
-      #url <- get_url2(request)
-
       # if the url is too large we used the method POST
       if(nchar(url$complete) > 2000){
 
         if(verbose){
-          cat(sprintf("- API URL: %s\n", url$partialpar))
+          cat(sprintf("- API URL: %s\n", url$endpointpar))
         }
 
         response <- httr::VERB("POST",
-                               url = url$partial,
+                               url = url$endpoint,
                                query = url$parameters,
                                body = url$filter,
                                encode = "form",
@@ -91,7 +89,7 @@ get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inecode 
         }
 
         response <- httr::VERB("GET",
-                               url = url$partial,
+                               url = url$endpoint,
                                query = url$totalpar,
                                httr::user_agent("ineapir")
                               )
@@ -134,6 +132,67 @@ get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inecode 
   return(result)
 }
 
+# Function to retrieve data from the aPI when the result is paginated
+get_api_data_all_pages <- function(url, request, verbose = FALSE, unnest = FALSE, inecode = FALSE, extractmetadata = FALSE){
+
+  result <- NULL
+
+  # Request all pages
+  if(request$parameters$page == 0){
+
+    definition <- request$definition
+    parameters <- request$parameters
+    addons     <- request$addons
+
+    # Page counter
+    numpage <- 1
+
+    # Update page
+    parameters[["page"]] <- numpage
+
+    # List of definitions and parameters
+    request <- list(definition = definition, parameters = parameters, addons = addons)
+
+    # Build the URL to call the API
+    url <- get_url(request)
+
+    # Call de API
+    result <- get_api_data(url, request, verbose = verbose, unnest = unnest, inecode = inecode, extractmetadata = extractmetadata)
+
+    # Number of rows
+    numrows <- nrow(result)
+
+    # if the number of rows is equal to the length of a page, we query the next page
+    while (numrows == page_lenght){
+      numpage <- numpage + 1
+
+      # Update page
+      parameters[["page"]] <- numpage
+
+      # Update the list of definitions and parameters
+      request <- list(definition = definition, parameters = parameters, addons = addons)
+
+      # Update the URL to call the API
+      url <- get_url(request)
+
+      # Call the API
+      resultpage <- get_api_data(url, request, verbose = verbose, unnest = unnest, inecode = inecode, extractmetadata = extractmetadata)
+
+      # Number of rows
+      numrows <- nrow(resultpage)
+
+      # Accumulated result
+      result <- rbind(result, resultpage)
+    }
+  # Request a specific page
+  }else{
+    result <- get_api_data(url, request, verbose = verbose, unnest = unnest, inecode = inecode, extractmetadata = extractmetadata)
+  }
+
+  return(result)
+
+}
+
 # Function to retrieve data from the aPI
 get_api_data_pages <- function(request, verbose = FALSE){
 
@@ -171,6 +230,7 @@ get_api_data_pages <- function(request, verbose = FALSE){
   return(data[1:n,])
 }
 
+# Get the url endpoint
 get_definition_path <- function(request){
 
   path <- ""
@@ -185,6 +245,7 @@ get_definition_path <- function(request){
   return(path)
 }
 
+# Get url parameters minus filter
 get_parameters_query <- function(request){
 
   parameters <- list()
@@ -192,10 +253,14 @@ get_parameters_query <- function(request){
   for(x in names(request$parameters)){
     val <- request$parameters[[x]]
 
+    # Discard parameters with null value
     if(x != "filter" && !is.null(val)){
+
+      # We have to format the input date
       if(x == "date"){
         val <- build_date(val)
 
+      # Since the list also contains the operation
       }else if(x == "p"){
         val <- val[[x]]
       }
@@ -208,6 +273,7 @@ get_parameters_query <- function(request){
 
 }
 
+# Get url filter
 get_parameters_filter <- function(request){
 
   val <- request$parameters[["filter"]]
@@ -220,11 +286,12 @@ get_parameters_filter <- function(request){
 
 }
 
+# Get url and its components
 get_url <- function(request){
-  # APU url
+  # API url
   url <- httr::parse_url(API_URL)
 
-  # Get the definition part
+  # Get the endpoint
   definition <- get_definition_path(request)
 
   # Get the parameters of the query
@@ -233,27 +300,27 @@ get_url <- function(request){
   # Get the filter of the query
   parfilter <- get_parameters_filter(request)
 
-  # Update the path with the definition part
+  # Update the path with the endpoint
   url$path <- paste0(url$path, definition)
 
-  # Build the partial url
-  partial <- httr::build_url(url)
+  # Build the url endpoint
+  endpoint <- httr::build_url(url)
 
   # Update the query of the url
   url$query <- parameters
 
-  # Build the partial url with parameters
-  partialpar <- httr::build_url(url)
+  # Build the url with parameters
+  endpointpar <- httr::build_url(url)
 
-  # Update the query of the url
+  # Update the query of the url adding the filter
   url$query <- append(parameters, parfilter)
 
   # Build the complete url
   complete <- httr::build_url(url)
 
   result <- list(complete = complete,
-                 partial = partial,
-                 partialpar = partialpar,
+                 endpoint = endpoint,
+                 endpointpar = endpointpar,
                  parameters = parameters,
                  filter = parfilter,
                  totalpar = append(parameters, parfilter)
@@ -552,48 +619,48 @@ get_filter_values <- function(parameter, lang, shortcut, verbose){
       # The filter comes from a series we collect the possible values from operation values
     }else{
       # We obtain the variables from the operation of the series
-      opevar <- get_metadata_variables(operation = id, validate = FALSE, verbose = FALSE, lang = lang)
+      opevar <- get_metadata_variables(operation = id, validate = FALSE, verbose = FALSE, lang = lang, page = 0)
 
       # Number of rows
-      numrows <- nrow(opevar)
+      #numrows <- nrow(opevar)
 
       # Page counter
-      numpage <- 1
+      #numpage <- 1
 
       # if the number of rows is equal to the length of a page, we query the next page
-      while (numrows == page_lenght){
-        numpage <- numpage + 1
+      #while (numrows == page_lenght){
+      #  numpage <- numpage + 1
 
-        opevarpage <- get_metadata_variables(operation = operation, validate = FALSE, page = numpage, verbose = verbose, lang = lang)
+      #  opevarpage <- get_metadata_variables(operation = operation, validate = FALSE, page = numpage, verbose = verbose, lang = lang)
 
-        numrows <- nrow(opevarpage)
+      #  numrows <- nrow(opevarpage)
 
-        opevar <- rbind(opevar, opevarpage)
-      }
+      #  opevar <- rbind(opevar, opevarpage)
+      #}
 
       # We obtain the values of all the variables
       i <- 1
       for(var in opevar$Id){
-        tmp <- get_metadata_values(operation = id, variable = var, validate = FALSE, verbose = FALSE, lang = lang)
+        tmp <- get_metadata_values(operation = id, variable = var, validate = FALSE, verbose = FALSE, lang = lang, page = 0)
         tmp <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
 
         # Number of rows
-        numrows <- nrow(tmp)
+        #numrows <- nrow(tmp)
 
         # Page counter
-        numpage <- 1
+        #numpage <- 1
 
         # if the number of rows is equal to the length of a page, we query the next page
-        while (numrows == page_lenght){
-          numpage <- numpage + 1
+        #while (numrows == page_lenght){
+        #  numpage <- numpage + 1
 
-          tmpage <- get_metadata_values(operation = id, variable = var, page = numpage, validate = FALSE, verbose = FALSE, lang = lang)
-          tmpage <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
+        #  tmpage <- get_metadata_values(operation = id, variable = var, page = numpage, validate = FALSE, verbose = FALSE, lang = lang)
+        #  tmpage <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
 
-          numrows <- nrow(tmpage)
+        #  numrows <- nrow(tmpage)
 
-          tmp <- rbind(tmp, tmpage)
-        }
+        #  tmp <- rbind(tmp, tmpage)
+        #}
 
         if(verbose){
           cat(sprintf("- Processing filter: %s%%        \r", round(i/nrow(opevar)*100,0)))
@@ -831,24 +898,24 @@ check_variablesoperation <- function(operation, variable, verbose){
   result <- TRUE
 
   if(!is.null(variable)){
-    vars <- get_metadata_variables(operation = operation, validate = FALSE, verbose = verbose)
+    vars <- get_metadata_variables(operation = operation, validate = FALSE, verbose = verbose, page = 0)
 
     # Number of rows
-    numrows <- nrow(vars)
+    #numrows <- nrow(vars)
 
     # Page counter
-    numpage <- 1
+    #numpage <- 1
 
     # if the number of rows is equal to the length of a page, we query the next page
-    while (numrows == page_lenght){
-      numpage <- numpage + 1
+    #while (numrows == page_lenght){
+    #  numpage <- numpage + 1
 
-      varspage <- get_metadata_variables(operation = operation, page = numpage, validate = FALSE, verbose = verbose)
+    #  varspage <- get_metadata_variables(operation = operation, page = numpage, validate = FALSE, verbose = verbose)
 
-      numrows <- nrow(varspage)
+    #  numrows <- nrow(varspage)
 
-      vars <- rbind(vars, varspage)
-    }
+    #  vars <- rbind(vars, varspage)
+    #}
 
     if(!is.element(variable, vars$Id)){
       result <- FALSE
@@ -871,24 +938,24 @@ check_variable <- function(variable, verbose){
   result <- TRUE
 
   if(!is.null(variable)){
-    vars <- get_metadata_variables(validate = FALSE, verbose = verbose)
+    vars <- get_metadata_variables(validate = FALSE, verbose = verbose, page = 0)
 
     # Number of rows
-    numrows <- nrow(vars)
+    #numrows <- nrow(vars)
 
     # Page counter
-    numpage <- 1
+    #numpage <- 1
 
     # if the number of rows is equal to the length of a page, we query the next page
-    while (numrows == page_lenght){
-      numpage <- numpage + 1
+    #while (numrows == page_lenght){
+    #  numpage <- numpage + 1
 
-      varspage <- get_metadata_variables(page = numpage, validate = FALSE, verbose = verbose)
+    #  varspage <- get_metadata_variables(page = numpage, validate = FALSE, verbose = verbose)
 
-      numrows <- nrow(varspage)
+    #  numrows <- nrow(varspage)
 
-      vars <- rbind(vars, varspage)
-    }
+    #  vars <- rbind(vars, varspage)
+    #}
 
     if(!is.element(variable, vars$Id)){
       result <- FALSE
@@ -912,24 +979,24 @@ check_publication <- function(publication, verbose){
 
   if(!is.null(publication)){
     # Get all the publications
-    pubs <- get_metadata_publications(validate = FALSE, verbose = verbose)
+    pubs <- get_metadata_publications(validate = FALSE, verbose = verbose, page = 0)
 
     # Number of rows
-    numrows <- nrow(pubs)
+    #numrows <- nrow(pubs)
 
     # Page counter
-    numpage <- 1
+    #numpage <- 1
 
     # if the number of rows is equal to the length of a page, we query the next page
-    while (numrows == page_lenght){
-      numpage <- numpage + 1
+    #while (numrows == page_lenght){
+    #  numpage <- numpage + 1
 
-      pubspage <- get_metadata_publications(page = numpage, validate = FALSE, verbose = verbose)
+    #  pubspage <- get_metadata_publications(page = numpage, validate = FALSE, verbose = verbose)
 
-      numrows <- nrow(pubspage)
+    #  numrows <- nrow(pubspage)
 
-      pubs <- rbind(pubs, pubspage)
-    }
+    #  pubs <- rbind(pubs, pubspage)
+    #}
 
     if(!is.element(publication, pubs$Id)){
       result <- FALSE
@@ -1385,24 +1452,24 @@ check_series_filter <- function(operation, filter, verbose, lang, shortcut){
     # The list must contain at least two values in the filter
     if(length(var) > 1 || (length(var) < 2 && length(val) > 1)){
       # Obtain the possible variables for an operation
-      opevar <- get_metadata_variables(operation = operation, validate = FALSE, verbose = verbose, lang = lang)
+      opevar <- get_metadata_variables(operation = operation, validate = FALSE, verbose = verbose, lang = lang, page = 0)
 
       # Number of files
-      numrows <- nrow(opevar)
+      #numrows <- nrow(opevar)
 
       # Page counter
-      numpage <- 1
+      #numpage <- 1
 
       # if the number of rows is equal to the length of a page, we query the next page
-      while (numrows == page_lenght){
-        numpage <- numpage + 1
+      #while (numrows == page_lenght){
+      #  numpage <- numpage + 1
 
-        opevarpage <- get_metadata_variables(operation = operation, validate = FALSE, page = numpage, verbose = verbose, lang = lang)
+      #  opevarpage <- get_metadata_variables(operation = operation, validate = FALSE, page = numpage, verbose = verbose, lang = lang)
 
-        numrows <- nrow(opevarpage)
+      #  numrows <- nrow(opevarpage)
 
-        opevar <- rbind(opevar, opevarpage)
-      }
+      #  opevar <- rbind(opevar, opevarpage)
+      #}
 
       # Go through all the variables
       for(v in var){
@@ -1444,26 +1511,26 @@ check_series_filter <- function(operation, filter, verbose, lang, shortcut){
         # obtain the metadata information for all the variables
         opeval <- NULL
         for(i in validvar){
-          tmp <- get_metadata_values(operation = operation, variable = i, validate = FALSE, verbose = verbose, lang = lang)
+          tmp <- get_metadata_values(operation = operation, variable = i, validate = FALSE, verbose = verbose, lang = lang, page = 0)
           tmp <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
 
           # Number of files
-          numrows <- nrow(tmp)
+          #numrows <- nrow(tmp)
 
           # Page counter
-          numpage <- 1
+          #numpage <- 1
 
           # if the number of rows is equal to the length of a page, we query the next page
-          while (numrows == page_lenght){
-            numpage <- numpage + 1
+          #while (numrows == page_lenght){
+          #  numpage <- numpage + 1
 
-            tmpage <- get_metadata_values(operation = operation, variable = i, page = numpage, validate = FALSE, verbose = verbose, lang = lang)
-            tmpage <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
+          #  tmpage <- get_metadata_values(operation = operation, variable = i, page = numpage, validate = FALSE, verbose = verbose, lang = lang)
+          #  tmpage <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
 
-            numrows <- nrow(tmpage)
+          #  numrows <- nrow(tmpage)
 
-            tmp <- rbind(tmp, tmpage)
-          }
+          #  tmp <- rbind(tmp, tmpage)
+          #}
 
           if (exists("opeval") && is.data.frame(get("opeval"))){
             opeval <- rbind(opeval,tmp)
