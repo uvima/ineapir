@@ -2,7 +2,7 @@
 #'
 #' @param operation (string): code of the operation
 #' @param lang  (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
-#' @param page (int): page number. The retrieved result of the query is paginated
+#' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages)
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
@@ -39,7 +39,7 @@ get_metadata_operations <- function(operation = NULL, lang = "ES", page = 1, val
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, request, verbose = verbose)
+  data <- get_api_data_all_pages(url, request, verbose = verbose)
 
   return(data)
 }
@@ -48,7 +48,7 @@ get_metadata_operations <- function(operation = NULL, lang = "ES", page = 1, val
 #'
 #' @param operation (string): Code of the operation
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
-#' @param page (int): page number. The retrieved result of the query is paginated
+#' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages)
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
@@ -85,7 +85,7 @@ get_metadata_variables <- function(operation = NULL, lang = "ES", page = 1, vali
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, request, verbose = verbose)
+  data <- get_api_data_all_pages(url, request, verbose = verbose)
 
   return(data)
 }
@@ -96,7 +96,7 @@ get_metadata_variables <- function(operation = NULL, lang = "ES", page = 1, vali
 #' @param variable (int): id of a variable
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
-#' @param page (int): page number. The retrieved result of the query is paginated
+#' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages)
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
@@ -134,7 +134,7 @@ get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lan
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, request, verbose = verbose)
+  data <- get_api_data_all_pages(url, request, verbose = verbose)
 
   return(data)
 }
@@ -144,7 +144,7 @@ get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lan
 #' @param operation (string): code of the operation
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
-#' @param page (int): page number. The retrieved result of the query is paginated
+#' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages)
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
@@ -182,7 +182,7 @@ get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", pa
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, request, verbose = verbose)
+  data <- get_api_data_all_pages(url, request, verbose = verbose)
 
   return(data)
 }
@@ -193,7 +193,7 @@ get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", pa
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
-#' @param page (int): page number. The retrieved result of the query is paginated
+#' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages)
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #'
@@ -231,7 +231,7 @@ get_metadata_publication_dates <- function(publication = NULL, det = 0, tip = NU
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, request, verbose = verbose)
+  data <- get_api_data_all_pages(url, request, verbose = verbose)
 
   return(data)
 }

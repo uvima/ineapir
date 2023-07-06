@@ -100,7 +100,7 @@ get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity 
   parameters <- append(parameters, list(nult = nlast))
   parameters <- append(parameters, list(det = det))
   parameters <- append(parameters, list(tip = tip))
-  parameters <- append(parameters, list(page = page))
+  parameters <- append(parameters, if(page == 0) list(page = 1) else list(page = page))
 
   # List of addons
   addons <- list(validate = validate, verbose = verbose, unnest = unnest, inecode = inecode, shortcut = shortcut)

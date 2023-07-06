@@ -77,7 +77,7 @@ get_metadata_series_operation <- function(operation = NULL, det = 0, tip = NULL,
   parameters <- list()
   parameters <- append(parameters, list(det = det))
   parameters <- append(parameters, list(tip = tip))
-  parameters <- append(parameters, list(page = page))
+  parameters <- append(parameters, if(page == 0) list(page = 1) else list(page = page))
 
   # List of addons
   addons <- list(validate = validate, verbose = verbose)
@@ -233,7 +233,7 @@ get_metadata_series_filter <- function(operation = NULL, filter = NULL, periodic
   parameters <- append(parameters, list(p = list(operation = operation, p = periodicity)))
   parameters <- append(parameters, list(det = det))
   parameters <- append(parameters, list(tip = tip))
-  parameters <- append(parameters, list(page = page))
+  parameters <- append(parameters, if(page == 0) list(page = 1) else list(page = page))
 
   # List of addons
   addons <- list(validate = validate, verbose = verbose,  shortcut = shortcut)
