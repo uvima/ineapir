@@ -9,7 +9,7 @@ get_metadata_values(
   variable = NULL,
   det = 0,
   lang = "ES",
-  page = 1,
+  page = 0,
   validate = TRUE,
   verbose = FALSE
 )

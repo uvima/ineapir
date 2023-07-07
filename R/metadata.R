@@ -14,7 +14,7 @@
 #' get_metadata_operations("IPC")
 #' }
 #'
-get_metadata_operations <- function(operation = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){
+get_metadata_operations <- function(operation = NULL, lang = "ES", page = 0, validate = TRUE, verbose = FALSE){
   # List of values to define the call to the API
   definition <- list()
   definition <- append(definition, list(lang = lang))
@@ -60,7 +60,7 @@ get_metadata_operations <- function(operation = NULL, lang = "ES", page = 1, val
 #' get_metadata_variables(operation = "IPC")
 #' }
 #'
-get_metadata_variables <- function(operation = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){
+get_metadata_variables <- function(operation = NULL, lang = "ES", page = 0, validate = TRUE, verbose = FALSE){
   # List of values to define the call to the API
   definition <- list()
   definition <- append(definition, list(lang = lang))
@@ -108,7 +108,7 @@ get_metadata_variables <- function(operation = NULL, lang = "ES", page = 1, vali
 #' get_metadata_values(operation = "IPC", variable = 115)
 #' }
 #'
-get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){
+get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lang = "ES", page = 0, validate = TRUE, verbose = FALSE){
   # List of values to define the call to the API
   definition <- list()
   definition <- append(definition, list(lang = lang))
@@ -156,7 +156,7 @@ get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lan
 #' get_metadata_publications(operation = "IPC")
 #' }
 #'
-get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){
+get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", page = 0, validate = TRUE, verbose = FALSE){
   # List of values to define the call to the API
   definition <- list()
   definition <- append(definition, list(lang = lang))
@@ -204,7 +204,7 @@ get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", pa
 #' get_metadata_publication_dates(publication = 8)
 #' }
 #'
-get_metadata_publication_dates <- function(publication = NULL, det = 0, tip = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){
+get_metadata_publication_dates <- function(publication = NULL, det = 0, tip = NULL, lang = "ES", page = 0, validate = TRUE, verbose = FALSE){
   # List of values to define the call to the API
   definition <- list()
   definition <- append(definition, list(lang = lang))

@@ -9,7 +9,7 @@ get_metadata_publication_dates(
   det = 0,
   tip = NULL,
   lang = "ES",
-  page = 1,
+  page = 0,
   validate = TRUE,
   verbose = FALSE
 )

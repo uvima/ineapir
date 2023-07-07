@@ -7,7 +7,7 @@
 get_metadata_variables(
   operation = NULL,
   lang = "ES",
-  page = 1,
+  page = 0,
   validate = TRUE,
   verbose = FALSE
 )

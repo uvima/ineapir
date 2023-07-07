@@ -8,7 +8,7 @@ get_metadata_publications(
   operation = NULL,
   det = 0,
   lang = "ES",
-  page = 1,
+  page = 0,
   validate = TRUE,
   verbose = FALSE
 )
