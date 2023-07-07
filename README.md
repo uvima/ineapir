@@ -179,7 +179,7 @@ To get all the values that a variable can take it is necessary to pass
 the `variable` argument which is the identifier of the variable.
 
 ``` r
-# We use the function get_metadata_values
+# We use the function get_metadata_values with argument variable
 values <- get_metadata_values(variable = 3)
 head(values)
 #>   Id Fk_Variable                                                   Nombre
@@ -300,7 +300,7 @@ To get all the series that define a table it is necessary to pass the
 `idTable` argument which is the identification code of the table.
 
 ``` r
-# We use the function get_metadata_series_taable with argument idTable
+# We use the function get_metadata_series_table with argument idTable
 series <- get_metadata_series_table(idTable = 50902)
 head(series[,c("COD", "Nombre")], 4)
 #>         COD                                                          Nombre
