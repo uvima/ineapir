@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 inepair provides a set of functions to obtain open data and metadata published
 by the National Statistics Institute of Spain 
 ([INE](https://www.ine.es/en/index.htm)). The data is obtained thanks to calls
-to the INE API service which allows access via URL requests to all the
+to the INE API service which allows access via URL requests to the
 available statistical information published by INE.
 
 ## Installation
@@ -48,6 +48,8 @@ argument which is the identification code of the series.
 
 ```{r series_data}
 library(ineapir)
+
+# We use the function get_data_series with the argument codSeries
 series <- get_data_series(codSeries = "IPC251856")
 series$Data
 ```
@@ -56,6 +58,7 @@ To get the last n data from a series it is necessary to pass the `nlast`
 argument as well.
 
 ```{r series_data_n}
+# We use the function get_data_series with arguments codSeries and nlast
 series <- get_data_series(codSeries = "IPC251856", nlast = 5)
 series$Data
 ```
@@ -65,6 +68,7 @@ The date must have and specific format (*yyyy/mm/dd*). If the end date is not
 specified we obtain all the data from the start date.
 
 ```{r series_data_date}
+# We use the function get_data_series with arguments codSeries, dateStart and dataEnd
 series <- get_data_series(codSeries = "IPC251856", dateStart = "2023/01/01", 
                           dateEnd = "2023/04/01")
 series$Data
@@ -76,6 +80,7 @@ To get all the data of a table it is necessary to pass the `idTable`
 argument which is the identification code of the table.
 
 ```{r table_data}
+# We use the function get_data_table with the argument idTable
 table <- get_data_table(idTable = 50902)
 table[1,c("COD", "Nombre")]
 head(table$Data[[1]])
@@ -97,6 +102,7 @@ those with a periodicity for disseminating results of less than a year,
 as well as some structural statistical operations.
 
 ```{r operations}
+# We use the function get_metadata_operations
 operations <- get_metadata_operations()
 head(operations)
 ```
@@ -107,6 +113,7 @@ Statistical Operations (IOE + '*Cod_IOE*'). To obtain information about only
 one operation we have to pass the `operation` argument with one of these codes.
 
 ```{r operation}
+# We use the function get_metadata_operations with argument operation
 operation <- get_metadata_operations(operation = "IPC")
 as.data.frame(operation)
 ```
@@ -116,7 +123,8 @@ as.data.frame(operation)
 We can get all the variables of the system.
 
 ```{r variables}
-variables <- get_metadata_variables(lang = "EN")
+# We use the function get_metadata_variables
+variables <- get_metadata_variables()
 head(variables)
 ```
 
@@ -124,7 +132,8 @@ A variable can be identify by a numerical code ('*Id*'). In addition, if we
 pass the `operation` argument we obtain the variables used in an operation.
 
 ```{r variables_opertation}
-variables <- get_metadata_variables(operation = "IPC", lang = "EN")
+# We use the function get_metadata_variables with argument operation
+variables <- get_metadata_variables(operation = "IPC")
 head(variables)
 ```
 
@@ -134,7 +143,8 @@ To get all the values that a variable can take it is necessary to pass the
 `variable` argument which is the identifier of the variable.
 
 ```{r values}
-values <- get_metadata_values(variable = 3, lang = "EN")
+# We use the function get_metadata_values
+values <- get_metadata_values(variable = 3)
 head(values)
 ```
 
@@ -143,7 +153,8 @@ the `operation` argument as well we obtain the values that the variable takes
 in that particular operation.
 
 ```{r values_operation}
-values <- get_metadata_values(operation = "IPC", variable = 3, lang = "EN")
+# We use the function get_metadata_values with arguments operation and variable
+values <- get_metadata_values(operation = "IPC", variable = 3)
 head(values)
 ```
 
@@ -152,6 +163,7 @@ head(values)
 We can get the tables associated with an statistical operation.
 
 ```{r tables}
+# We use the function get_metadata_tables with argument operation
 tables <- get_metadata_tables(operation = "IPC")
 head(tables[,c("Id","Nombre")])
 ```
@@ -162,6 +174,7 @@ variables and values present in a table first we have to query the groups
 that define the table:
 
 ```{r groups}
+# We use the function get_metadata_table_groups with argument idTable
 groups <- get_metadata_table_groups(idTable = 50902)
 head(groups)
 ```
@@ -170,6 +183,7 @@ Once we have the identification codes of the groups, we can query the values
 for an specific group.
 
 ```{r group_values}
+# We use the function get_metadata_table_values with arguments idTable and idGroup
 values <- get_metadata_table_Values(idTable = 50902, idGroup = 110889)
 head(values, 4)
 ```
@@ -181,6 +195,7 @@ about a particular series it is necessary to pass the `codSeries` argument
 which is the identification code of the series.
 
 ```{r series}
+# We use the function get_metadata_series with argument codSeries
 series <- get_metadata_series(codSeries = "IPC251856")
 as.data.frame(series)
 ```
@@ -189,6 +204,7 @@ To get the values and variables that define a series it is necessary to pass
 the `codSeries` argument as well.
 
 ```{r series_values}
+# We use the function get_metadata_series_values with argument codSeries
 values <- get_metadata_series_values(codSeries = "IPC251856")
 head(values)
 ```
@@ -197,6 +213,7 @@ To get all the series that define a table it is necessary to pass the
 `idTable` argument which is the identification code of the table.
 
 ```{r series_table}
+# We use the function get_metadata_series_taable with argument idTable
 series <- get_metadata_series_table(idTable = 50902)
 head(series[,c("COD", "Nombre")], 4)
 ```

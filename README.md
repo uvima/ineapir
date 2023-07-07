@@ -11,8 +11,8 @@
 inepair provides a set of functions to obtain open data and metadata
 published by the National Statistics Institute of Spain
 ([INE](https://www.ine.es/en/index.htm)). The data is obtained thanks to
-calls to the INE API service which allows access via URL requests to all
-the available statistical information published by INE.
+calls to the INE API service which allows access via URL requests to the
+available statistical information published by INE.
 
 ## Installation
 
@@ -36,6 +36,8 @@ argument which is the identification code of the series.
 
 ``` r
 library(ineapir)
+
+# We use the function get_data_series with the argument codSeries
 series <- get_data_series(codSeries = "IPC251856")
 series$Data
 #>         Fecha FK_TipoDato FK_Periodo Anyo Valor Secreto
@@ -46,6 +48,7 @@ To get the last n data from a series it is necessary to pass the `nlast`
 argument as well.
 
 ``` r
+# We use the function get_data_series with arguments codSeries and nlast
 series <- get_data_series(codSeries = "IPC251856", nlast = 5)
 series$Data
 #>          Fecha FK_TipoDato FK_Periodo Anyo Valor Secreto
@@ -61,6 +64,7 @@ dates. The date must have and specific format (*yyyy/mm/dd*). If the end
 date is not specified we obtain all the data from the start date.
 
 ``` r
+# We use the function get_data_series with arguments codSeries, dateStart and dataEnd
 series <- get_data_series(codSeries = "IPC251856", dateStart = "2023/01/01", 
                           dateEnd = "2023/04/01")
 series$Data
@@ -77,6 +81,7 @@ To get all the data of a table it is necessary to pass the `idTable`
 argument which is the identification code of the table.
 
 ``` r
+# We use the function get_data_table with the argument idTable
 table <- get_data_table(idTable = 50902)
 table[1,c("COD", "Nombre")]
 #>         COD                                   Nombre
@@ -108,6 +113,7 @@ operations, those with a periodicity for disseminating results of less
 than a year, as well as some structural statistical operations.
 
 ``` r
+# We use the function get_metadata_operations
 operations <- get_metadata_operations()
 head(operations)
 #>   Id Cod_IOE                                                 Nombre Codigo  Url
@@ -126,6 +132,7 @@ information about only one operation we have to pass the `operation`
 argument with one of these codes.
 
 ``` r
+# We use the function get_metadata_operations with argument operation
 operation <- get_metadata_operations(operation = "IPC")
 as.data.frame(operation)
 #>   Id Cod_IOE                             Nombre Codigo
@@ -137,15 +144,16 @@ as.data.frame(operation)
 We can get all the variables of the system.
 
 ``` r
-variables <- get_metadata_variables(lang = "EN")
+# We use the function get_metadata_variables
+variables <- get_metadata_variables()
 head(variables)
-#>    Id                            Nombre Codigo
-#> 1 349                   Regional totals    NAC
-#> 2 954                             Total       
-#> 3  70 Autonomous Communities and Cities   CCAA
-#> 4 955      Crops, pastures and orchards       
-#> 5 115                         Provinces   PROV
-#> 6 956               UAA and Other Lands
+#>    Id                           Nombre Codigo
+#> 1 349            Totales Territoriales    NAC
+#> 2 954                            Total       
+#> 3  70 Comunidades y Ciudades Autónomas   CCAA
+#> 4 955       Cultivos, pastos y huertos       
+#> 5 115                       Provincias   PROV
+#> 6 956              SAU y Otras tierras
 ```
 
 A variable can be identify by a numerical code (‘*Id*’). In addition, if
@@ -153,15 +161,16 @@ we pass the `operation` argument we obtain the variables used in an
 operation.
 
 ``` r
-variables <- get_metadata_variables(operation = "IPC", lang = "EN")
+# We use the function get_metadata_variables with argument operation
+variables <- get_metadata_variables(operation = "IPC")
 head(variables)
-#>    Id                            Nombre Codigo
-#> 1   3                      Type of data       
-#> 2  70 Autonomous Communities and Cities   CCAA
-#> 3 115                         Provinces   PROV
-#> 4 269               Special groups 2001       
-#> 5 270                     Headings 2001       
-#> 6 349                   Regional totals    NAC
+#>    Id                           Nombre Codigo
+#> 1   3                     Tipo de dato       
+#> 2  70 Comunidades y Ciudades Autónomas   CCAA
+#> 3 115                       Provincias   PROV
+#> 4 269           Grupos especiales 2001       
+#> 5 270                    Rúbricas 2001       
+#> 6 349            Totales Territoriales    NAC
 ```
 
 ### Obtaining values
@@ -170,15 +179,23 @@ To get all the values that a variable can take it is necessary to pass
 the `variable` argument which is the identifier of the variable.
 
 ``` r
-values <- get_metadata_values(variable = 3, lang = "EN")
+# We use the function get_metadata_values
+values <- get_metadata_values(variable = 3)
 head(values)
-#>   Id Fk_Variable                                      Nombre Codigo
-#> 1 70           3                                  Gross data       
-#> 2 71           3 Seasonal and calendar effects adjusted data       
-#> 3 72           3                                   Base data       
-#> 4 73           3                    Quarterly variation rate       
-#> 5 74           3                            Annual variation       
-#> 6 75           3                                       Euros
+#>   Id Fk_Variable                                                   Nombre
+#> 1 70           3                                             Datos brutos
+#> 2 71           3 Datos corregidos de efectos estacionales y de calendario
+#> 3 72           3                                                Dato base
+#> 4 73           3                                     Variación trimestral
+#> 5 74           3                                          Variación anual
+#> 6 75           3                                                    Euros
+#>   Codigo
+#> 1       
+#> 2       
+#> 3       
+#> 4       
+#> 5       
+#> 6
 ```
 
 A value can be identify by a numerical code (‘*Id*’). In addition, if we
@@ -186,15 +203,16 @@ pass the `operation` argument as well we obtain the values that the
 variable takes in that particular operation.
 
 ``` r
-values <- get_metadata_values(operation = "IPC", variable = 3, lang = "EN")
+# We use the function get_metadata_values with arguments operation and variable
+values <- get_metadata_values(operation = "IPC", variable = 3)
 head(values)
-#>   Id Fk_Variable                 Nombre Codigo
-#> 1 72           3              Base data       
-#> 2 74           3       Annual variation       
-#> 3 83           3                  Index       
-#> 4 84           3 Monthly variation rate       
-#> 5 85           3   Annual average index      M
-#> 6 86           3       Annual variation
+#>   Id Fk_Variable            Nombre Codigo
+#> 1 72           3         Dato base       
+#> 2 74           3   Variación anual       
+#> 3 83           3            Índice       
+#> 4 84           3 Variación mensual       
+#> 5 85           3       Media anual      M
+#> 6 86           3   Variación anual
 ```
 
 ### Obtaining tables
@@ -202,6 +220,7 @@ head(values)
 We can get the tables associated with an statistical operation.
 
 ``` r
+# We use the function get_metadata_tables with argument operation
 tables <- get_metadata_tables(operation = "IPC")
 head(tables[,c("Id","Nombre")])
 #>      Id                                                                 Nombre
@@ -219,6 +238,7 @@ variables and values present in a table first we have to query the
 groups that define the table:
 
 ``` r
+# We use the function get_metadata_table_groups with argument idTable
 groups <- get_metadata_table_groups(idTable = 50902)
 head(groups)
 #>       Id         Nombre
@@ -230,6 +250,7 @@ Once we have the identification codes of the groups, we can query the
 values for an specific group.
 
 ``` r
+# We use the function get_metadata_table_values with arguments idTable and idGroup
 values <- get_metadata_table_Values(idTable = 50902, idGroup = 110889)
 head(values, 4)
 #>       Id Fk_Variable                             Nombre Codigo
@@ -251,6 +272,7 @@ information about a particular series it is necessary to pass the
 `codSeries` argument which is the identification code of the series.
 
 ``` r
+# We use the function get_metadata_series with argument codSeries
 series <- get_metadata_series(codSeries = "IPC251856")
 as.data.frame(series)
 #>       Id       COD FK_Operacion
@@ -265,6 +287,7 @@ To get the values and variables that define a series it is necessary to
 pass the `codSeries` argument as well.
 
 ``` r
+# We use the function get_metadata_series_values with argument codSeries
 values <- get_metadata_series_values(codSeries = "IPC251856")
 head(values)
 #>       Id Fk_Variable          Nombre Codigo
@@ -277,6 +300,7 @@ To get all the series that define a table it is necessary to pass the
 `idTable` argument which is the identification code of the table.
 
 ``` r
+# We use the function get_metadata_series_taable with argument idTable
 series <- get_metadata_series_table(idTable = 50902)
 head(series[,c("COD", "Nombre")], 4)
 #>         COD                                                          Nombre
