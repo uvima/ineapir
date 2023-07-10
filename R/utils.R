@@ -808,24 +808,24 @@ check_operation <- function(operation, active_null = FALSE, verbose){
 
   if(!is.null(operation)){
     # Get all aperations
-    opes <- get_metadata_operations(validate = FALSE, verbose = verbose)
+    opes <- get_metadata_operations(validate = FALSE, verbose = verbose, page = 0)
 
     # Number of rows
-    numrows <- nrow(opes)
+    #numrows <- nrow(opes)
 
     # Page counter
-    numpage <- 1
+    #numpage <- 1
 
     # if the number of rows is equal to the length of a page, we query the next page
-    while (numrows == page_lenght){
-      numpage <- numpage + 1
+    #while (numrows == page_lenght){
+    #  numpage <- numpage + 1
 
-      opespage <- get_metadata_operations(validate = FALSE, page = numpage, verbose = verbose)
+    #  opespage <- get_metadata_operations(validate = FALSE, page = numpage, verbose = verbose)
 
-      numrows <- nrow(opespage)
+    #  numrows <- nrow(opespage)
 
-      opes <- rbind(opes, opespage)
-    }
+    #  opes <- rbind(opes, opespage)
+    #}
 
     # Logical controls
     id <- FALSE
@@ -919,7 +919,7 @@ check_variablesoperation <- function(operation, variable, verbose){
 
     if(!is.element(variable, vars$Id)){
       result <- FALSE
-      stop(sprintf("%s is not a valid variable for operation %s", variable, operation))
+      stop(sprintf("%s is not a valid variable for operation %s. Valid ids: %s", variable, operation, paste0(vars$Id, collapse = ", ")))
     }
   }else{
     result <- FALSE
@@ -1038,6 +1038,16 @@ check_idtable_idgroup <- function(input, verbose){
 
   check_isnull(nameid[1], idTable, verbose)
   check_isnull(nameid[2], idGroup, verbose)
+
+  if(!is.null(idTable) && !is.null(idGroup)){
+    # Get all the groups of the table
+    groups <- get_metadata_table_groups(idTable = idTable, validate = FALSE, verbose = verbose)
+
+    if(!is.element(idGroup, groups$Id)){
+      result <- FALSE
+      stop(sprintf("%s is not a valid group for table %s. Valid ids: %s", idGroup, idTable, paste0(groups$Id, collapse = ", ")))
+    }
+  }
 }
 
 # Check date argument in API CALL
@@ -1145,6 +1155,12 @@ check_nlast <- function(nlast, verbose){
   if(!is.numeric(nlast)){
     result <- FALSE
     stop("nlast must be a number greater or equal to 1")
+
+  }else{
+    if(nlast < 1){
+      result <- FALSE
+      stop("nlast must be a number greater or equal to 1")
+    }
   }
 
   if(verbose){
@@ -1223,11 +1239,11 @@ check_page <- function(n, verbose){
 
   if(!is.numeric(n)){
     result <- FALSE
-    stop("n must be a number greater than 0")
+    stop("page must be a number greater or equal to 0")
   }else{
     if(n < 0){
       result <- FALSE
-      stop("n must be a number greater than 0")
+      stop("page must be a number greater or equal to 0")
     }
   }
 
@@ -1606,7 +1622,7 @@ check_inecode <- function(name, val, tip){
   return(result)
 }
 
-# Check if the inecode argument is valid
+# Check if the extractmetadata argument is valid
 check_extractmetadata <- function(name, val, tip){
 
   check_islogical(name, val)
