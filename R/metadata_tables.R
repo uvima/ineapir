@@ -140,3 +140,46 @@ get_metadata_table_Values <- function(idTable = NULL, idGroup = NULL, lang = "ES
   return(data)
 }
 
+#' Get the operation of the table
+#'
+#' @param idTable (int): code of the table
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
+#' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
+#' @param verbose (logical): print additional information
+#'
+#' @return Data frame with information of the operation of a table
+#' @export
+#'
+#' @examples \dontrun{
+#' get_metadata_table_operation(idTable = 50902)
+#' }
+#'
+get_metadata_table_operation <- function(idTable = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
+
+  # List of values to define the call to the API
+  definition <- list()
+  definition <- append(definition, list(lang = lang))
+  definition <- append(definition, list(fun = "OPERACIONES_TABLA"))
+  definition <- append(definition, list(input = idTable))
+  definition <- append(definition, list(tag = "idTable"))
+
+  # List of parameters to call the API
+  parameters <- list()
+
+  # List of addons
+  addons <- list(validate = validate, verbose = verbose)
+
+  # List of definitions and parameters
+  request <- list(definition = definition, parameters = parameters, addons = addons)
+
+  # Check request
+  check_request(request)
+
+  # Build the complete URL to call the API
+  url <- get_url(request)
+
+  # Obtain the retrieved data calling the API
+  data <- get_api_data(url, request, verbose = verbose)
+
+  return(data)
+}
