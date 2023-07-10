@@ -95,8 +95,12 @@ get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inecode 
                               )
 
       }
+      # Get the content of the response
+      content <- httr::content(response, "text")
 
-      result <- jsonlite::fromJSON(httr::content(response, "text"), flatten = TRUE)
+      if(jsonlite::validate(content)){
+        result <- jsonlite::fromJSON(content , flatten = TRUE)
+      }
       #result <- jsonlite::fromJSON(url, flatten = TRUE)
     },
     error=function(e) {
@@ -406,13 +410,15 @@ build_filter <- function(parameter, lang, addons){
   for(n in names(filter)){
 
     # check if in the filter there are shortcuts
-    short <- is.element(tolower(n), c(names(shortcuts_filter), names(shortcuts_operations)))
+    #short <- is.element(tolower(n), c(names(shortcuts_filter), names(shortcuts_operations)))
+    short <- is.element(tolower(n), c(names(shortcuts_filter), "values"))
 
     if(addons$shortcut && short){
       # filter with ids
       filterout <- list()
 
-      if(tolower(n) %in% names(shortcuts_operations)){
+      #if(tolower(n) %in% names(shortcuts_operations)){
+      if(tolower(n) == "values"){
         #varope <- get_metadata_variables(operation = shortcuts_operations[[tolower(n)]],
         #                               validate = FALSE, verbose = TRUE)
         varid <- unique(dfval$Fk_Variable)
@@ -477,7 +483,9 @@ build_filter <- function(parameter, lang, addons){
                   i <- dfvalgrep[dfvalgrep$Fk_Variable == var,]$i[1]
                   dfvalgreptmp$i[r] <- i
                 }else{
-                  i <- max(dfvalgrep$i) + 1
+                  if(nrow(dfvalgrep) > 0){
+                    i <- max(dfvalgrep$i) + 1
+                  }
                 }
               }
               # Check the filter comes from a table or a series
@@ -1270,18 +1278,24 @@ check_filter <- function(parameter, verbose, lang, shortcut){
 
     # Obtain table information including metadata
     #df <- get_data_table(idTable = id, nlast = 1, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
-    df <- get_metadata_series_table(idTable = id, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
+    #df <- get_metadata_series_table(idTable = id, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
 
-    # Make sure we have a dataframe
+    groups <- get_metadata_table_groups(idTable = id, validate = FALSE, verbose = verbose, lang = lang)
+
+    # Make sure the response is valid or null
     if(!check_result_status(df)){
 
       # The table is in px or tpx format
-      if(is.pxtable(df$MetaData)){
+      #if(is.pxtable(df$MetaData)){
+      if(is.null(groups)){
+        # Obtain metadata information
+        df <- get_metadata_series_table(idTable = id, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
+
         check_table_px_filter(id, filter, verbose, df)
 
       # The table is stored in tempus
       }else{
-        check_table_tempus_filter(id, filter, verbose, df, shortcut)
+        check_table_tempus_filter(id, filter, verbose, lang, groups, shortcut)
       }
     }
   # The filter comes from a series
@@ -1356,7 +1370,7 @@ check_table_px_filter <- function(idTable, pxfilter, verbose, df){
 }
 
 # Check if the filter argument is valid for a tempus table
-check_table_tempus_filter <- function(idTable, filter, verbose, df, shortcut){
+check_table_tempus_filter <- function(idTable, filter, verbose, lang, groups, shortcut){
   result <- TRUE
 
   # The filter must be a list
@@ -1366,22 +1380,38 @@ check_table_tempus_filter <- function(idTable, filter, verbose, df, shortcut){
     var <- names(filter)
 
     # There is a list of dataframes with metadata information
-    dfmeta <- lapply(df$MetaData, function(x) subset(x, select = c("Id", "Variable.Id", "Nombre")))
+    #dfmeta <- lapply(df$MetaData, function(x) subset(x, select = c("Id", "Variable.Id", "Nombre")))
 
     # Unique dataframe with metadata information
-    metadata <- do.call(rbind, dfmeta)
+    #metadata <- do.call(rbind, dfmeta)
+
+    # We obtain the values of all the groups
+    i <- 1
+    metatada <- NULL
+    for(g in groups$Id){
+      dfmeta <- get_metadata_table_Values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
+      dfmeta <- subset(dfmeta, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
+
+      if (exists("metadata") && is.data.frame(get("metadata"))){
+        metadata <- rbind(metadata,dfmeta)
+      }else{
+        metadata <- dfmeta
+      }
+    }
 
     # Go through all the variables
     for(v in var){
       # Has been used a shortcut name for the variable or not
-      short <- is.element(tolower(v), c(names(shortcuts_filter), names(shortcuts_operations)))
+      #short <- is.element(tolower(v), c(names(shortcuts_filter), names(shortcuts_operations)))
+      short <- is.element(tolower(v), c(names(shortcuts_filter), "values"))
 
       if(shortcut){
         if(short){
-          if(tolower(v) %in% names(shortcuts_operations)){
+          #if(tolower(v) %in% names(shortcuts_operations)){
+          if(tolower(v) == "values"){
             #varope <- get_metadata_variables(operation = shortcuts_operations[[tolower(v)]],
             #                                 validate = FALSE, verbose = TRUE)
-            variable <- unique(metadata$Variable.Id)
+            variable <- unique(metadata$Fk_Variable)
           }else{
             # If there is a shortcut obtain the corresponding id
             variable <- shortcuts_filter[[tolower(v)]]
@@ -1402,9 +1432,9 @@ check_table_tempus_filter <- function(idTable, filter, verbose, df, shortcut){
       #variable <- if(short) shortcuts[[tolower(v)]] else v
 
       # The variable id is in the metadata information
-      validvar <- intersect(variable, metadata$Variable.Id)
+      validvar <- intersect(variable, metadata$Fk_Variable)
 
-      if(!(is.element(v, metadata$Variable.Id) || length(validvar) > 0 )){
+      if(!(is.element(v, metadata$Fk_Variable) || length(validvar) > 0 )){
         result <- FALSE
         stop(sprintf("%s is not a valid variable for %s idTable",v,idTable))
       }
@@ -1413,7 +1443,7 @@ check_table_tempus_filter <- function(idTable, filter, verbose, df, shortcut){
       # obtain the metadata information for all the variables
       metavar <- NULL
       for(i in validvar){
-        tmp <- metadata[metadata$Variable.Id == i,]
+        tmp <- metadata[metadata$Fk_Variable == i,]
 
         if (exists("metavar") && is.data.frame(get("metavar"))){
           metavar <- rbind(metavar,tmp)
@@ -1435,7 +1465,7 @@ check_table_tempus_filter <- function(idTable, filter, verbose, df, shortcut){
           # The id or the shortcut name of the value must exist in the metadata information
           if(f != "" && !(is.element(f, metavar$Id) || sum(grepl(valshort, metavar$Nombre, ignore.case = TRUE)) > 0)){
             result <- FALSE
-            stop(sprintf("%s is not a valid value for variable %s", f, v))
+            stop(sprintf("%s is not a valid value for variable %s or is not present in the values of the groups of the table", f, v))
           }
         }
       }
@@ -1488,13 +1518,16 @@ check_series_filter <- function(operation, filter, verbose, lang, shortcut){
       #}
 
       # Go through all the variables
+      validvartotal <- NULL
       for(v in var){
         # Has been used a shortcut name for the variable or not
-        short <- is.element(tolower(v), c(names(shortcuts_filter), names(shortcuts_operations)))
+        #short <- is.element(tolower(v), c(names(shortcuts_filter), names(shortcuts_operations)))
+        short <- is.element(tolower(v), c(names(shortcuts_filter), "values"))
 
         if(shortcut){
           if(short){
-            if(tolower(v) %in% names(shortcuts_operations)){
+            #if(tolower(v) %in% names(shortcuts_operations)){
+            if(tolower(v) == "values"){
               variable <- opevar$Id
             }else{
               # If there is a shortcut obtain the corresponding id
@@ -1523,10 +1556,13 @@ check_series_filter <- function(operation, filter, verbose, lang, shortcut){
           stop(sprintf("%s is not a valid variable for %s operation",v,operation))
         }
 
+        validvartotal <- append(validvartotal, as.numeric(validvar))
+      }
+
         # If the shortcut name includes more than one variable
         # obtain the metadata information for all the variables
         opeval <- NULL
-        for(i in validvar){
+        for(i in unique(validvartotal)){
           tmp <- get_metadata_values(operation = operation, variable = i, validate = FALSE, verbose = verbose, lang = lang, page = 0)
           tmp <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
 
@@ -1569,7 +1605,7 @@ check_series_filter <- function(operation, filter, verbose, lang, shortcut){
             stop(sprintf("%s is not a valid value for variable %s", f, v))
           }
         }
-      }
+
     }else{
       result <- FALSE
       stop("The list must contain at least two values in the filter")
