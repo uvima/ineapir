@@ -721,6 +721,7 @@ check_definition <- function(definition, addons){
 
 # Check the parameters of the request
 check_parameters <- function(parameters, addons, definition){
+  result <- list()
 
   # Validate or not the parameters
   check <- addons$validate
@@ -730,7 +731,7 @@ check_parameters <- function(parameters, addons, definition){
       val <- parameters[[x]]
 
       if(!is.null(val)){
-        switch (x,
+        r <- switch (x,
                 "date" = check_dates(val, addons$verbose),
                 "p" = check_periodicity(val[[1]], val[[2]], addons$verbose),
                 "nult" = check_nlast(val, addons$verbose),
@@ -740,9 +741,13 @@ check_parameters <- function(parameters, addons, definition){
                 "page" = check_page(val, addons$verbose),
                 "filter" = check_filter(val, addons$verbose, definition$lang, addons$shortcut)
         )
+        result <- append(result, r)
+        names(result)[length(result)] <- x
       }
     }
   }
+
+  return(result)
 }
 
 # Check the addons of the request
@@ -1263,6 +1268,7 @@ check_page <- function(n, verbose){
 
 # Check if the filter argument is valid
 check_filter <- function(parameter, verbose, lang, shortcut){
+  result <- TRUE
 
   # id to identify a table or a operation
   id <- parameter[[1]]
@@ -1280,28 +1286,39 @@ check_filter <- function(parameter, verbose, lang, shortcut){
     #df <- get_data_table(idTable = id, nlast = 1, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
     #df <- get_metadata_series_table(idTable = id, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
 
-    groups <- get_metadata_table_groups(idTable = id, validate = FALSE, verbose = verbose, lang = lang)
+    # Get the groups of the table
+    #groups <- get_metadata_table_groups(idTable = id, validate = FALSE, verbose = verbose, lang = lang)
+
+    # Get the metadata information of the table
+    df <- get_metadata_variable_values_table(id, verbose, FALSE, lang)
 
     # Make sure the response is valid or null
-    if(!check_result_status(df)){
+    if(!check_result_status(df$groups)){
 
       # The table is in px or tpx format
       #if(is.pxtable(df$MetaData)){
-      if(is.null(groups)){
+      if(is.null(df$groups)){
         # Obtain metadata information
-        df <- get_metadata_series_table(idTable = id, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
+        #df <- get_metadata_series_table(idTable = id, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
 
-        check_table_px_filter(id, filter, verbose, df)
+        if(shortcut){
+          stop("- For a px table shortcut mus be set to FALSE")
+
+        }else{
+          result <- check_table_px_filter(id, filter, verbose, df$metadata)
+        }
 
       # The table is stored in tempus
       }else{
-        check_table_tempus_filter(id, filter, verbose, lang, groups, shortcut)
+        result <- check_table_tempus_filter(id, filter, verbose, lang, df$metadata, shortcut)
       }
     }
   # The filter comes from a series
   }else{
-    check_series_filter(id, filter, verbose, lang, shortcut)
+    result <- check_series_filter(id, filter, verbose, lang, shortcut)
   }
+
+  return(result)
 }
 
 # Confirm if the table is in px or tpx format
@@ -1330,22 +1347,22 @@ check_table_px_filter <- function(idTable, pxfilter, verbose, df){
     var <- names(pxfilter)
 
     # There is a list of dataframes with metadata information
-    dfmeta <- lapply(df$MetaData, function(x) subset(x, select = c("Codigo", "Variable.Codigo")))
+    #dfmeta <- lapply(df$MetaData, function(x) subset(x, select = c("Codigo", "Variable.Codigo")))
 
     # Unique dataframe with metadata information
-    metadata <- do.call(rbind, dfmeta)
+    #metadata <- do.call(rbind, dfmeta)
 
     # Go through all the variables
     for( v in var){
 
       # If the variable in the filter is not in the metadata is not valid
-      if(!is.element(v, metadata$Variable.Codigo)){
+      if(!is.element(v, df$Variable.Codigo)){
         result <- FALSE
         stop(sprintf("%s is not a valid variable for %s idTable",v,idTable))
       }
 
       # subset of the metadata for an specific variable
-      metavar <- metadata[metadata$Variable.Codigo == v,]
+      metavar <- df[df$Variable.Codigo == v,]
 
       # Go through all the values in the filter for the specific variable
       for(val in pxfilter[[v]]){
@@ -1370,7 +1387,7 @@ check_table_px_filter <- function(idTable, pxfilter, verbose, df){
 }
 
 # Check if the filter argument is valid for a tempus table
-check_table_tempus_filter <- function(idTable, filter, verbose, lang, groups, shortcut){
+check_table_tempus_filter <- function(idTable, filter, verbose, lang, df, shortcut){
   result <- TRUE
 
   # The filter must be a list
@@ -1386,18 +1403,18 @@ check_table_tempus_filter <- function(idTable, filter, verbose, lang, groups, sh
     #metadata <- do.call(rbind, dfmeta)
 
     # We obtain the values of all the groups
-    i <- 1
-    metatada <- NULL
-    for(g in groups$Id){
-      dfmeta <- get_metadata_table_Values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
-      dfmeta <- subset(dfmeta, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
+    #i <- 1
+    #metadata <- NULL
+    #for(g in groups$Id){
+    #  dfmeta <- get_metadata_table_Values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
+    #  dfmeta <- subset(dfmeta, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
 
-      if (exists("metadata") && is.data.frame(get("metadata"))){
-        metadata <- rbind(metadata,dfmeta)
-      }else{
-        metadata <- dfmeta
-      }
-    }
+    #  if (exists("metadata") && is.data.frame(get("metadata"))){
+    #    metadata <- rbind(metadata,dfmeta)
+    #  }else{
+    #    metadata <- dfmeta
+    #   }
+    #}
 
     # Go through all the variables
     for(v in var){
@@ -1411,7 +1428,7 @@ check_table_tempus_filter <- function(idTable, filter, verbose, lang, groups, sh
           if(tolower(v) == "values"){
             #varope <- get_metadata_variables(operation = shortcuts_operations[[tolower(v)]],
             #                                 validate = FALSE, verbose = TRUE)
-            variable <- unique(metadata$Fk_Variable)
+            variable <- unique(df$Fk_Variable)
           }else{
             # If there is a shortcut obtain the corresponding id
             variable <- shortcuts_filter[[tolower(v)]]
@@ -1432,9 +1449,9 @@ check_table_tempus_filter <- function(idTable, filter, verbose, lang, groups, sh
       #variable <- if(short) shortcuts[[tolower(v)]] else v
 
       # The variable id is in the metadata information
-      validvar <- intersect(variable, metadata$Fk_Variable)
+      validvar <- intersect(variable, df$Fk_Variable)
 
-      if(!(is.element(v, metadata$Fk_Variable) || length(validvar) > 0 )){
+      if(!(is.element(v, df$Fk_Variable) || length(validvar) > 0 )){
         result <- FALSE
         stop(sprintf("%s is not a valid variable for %s idTable",v,idTable))
       }
@@ -1443,7 +1460,7 @@ check_table_tempus_filter <- function(idTable, filter, verbose, lang, groups, sh
       # obtain the metadata information for all the variables
       metavar <- NULL
       for(i in validvar){
-        tmp <- metadata[metadata$Fk_Variable == i,]
+        tmp <- df[df$Fk_Variable == i,]
 
         if (exists("metavar") && is.data.frame(get("metavar"))){
           metavar <- rbind(metavar,tmp)
@@ -1956,6 +1973,43 @@ extract_metadata <- function(datain, request){
   return(dataout)
 }
 
+get_metadata_variable_values_table <- function(idTable, verbose, validate, lang){
+
+  # Get the groups of the table
+  groups <- get_metadata_table_groups(idTable = idTable, validate = validate, verbose = verbose, lang = lang)
+
+  dfmetadata <- NULL
+  # Make sure the response is valid or null
+  if(!check_result_status(groups)){
+
+    # The table is in px or tpx format
+    if(is.null(groups)){
+      # Obtain metadata information
+      df <- get_metadata_series_table(idTable = idTable, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
+
+      # Get the metadata with information of variables and values
+      dfmetadata <- lapply(df$MetaData,
+                         function(x) subset(x, select = c("Nombre", "Codigo", "Variable.Nombre","Variable.Codigo")))
+
+      dfmetadata <- unique(do.call(rbind, dfmetadata))
+
+      # The table is stored in tempus
+    }else{
+      for(g in groups$Id){
+        df <- get_metadata_table_Values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
+        df <- subset(df, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
+
+        if (exists("dfmetadata") && is.data.frame(get("dfmetadata"))){
+          dfmetadata <- rbind(dfmetadata,df)
+        }else{
+          dfmetadata <- df
+        }
+      }
+    }
+  }
+
+  return(list(groups = groups, metadata = dfmetadata))
+}
 
 
 
