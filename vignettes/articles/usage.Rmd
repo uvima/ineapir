@@ -16,7 +16,7 @@ library(ineapir)
 library(ggplot2)
 
 # Filter cpi overall index
-filter <- list(ipc = c("variación anual" , "índice general"))
+filter <- list(values = c("variación anual" , "índice general"))
 
 # Request data of cpi
 # Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=50902&L=0
@@ -24,7 +24,7 @@ general <- get_data_table(idTable = 50902, shortcut = TRUE,
                           filter = filter, unnest = TRUE, tip = "A" )
 
 # Filter core cpi
-filter <- list(ipc = c("variación anual" , 
+filter <- list(values = c("variación anual" , 
                        "general sin alimentos no elaborados ni productos energéticos"))
 
 # Request data of core cpi
@@ -108,7 +108,7 @@ ggplot(aes(x = Edad, y = Porcentaje ,fill = Sexo)) +
 library(plotly)
 
 # Filter for unemployment rates
-filter = list(tipodato = "tasa de paro", ccaa = "", sexo = "ambos", edad = "total")
+filter = list(ccaa = "", sexo = "ambos", edad = "total")
 
 # Table: Unemployment rates by different age groups, sex and Autonomous Community
 # Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=4247&L=0

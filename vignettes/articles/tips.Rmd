@@ -64,8 +64,8 @@ variables
 We can use the English language as well filtering data using shortcuts.
 
 ```{r lang_2}
-# Filter with the cpi wrapper
-filter <- list(cpi = c("annual change" , "overall index"))
+# Filter with the values wrapper (CPI)
+filter <- list(values = c("annual change" , "overall index"))
 
 # Request data using the filter with shortcut = TRUE and lang = "EN"
 cpi <- get_data_table(idTable = 50902, shortcut = TRUE, filter = filter,
@@ -81,8 +81,8 @@ When we request data from tables or series using the functions
  entry.
 
 ```{r unnest_1}
-# Filter with the ipc wrapper
-filter <- list(ipc = c("variación anual" , "variación mensual", "índice general"))
+# Filter with the values wrapper (CPI)
+filter <- list(values = c("variación anual" , "variación mensual", "índice general"))
 
 # Request data using the filter and unnest = FALSE
 ipc <- get_data_table(idTable = 50902, shortcut = TRUE, filter = filter,
@@ -99,8 +99,8 @@ If we want to get only one data frame for all data values, we can pass
 the argument `unnest = TRUE`.
 
 ```{r unnest_2}
-# Filter with the ipc wrapper
-filter <- list(ipc = c("variación anual" , "variación mensual", "índice general"))
+# Filter with the values wrapper (CPI)
+filter <- list(values = c("variación anual" , "variación mensual", "índice general"))
 
 # Request data using the filter and unnest = TRUE
 ipc <- get_data_table(idTable = 50902, shortcut = TRUE, filter = filter,
@@ -117,8 +117,8 @@ one by passing the argument `inecode = TRUE`. Including metadata with `tip="M"`
 is required for it to work.
 
 ```{r inecode}
-# Filter with the ipc wrapper
-filter <- list(ipc = c("índice$" , "índice general"), prov = "")
+# Filter with the values wrapper (CPI)
+filter <- list(values = c("índice$" , "índice general"), prov = "")
 
 # Request data using the filter with inecode = TRUE and tip = "AM"
 ipc <- get_data_table(idTable = 50918, shortcut = TRUE, filter = filter,

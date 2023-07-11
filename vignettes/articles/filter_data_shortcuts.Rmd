@@ -57,12 +57,7 @@ variables are shown below.
 |lugarnacimiento | 97  | Place of birth |
 |effectscorr     | 544 | Correction of effects |
 |efectoscorr     | 544 | Correction of effects |
-|cpi         | `get_metadata_variables(operation = "IPC")`    | CPI wrapper |
-|ipc         | `get_metadata_variables(operation = "IPC")`    | CPI wrapper |
-|gdp         | `get_metadata_variables(operation = "CNTR2010")` | GDP wrapper |
-|pib         | `get_metadata_variables(operation = "CNTR2010")` | GDP wrapper |
-|pop         | `get_metadata_variables(operation = "ECP"`  | Population wrapper|
-|pob         | `get_metadata_variables(operation = "ECP")` | Population wrapper|
+|values       | `get_metadata_variables(operation = operation)`    | values wrapper |
 
 ## Filtering data from tables
 
@@ -86,11 +81,11 @@ ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
 Since the table with the id code 50902 belongs to the IPC operation, we can
-also use the *ipc* wrapper.
+also use the *values* wrapper.
 
 ```{r tabla_filter_2}
-# Filter with the ipc wrapper
-filter <- list(ipc = c("variación anual" , "índice general"))
+# Filter with the values wrapper (CPI)
+filter <- list(values = c("variación anual" , "índice general"))
 
 # Request data using the filter and shortcut = TRUE
 ipc <- get_data_table(idTable = 50902, shortcut = TRUE, filter = filter,
@@ -101,8 +96,8 @@ ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ### Example two
 
 ```{r tabla_filter_3}
-# Filter with the pib wrapper
-filter <- list(pib = c("producto interior", "datos ajustados", "variación anual"))
+# Filter with the values wrapper (GDP)
+filter <- list(values = c("producto interior", "datos ajustados", "variación anual"))
 
 # Request data using the filter and shortcut = TRUE
 pib <- get_data_table(idTable = 30679, shortcut = TRUE, filter = filter,
@@ -113,8 +108,8 @@ pib[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ### Example three
 
 ```{r tabla_filter_4}
-# Filter with the pob wrapper
-filter <- list(pob = c("todas las edades", "total"))
+# Filter with the values wrapper (population)
+filter <- list(values = c("todas las edades", "total"))
 
 # Request data using the filter and shortcut = TRUE
 pob <- get_data_table(idTable = 56934, shortcut = TRUE, filter = filter,
@@ -130,8 +125,8 @@ value a name.
 ### Example one
 
 ```{r series_filter_1}
-# Filter with the ipc wrapper
-filter <- list(ipc = c("variación anual" , "índice general", "total nacional"))
+# Filter with the values wrapper (CPI)
+filter <- list(values = c("variación anual" , "índice general", "total nacional"))
 
 # Request data using the filter
 ipc <- get_data_series_filter(operation = "IPC", shortcut = TRUE, filter = filter,
@@ -142,8 +137,8 @@ ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ### Example two
 
 ```{r series_filter_2}
-# Filter with the pib wrapper
-filter <- list(pib = c("producto interior", "datos ajustados",
+# Filter with the values wrapper (GDP)
+filter <- list(values = c("producto interior", "datos ajustados",
                        "volumen encadenado", "variación anual"))
 
 # Request data using the filter
@@ -156,8 +151,8 @@ pib[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ### Example three
 
 ```{r series_filter_3}
-# Filter with the pop wrapper combine with individual shortcuts
-filter <- list(pob = c("todas las edades", "total nacional"), nacionalidad = "total",
+# Filter with the values wrapper combine with individual shortcuts (population)
+filter <- list(values = c("todas las edades", "total nacional"), nacionalidad = "total",
                sexo = "total", paisnacimiento = "total" )
 
 # Request data using the filter

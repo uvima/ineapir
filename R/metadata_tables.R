@@ -200,38 +200,8 @@ get_metadata_operation_table <- function(idTable = NULL, lang = "ES", validate =
 #'
 get_metadata_table <- function(idTable = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
 
-  # Get the groups of the table
-  groups <- get_metadata_table_groups(idTable = idTable, validate = validate, verbose = verbose, lang = lang)
+  # Get the metadata information of the table
+  df <- get_metadata_variable_values_table(idTable, verbose, validate, lang)
 
-  metatada <- NULL
-  # Make sure the response is valid or null
-  if(!check_result_status(groups)){
-
-    # The table is in px or tpx format
-    if(is.null(groups)){
-      # Obtain metadata information
-      df <- get_metadata_series_table(idTable = idTable, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
-
-      # Get the metadata with information of variables and values
-      metadata <- lapply(df$MetaData,
-                         function(x) subset(x, select = c("Nombre", "Codigo", "Variable.Nombre","Variable.Codigo")))
-
-      metadata <- unique(do.call(rbind, metadata))
-
-    # The table is stored in tempus
-    }else{
-      for(g in groups$Id){
-        df <- get_metadata_table_Values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
-        df <- subset(df, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
-
-        if (exists("metadata") && is.data.frame(get("metadata"))){
-          metadata <- rbind(metadata,df)
-        }else{
-          metadata <- df
-        }
-      }
-    }
-  }
-
-  return(metadata)
+  return(df$metadata)
 }
