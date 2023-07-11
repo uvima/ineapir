@@ -221,7 +221,7 @@ We can get the tables associated with an statistical operation.
 
 ``` r
 # We use the function get_metadata_tables with argument operation
-tables <- get_metadata_tables(operation = "IPC")
+tables <- get_metadata_tables_operation(operation = "IPC")
 head(tables[,c("Id","Nombre")])
 #>      Id                                                                 Nombre
 #> 1 24077                    Índice general nacional. Series desde enero de 1961

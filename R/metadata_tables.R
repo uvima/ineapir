@@ -17,7 +17,7 @@
 #' get_metadata_tables(operation = "IPC")
 #' }
 #'
-get_metadata_tables <- function(operation = NULL, det = 0, tip = NULL, geo = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){
+get_metadata_tables_operation <- function(operation = NULL, det = 0, tip = NULL, geo = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){
 
   # List of values to define the call to the API
   definition <- list()
@@ -151,10 +151,10 @@ get_metadata_table_Values <- function(idTable = NULL, idGroup = NULL, lang = "ES
 #' @export
 #'
 #' @examples \dontrun{
-#' get_metadata_table_operation(idTable = 50902)
+#' get_metadata_operation_table(idTable = 50902)
 #' }
 #'
-get_metadata_table_operation <- function(idTable = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
+get_metadata_operation_table <- function(idTable = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
 
   # List of values to define the call to the API
   definition <- list()
@@ -182,4 +182,56 @@ get_metadata_table_operation <- function(idTable = NULL, lang = "ES", validate =
   data <- get_api_data(url, request, verbose = verbose)
 
   return(data)
+}
+
+#' Get the metadata information of a table
+#'
+#' @param idTable (int): code of the table
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
+#' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
+#' @param verbose (logical): print additional information
+#'
+#' @return Data frame with information of metadata of a table
+#' @export
+#'
+#' @examples \dontrun{
+#' get_metadata_table(idTable = 50902)
+#' }
+#'
+get_metadata_table <- function(idTable = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
+
+  # Get the groups of the table
+  groups <- get_metadata_table_groups(idTable = idTable, validate = validate, verbose = verbose, lang = lang)
+
+  metatada <- NULL
+  # Make sure the response is valid or null
+  if(!check_result_status(groups)){
+
+    # The table is in px or tpx format
+    if(is.null(groups)){
+      # Obtain metadata information
+      df <- get_metadata_series_table(idTable = idTable, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
+
+      # Get the metadata with information of variables and values
+      metadata <- lapply(df$MetaData,
+                         function(x) subset(x, select = c("Nombre", "Codigo", "Variable.Nombre","Variable.Codigo")))
+
+      metadata <- unique(do.call(rbind, metadata))
+
+    # The table is stored in tempus
+    }else{
+      for(g in groups$Id){
+        df <- get_metadata_table_Values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
+        df <- subset(df, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
+
+        if (exists("metadata") && is.data.frame(get("metadata"))){
+          metadata <- rbind(metadata,df)
+        }else{
+          metadata <- df
+        }
+      }
+    }
+  }
+
+  return(metadata)
 }
