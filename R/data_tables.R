@@ -48,7 +48,7 @@ get_data_table <- function(idTable = NULL, filter = NULL, nlast = NULL, det = NU
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)

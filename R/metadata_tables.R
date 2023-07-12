@@ -40,7 +40,7 @@ get_metadata_tables_operation <- function(operation = NULL, det = 0, tip = NULL,
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)
@@ -84,7 +84,7 @@ get_metadata_table_groups <- function(idTable = NULL, lang = "ES", validate = TR
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)
@@ -129,7 +129,7 @@ get_metadata_table_Values <- function(idTable = NULL, idGroup = NULL, lang = "ES
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)
@@ -173,7 +173,7 @@ get_metadata_operation_table <- function(idTable = NULL, lang = "ES", validate =
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)
@@ -203,5 +203,5 @@ get_metadata_table <- function(idTable = NULL, lang = "ES", validate = TRUE, ver
   # Get the metadata information of the table
   df <- get_metadata_variable_values_table(idTable, verbose, validate, lang)
 
-  return(df$metadata)
+  return(df$values)
 }

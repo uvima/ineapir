@@ -48,7 +48,7 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)
@@ -109,7 +109,7 @@ get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity 
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)

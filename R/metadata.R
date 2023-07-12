@@ -33,7 +33,7 @@ get_metadata_operations <- function(operation = NULL, lang = "ES", page = 0, val
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)
@@ -79,7 +79,7 @@ get_metadata_variables <- function(operation = NULL, lang = "ES", page = 0, vali
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)
@@ -128,7 +128,7 @@ get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lan
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)
@@ -176,7 +176,7 @@ get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", pa
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)
@@ -225,7 +225,7 @@ get_metadata_publication_dates <- function(publication = NULL, det = 0, tip = NU
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)
@@ -269,7 +269,7 @@ get_metadata_periodicity <- function(operation = NULL, lang = "ES", validate = T
     request <- list(definition = definition, parameters = parameters, addons = addons)
 
     # Check request
-    check_request(request)
+    request <- check_request(request)
 
     # Build the complete URL to call the API
     url <- get_url(request)

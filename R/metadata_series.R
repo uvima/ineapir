@@ -35,7 +35,7 @@ get_metadata_series <- function(codSeries = NULL, det = 0, tip = NULL, lang = "E
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)
@@ -86,7 +86,7 @@ get_metadata_series_operation <- function(operation = NULL, det = 0, tip = NULL,
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)
@@ -137,7 +137,7 @@ get_metadata_series_values <- function(codSeries = NULL, det = 0, tip = NULL, la
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)
@@ -185,7 +185,7 @@ get_metadata_series_table <- function(idTable = NULL, det = 0, tip = NULL, lang 
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)
@@ -242,7 +242,7 @@ get_metadata_series_filter <- function(operation = NULL, filter = NULL, periodic
   request <- list(definition = definition, parameters = parameters, addons = addons)
 
   # Check request
-  check_request(request)
+  request <- check_request(request)
 
   # Build the complete URL to call the API
   url <- get_url(request)
