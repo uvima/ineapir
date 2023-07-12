@@ -144,18 +144,18 @@ get_api_data_all_pages <- function(url, request, verbose = FALSE, unnest = FALSE
   # Request all pages
   if(request$parameters$page == 0){
 
-    definition <- request$definition
-    parameters <- request$parameters
-    addons     <- request$addons
+    #definition <- request$definition
+    #parameters <- request$parameters
+    #addons     <- request$addons
 
     # Page counter
     numpage <- 1
 
     # Update page
-    parameters[["page"]] <- numpage
+    request$parameters[["page"]] <- numpage
 
     # List of definitions and parameters
-    request <- list(definition = definition, parameters = parameters, addons = addons)
+    #request <- list(definition = definition, parameters = parameters, addons = addons)
 
     # Build the URL to call the API
     url <- get_url(request)
@@ -171,10 +171,10 @@ get_api_data_all_pages <- function(url, request, verbose = FALSE, unnest = FALSE
       numpage <- numpage + 1
 
       # Update page
-      parameters[["page"]] <- numpage
+      request$parameters[["page"]] <- numpage
 
       # Update the list of definitions and parameters
-      request <- list(definition = definition, parameters = parameters, addons = addons)
+      #request <- list(definition = definition, parameters = parameters, addons = addons)
 
       # Update the URL to call the API
       url <- get_url(request)
@@ -283,11 +283,10 @@ get_parameters_filter <- function(request){
   val <- request$parameters[["filter"]]
 
   if(!is.null(val)){
-    val <- build_filter(val, request$definition[["lang"]], request$addons)
+    val <- build_filter(val, request$definition[["lang"]], request$addons, request$check$parameters$filter)
   }
 
   return(val)
-
 }
 
 # Get url and its components
@@ -388,7 +387,7 @@ build_date <- function(date){
 }
 
 # Return the cross of variables and values in the format used by the API
-build_filter <- function(parameter, lang, addons){
+build_filter <- function(parameter, lang, addons, checkfilter){
   # Values to return
   val <- character()
   lval <- list()
@@ -402,8 +401,20 @@ build_filter <- function(parameter, lang, addons){
   # Names in the list of the parameter
   parnames <- tolower(names(parameter))
 
-  # Dataframe with the values
-  dfval <- get_filter_values(parameter, lang, addons$shortcut, addons$verbose)
+  # If validate = TRUE there exists a dataframe with values
+  if(addons$validate){
+    # Dataframe with the values
+    dfval <- checkfilter$values
+
+  # If validate = FALSE we get the values
+  }else{
+    # First we check that shortcut is set correctly
+    #check_shortcut("shortcut", addons$shortcut, filter)
+
+    # Dataframe with the values
+    dfval <- get_filter_values(parameter, lang, addons$shortcut, verbose = FALSE, progress = TRUE)
+    dfval <- dfval$values
+  }
 
   # We go through all the variables
   i <- 1
@@ -579,7 +590,49 @@ build_filter <- function(parameter, lang, addons){
 }
 
 # Get the all values used in a table or operation
-get_filter_values <- function(parameter, lang, shortcut, verbose){
+get_filter_values <- function(parameter, lang, shortcut, verbose, progress = TRUE){
+
+  # id to identify a table or a operation
+  id <- parameter[[1]]
+
+  # List of variables and values
+  filter <- parameter[[2]]
+
+  # Names in the list of the parameter
+  parnames <- tolower(names(parameter))
+
+  # Dataframe to return the values
+  dfval <- NULL
+
+  # The filter includes shortcuts in the names of variables and values
+  if(shortcut){
+
+    if(progress){
+      cat("- Processing filter: 0% \r")
+    }
+
+    # The filter comes from a table
+    if(is.element("idtable",parnames)){
+
+      # Get the metadata information of the table
+      dfval <- get_metadata_variable_values_table(idTable = id, verbose = verbose, validate = FALSE, lang, progress)
+
+      # The filter comes from a series
+    }else{
+      # We obtain the variables and values from the operation of the series
+      dfval <- get_metadata_variable_values_operation(operation = id, verbose = verbose, validate = FALSE, lang, progress)
+    }
+  }
+
+  if(progress){
+    cat("- Processing filter: 100%         \n")
+  }
+
+  return(dfval)
+}
+
+# Get the all values used in a table or operation
+get_filter_values2 <- function(parameter, lang, shortcut, verbose){
 
   # id to identify a table or a operation
   id <- parameter[[1]]
@@ -695,28 +748,43 @@ get_filter_values <- function(parameter, lang, shortcut, verbose){
 check_request <- function(request){
 
   # Check addons
-  check_addons(request$parameters, request$addons)
+  cadd <- check_addons(request$parameters, request$addons)
 
   # Check definition
-  check_definition(request$definition, request$addons)
+  cdef <- check_definition(request$definition, request$addons)
 
   # Check parameters
-  check_parameters(request$parameters, request$addons, request$definition)
+  cpar <- check_parameters(request$parameters, request$addons, request$definition)
+
+  # Check results to return
+  check <- list()
+  check <- append(check, list(definition = cdef))
+  check <- append(check, list(addons = cadd))
+  check <- append(check, list(parameters = cpar))
+
+  request <- append(request, list(check = check))
+
+  return(request)
 }
 
 # Check the definition of the request
 check_definition <- function(definition, addons){
+  result <- list()
 
   # Validate or not the definition
   check <- addons$validate
 
   if(check){
     # Check lang argument
-    check_lang(definition$lang, addons$verbose)
+    rl <- check_lang(definition$lang, addons$verbose)
 
     # Check input
-    check_input(definition$tag, definition$input, addons$verbose)
+    ri <- check_input(definition$tag, definition$input, addons$verbose)
+
+    result <- list(lang = rl, input = ri)
   }
+
+  return(result)
 }
 
 # Check the parameters of the request
@@ -741,6 +809,7 @@ check_parameters <- function(parameters, addons, definition){
                 "page" = check_page(val, addons$verbose),
                 "filter" = check_filter(val, addons$verbose, definition$lang, addons$shortcut)
         )
+        # Check results to return
         result <- append(result, r)
         names(result)[length(result)] <- x
       }
@@ -752,20 +821,27 @@ check_parameters <- function(parameters, addons, definition){
 
 # Check the addons of the request
 check_addons <- function(parameters, addons){
+  result <- list()
+
   for(x in names(addons)){
     val <- addons[[x]]
 
-    if(!is.null(val) && val){
-      switch (x,
+    if(!is.null(val)){
+      r <- switch (x,
               "validate" = check_islogical(x, val),
               "verbose" = check_islogical(x, val),
               "unnest" = check_islogical(x, val),
               "inecode"= check_inecode(x, val, parameters$tip),
-              "shortcut" = check_islogical(x, val),
+              "shortcut" = check_shortcut(x, val, parameters$filter$filter),
               "extractmetadata"= check_extractmetadata(x, val, parameters$tip)
       )
+      # Check results to return
+      result <- append(result, r)
+      names(result)[length(result)] <- x
     }
   }
+
+  return(result)
 }
 
 #Check the result retrieved for the API
@@ -803,7 +879,9 @@ check_lang <- function(lang, verbose){
 
 # Check the input part of the definition
 check_input <- function(tag, input, verbose){
-  switch(
+  result <- list()
+
+  r <- switch(
     tag,
     "operation" = check_operation(input, verbose = verbose),
     "operation_active_null" = check_operation(input, active_null = TRUE, verbose = verbose),
@@ -813,6 +891,11 @@ check_input <- function(tag, input, verbose){
     "idTable" = check_isnull(tag, input, verbose),
     "idTable_idGroup" = check_idtable_idgroup(input, verbose)
   )
+  # Check results to return
+  result <- append(result, r)
+  names(result)[length(result)] <- tag
+
+  return(result)
 }
 
 # Check operation argument in API call
@@ -887,6 +970,8 @@ check_operation <- function(operation, active_null = FALSE, verbose){
 
 # Check variables
 check_variables_operation <- function(input, verbose){
+  result <- TRUE
+
   # Variable id
   variable <- input$variable
 
@@ -898,12 +983,14 @@ check_variables_operation <- function(input, verbose){
     check_operation(operation, verbose = verbose)
 
     # Second we check if the variable is valid for the operation
-    check_variablesoperation(operation, variable, verbose)
+    result <- check_variablesoperation(operation, variable, verbose)
 
   }else{
     # Check if the variable is valid
-    check_variable(variable, verbose)
+    result <- check_variable(variable, verbose)
   }
+
+  return(result)
 }
 
 # Check if a variable is valid for an operation
@@ -1044,13 +1131,15 @@ check_isnull <- function(name, id, verbose){
 
 # Check if both, table and group, are NULL
 check_idtable_idgroup <- function(input, verbose){
+  result <- TRUE
+
   idTable <- input$idTable
   idGroup <- input$idGroup
 
   nameid <- names(input)
 
   check_isnull(nameid[1], idTable, verbose)
-  check_isnull(nameid[2], idGroup, verbose)
+  check_isnull(nameid[2], idGroup, verbose = FALSE)
 
   if(!is.null(idTable) && !is.null(idGroup)){
     # Get all the groups of the table
@@ -1061,6 +1150,12 @@ check_idtable_idgroup <- function(input, verbose){
       stop(sprintf("%s is not a valid group for table %s. Valid ids: %s", idGroup, idTable, paste0(groups$Id, collapse = ", ")))
     }
   }
+
+  if(verbose){
+    cat(sprintf("- Check idGroup: OK\n"))
+  }
+
+  return(result)
 }
 
 # Check date argument in API CALL
@@ -1279,6 +1374,48 @@ check_filter <- function(parameter, verbose, lang, shortcut){
   # Names in the list of the parameter
   parnames <- tolower(names(parameter))
 
+  # Get the values from metadata of tables or operations
+  df <- get_filter_values(parameter, lang, shortcut = TRUE, verbose = verbose, progress = FALSE)
+
+  # Make sure the response is valid or null
+  if(!check_result_status(df$values)){
+
+    # The filter comes from a px table
+    if(df$origin == "tablepx"){
+      if(shortcut){
+        stop("- For a px table shortcut mus be set to FALSE")
+
+      }else{
+        result <- check_table_px_filter(id, filter, verbose, df$values)
+      }
+
+    # The filter comes from a tempus table
+    }else if(df$origin == "tablet3"){
+      result <- check_table_tempus_filter(parameter, verbose, df$values, shortcut)
+    }
+
+    # The filter comes from a series
+    else if(df$origin == "series") {
+      result <- check_series_filter(parameter, verbose, df$values, shortcut)
+    }
+  }
+
+  return(list(df))
+}
+
+# Check if the filter argument is valid
+check_filter2 <- function(parameter, verbose, lang, shortcut){
+  result <- TRUE
+
+  # id to identify a table or a operation
+  id <- parameter[[1]]
+
+  # List of variables and values
+  filter <- parameter[[2]]
+
+  # Names in the list of the parameter
+  parnames <- tolower(names(parameter))
+
   # The filter comes from a table
   if(is.element("idtable",parnames)){
 
@@ -1387,7 +1524,36 @@ check_table_px_filter <- function(idTable, pxfilter, verbose, df){
 }
 
 # Check if the filter argument is valid for a tempus table
-check_table_tempus_filter <- function(idTable, filter, verbose, lang, df, shortcut){
+check_table_tempus_filter <- function(parameter, verbose, df, shortcut){
+  result <- TRUE
+
+  # id to identify a table or a operation
+  id <- parameter[[1]]
+
+  # List of variables and values
+  filter <- parameter[[2]]
+
+  # Names in the list of the parameter
+  parnames <- tolower(names(parameter))
+
+  # The filter must be a list
+  if(is.list(filter)){
+    check_tempus_filter(id, filter, parnames, df, shortcut)
+
+  }else{
+    result <- FALSE
+    stop("filter must be a list")
+  }
+
+  if(verbose){
+    cat(sprintf("- Check filter: OK\n"))
+  }
+
+  return(result)
+}
+
+# Check if the filter argument is valid for a tempus table
+check_table_tempus_filter2 <- function(idTable, filter, verbose, lang, df, shortcut){
   result <- TRUE
 
   # The filter must be a list
@@ -1500,7 +1666,50 @@ check_table_tempus_filter <- function(idTable, filter, verbose, lang, df, shortc
 }
 
 # Check if the filter argument is valid for a series
-check_series_filter <- function(operation, filter, verbose, lang, shortcut){
+check_series_filter <- function(parameter, verbose, df, shortcut){
+  result <- TRUE
+
+  # id to identify a table or a operation
+  id <- parameter[[1]]
+
+  # List of variables and values
+  filter <- parameter[[2]]
+
+  # Names in the list of the parameter
+  parnames <- tolower(names(parameter))
+
+  # The filter must be a list
+  if(is.list(filter)){
+
+    # Variables of the filter
+    var <- names(filter)
+
+    # Values of the filter
+    val <- unlist(filter, use.names = FALSE)
+
+    # The list must contain at least two values in the filter
+    if(length(var) > 1 || (length(var) < 2 && length(val) > 1)){
+      check_tempus_filter(id, filter, parnames, df, shortcut)
+
+    }else{
+      result <- FALSE
+      stop("The list must contain at least two values in the filter")
+    }
+  }else{
+    result <- FALSE
+    stop("filter must be a list")
+  }
+
+
+  if(verbose){
+    cat(sprintf("- Check filter: OK\n"))
+  }
+
+  return(result)
+}
+
+# Check if the filter argument is valid for a series
+check_series_filter2 <- function(operation, filter, verbose, lang, shortcut){
 
   result <- TRUE
 
@@ -1639,6 +1848,87 @@ check_series_filter <- function(operation, filter, verbose, lang, shortcut){
   return(result)
 }
 
+# Check if the filter argument is valid
+check_tempus_filter <- function(id, filter, parnames, df, shortcut){
+  result <- TRUE
+
+  # Variables of the filter
+  var <- names(filter)
+
+  for(v in var){
+    # Has been used a shortcut name for the variable or not
+    short <- is.element(tolower(v), c(names(shortcuts_filter), "values"))
+
+    if(shortcut){
+      if(short){
+        # The values wrapper is present
+        if(tolower(v) == "values"){
+          variable <- unique(df$Fk_Variable)
+
+          # A shortcut is present
+        }else{
+          variable <- shortcuts_filter[[tolower(v)]]
+        }
+      }else{
+        variable <- v
+      }
+    }else{
+      if(short){
+        result <- FALSE
+        stop("It is neccessary to set shortcut = TRUE")
+      }else{
+        variable <- v
+      }
+    }
+
+    # The variable id is in the metadata information
+    validvar <- intersect(variable, df$Fk_Variable)
+
+    if(!(is.element(v, df$Fk_Variable) || length(validvar) > 0 )){
+      result <- FALSE
+      stop(sprintf("%s is not a valid variable for %s %s",v, parnames[1],id))
+    }
+
+    # If the shortcut name includes more than one variable
+    # obtain the metadata information for all the variables
+    metavar <- NULL
+    for(i in validvar){
+      tmp <- df[df$Fk_Variable == i,]
+
+      if (exists("metavar") && is.data.frame(get("metavar"))){
+        metavar <- rbind(metavar,tmp)
+      }else{
+        metavar <- tmp
+      }
+    }
+
+    # Go through all the values of an specific variable
+    for(val in filter[[v]]){
+      # permitir multiples valores
+      for(f in val){
+        # Split the value
+        valshort <- if(nchar(f) > 0 ) unlist(strsplit(as.character(f), "\\s+")) else f
+
+        # Obtain the largest element
+        valshort <- valshort[which.max(nchar(valshort))]
+
+        # The id or the shortcut name of the value must exist in the metadata information
+        if(f != "" && !(is.element(f, metavar$Id) || sum(grepl(valshort, metavar$Nombre, ignore.case = TRUE)) > 0)){
+          result <- FALSE
+
+          if(is.element("idtable",parnames)){
+            stop(sprintf("%s is not a valid value for variable %s or is not present in the values of the groups of the table", f, v))
+          }else{
+            stop(sprintf("%s is not a valid value for variable %s", f, v))
+          }
+        }
+      }
+    }
+  }
+
+  return(result)
+}
+
 # Check if an argument is logical
 check_islogical <- function(name, par){
   result <- TRUE
@@ -1646,6 +1936,29 @@ check_islogical <- function(name, par){
   if(!is.logical(par)){
     result <- FALSE
     stop(sprintf("%s must be logical", name))
+  }
+
+  return(result)
+}
+
+check_shortcut <- function(name, val, filter){
+  check_islogical(name, val)
+
+  result <- TRUE
+
+  if(!is.null(filter)){
+
+    # if shortcut = FALSE and there are shortcuts in the filter
+    if(!val && sum(is.element(tolower(names(filter)), c(names(shortcuts_filter), "values"))) > 0 ){
+      result <- FALSE
+      stop("It is neccessary to set shortcut = TRUE")
+    }
+
+    # if shortcut = TRUE and there are not shortcuts in the filter
+    if(val && sum(is.element(tolower(names(filter)), c(names(shortcuts_filter), "values"))) < 1 ){
+      result <- FALSE
+      stop("It is neccessary to set shortcut = FALSE")
+    }
   }
 
   return(result)
@@ -1661,7 +1974,7 @@ check_inecode <- function(name, val, tip){
   if(!is.null(tip)){
     tip <- toupper(tip)
 
-    if(tip != "M" && tip != "AM"){
+    if(val && tip != "M" && tip != "AM"){
       result <- FALSE
       stop("when inecode is set TRUE, tip must be equal to 'M' or 'AM'")
     }
@@ -1685,7 +1998,7 @@ check_extractmetadata <- function(name, val, tip){
   if(!is.null(tip)){
     tip <- toupper(tip)
 
-    if(tip != "M" && tip != "AM"){
+    if(val && tip != "M" && tip != "AM"){
       result <- FALSE
       stop("when extractmetadata is set TRUE, tip must be equal to 'M' or 'AM'")
     }
@@ -1973,7 +2286,7 @@ extract_metadata <- function(datain, request){
   return(dataout)
 }
 
-get_metadata_variable_values_table <- function(idTable, verbose, validate, lang){
+get_metadata_variable_values_table2 <- function(idTable, verbose, validate, lang){
 
   # Get the groups of the table
   groups <- get_metadata_table_groups(idTable = idTable, validate = validate, verbose = verbose, lang = lang)
@@ -2009,6 +2322,82 @@ get_metadata_variable_values_table <- function(idTable, verbose, validate, lang)
   }
 
   return(list(groups = groups, metadata = dfmetadata))
+}
+
+get_metadata_variable_values_table <- function(idTable, verbose, validate, lang, progress = FALSE){
+
+  # Get the groups of the table
+  groups <- get_metadata_table_groups(idTable = idTable, validate = validate, verbose = verbose, lang = lang)
+
+  dfvalues <- NULL
+  origin <- ""
+  # Make sure the response is valid or null
+  if(!check_result_status(groups)){
+
+    # The table is in px or tpx format
+    if(is.null(groups)){
+      origin <- "tablepx"
+
+      # Obtain metadata information
+      df <- get_metadata_series_table(idTable = idTable, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
+
+      # Get the metadata with information of variables and values
+      dfvalues <- lapply(df$MetaData,
+                         function(x) subset(x, select = c("Nombre", "Codigo", "Variable.Nombre","Variable.Codigo")))
+
+      dfvalues <- unique(do.call(rbind, dfvalues))
+
+      # The table is stored in tempus
+    }else{
+      origin <- "tablet3"
+
+      i <- 1
+      for(g in groups$Id){
+        df <- get_metadata_table_Values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
+        df <- subset(df, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
+
+        if(progress){
+          cat(sprintf("- Processing filter: %s%%        \r", round(i/nrow(groups)*100,0)))
+          i <- i + 1
+        }
+        if (exists("dfvalues") && is.data.frame(get("dfvalues"))){
+          dfvalues <- rbind(dfvalues,df)
+        }else{
+          dfvalues <- df
+        }
+      }
+    }
+  }
+
+  return(list(origin = origin, values = dfvalues))
+}
+
+get_metadata_variable_values_operation <- function(operation, verbose, validate, lang, progress = FALSE){
+
+  dfvalues <- NULL
+
+  # We obtain the variables from the operation of the series
+  opevar <- get_metadata_variables(operation = operation, validate = validate, verbose = verbose, lang = lang, page = 0)
+
+  # We obtain the values of all the variables
+  i <- 1
+  for(var in opevar$Id){
+    tmp <- get_metadata_values(operation = operation, variable = var, validate = FALSE, verbose = verbose, lang = lang, page = 0)
+    tmp <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
+
+    if(progress){
+      cat(sprintf("- Processing filter: %s%%        \r", round(i/nrow(opevar)*100,0)))
+      i <- i + 1
+    }
+
+    if (exists("dfvalues") && is.data.frame(get("dfvalues"))){
+      dfvalues <- rbind(dfvalues,tmp)
+    }else{
+      dfvalues <- tmp
+    }
+  }
+
+  return(list(origin = "series", values = dfvalues))
 }
 
 
