@@ -409,10 +409,10 @@ build_filter <- function(parameter, lang, addons, checkfilter){
   # If validate = FALSE we get the values
   }else{
     # First we check that shortcut is set correctly
-    #check_shortcut("shortcut", addons$shortcut, filter)
+    #check_shortcut(filter, addons$shortcut, filter)
 
     # Dataframe with the values
-    dfval <- get_filter_values(parameter, lang, addons$shortcut, verbose = FALSE, progress = TRUE)
+    dfval <- get_filter_values(parameter, lang, addons$shortcut, verbose = FALSE, progress = addons$verbose)
     dfval <- dfval$values
   }
 
@@ -748,7 +748,7 @@ get_filter_values2 <- function(parameter, lang, shortcut, verbose){
 check_request <- function(request){
 
   # Check addons
-  cadd <- check_addons(request$parameters, request$addons)
+  cadd <- check_addons(request$parameters, request$addons, request$definition)
 
   # Check definition
   cdef <- check_definition(request$definition, request$addons)
@@ -820,7 +820,7 @@ check_parameters <- function(parameters, addons, definition){
 }
 
 # Check the addons of the request
-check_addons <- function(parameters, addons){
+check_addons <- function(parameters, addons, definition){
   result <- list()
 
   for(x in names(addons)){
@@ -832,7 +832,7 @@ check_addons <- function(parameters, addons){
               "verbose" = check_islogical(x, val),
               "unnest" = check_islogical(x, val),
               "inecode"= check_inecode(x, val, parameters$tip),
-              "shortcut" = check_shortcut(x, val, parameters$filter$filter),
+              "shortcut" = check_shortcut(parameters$filter$filter, addons$shortcut, definition),
               "extractmetadata"= check_extractmetadata(x, val, parameters$tip)
       )
       # Check results to return
@@ -1380,14 +1380,16 @@ check_filter <- function(parameter, verbose, lang, shortcut){
   # Make sure the response is valid or null
   if(!check_result_status(df$values)){
 
+    #check_shortcut(filter, shortcut, df$origin)
+
     # The filter comes from a px table
     if(df$origin == "tablepx"){
-      if(shortcut){
-        stop("- For a px table shortcut mus be set to FALSE")
+      #if(shortcut){
+      #  stop("- For a px table shortcut mus be set to FALSE")
 
-      }else{
+      #}else{
         result <- check_table_px_filter(id, filter, verbose, df$values)
-      }
+      #}
 
     # The filter comes from a tempus table
     }else if(df$origin == "tablet3"){
@@ -1941,23 +1943,69 @@ check_islogical <- function(name, par){
   return(result)
 }
 
-check_shortcut <- function(name, val, filter){
-  check_islogical(name, val)
+ check_shortcut <- function(filter, shortcut, definition){
 
-  result <- TRUE
+  result <- FALSE
+
+  #if(!is.null(filter)){
+  #  if(grepl("IdTable",request$definition$tag, ignore.case = TRUE)){
+      # Get the groups of the table
+  #    groups <- get_metadata_table_groups(idTable = request$definition$input, validate = FALSE, verbose = FALSE, lang = "ES")
+
+      # px table (filter without shortcuts)
+  #    if(is.null(groups)){
+  #      result <- FALSE
+
+      # Tempus table
+  #    }else{
+        # There are shortcuts in the filter
+  #      if(sum(is.element(tolower(names(filter)), c(names(shortcuts_filter), "values"))) > 0){
+  #        result <- TRUE
+  #      }else{
+  #        result <- FALSE
+  #      }
+  #    }
+
+    # Tempus series
+  #  }else{
+      # There are shortcuts in the filter
+  #    if(sum(is.element(tolower(names(filter)), c(names(shortcuts_filter), "values"))) > 0){
+  #      result <- TRUE
+  #    }else{
+  #      result <- FALSE
+  #    }
+  #  }
+  #}
+
 
   if(!is.null(filter)){
 
-    # if shortcut = FALSE and there are shortcuts in the filter
-    if(!val && sum(is.element(tolower(names(filter)), c(names(shortcuts_filter), "values"))) > 0 ){
-      result <- FALSE
-      stop("It is neccessary to set shortcut = TRUE")
+    if(grepl("IdTable", definition$tag, ignore.case = TRUE)){
+      # Get the groups of the table
+      groups <- get_metadata_table_groups(idTable = definition$input, validate = FALSE, verbose = FALSE, lang = "ES")
+
+      # PX table = TRUE
+      result <- if(is.null(groups)) TRUE else FALSE
     }
 
-    # if shortcut = TRUE and there are not shortcuts in the filter
-    if(val && sum(is.element(tolower(names(filter)), c(names(shortcuts_filter), "values"))) < 1 ){
-      result <- FALSE
-      stop("It is neccessary to set shortcut = FALSE")
+    # If px table
+    if(result){
+      if(shortcut){
+        result <- FALSE
+        stop("It is neccessary to set shortcut = FALSE")
+      }
+    }else{
+      # if shortcut = FALSE and there are shortcuts in the filter
+      if(!shortcut && sum(is.element(tolower(names(filter)), c(names(shortcuts_filter), "values"))) > 0 ){
+        result <- FALSE
+        stop("It is neccessary to set shortcut = TRUE")
+      }
+
+      # if shortcut = TRUE and there are not shortcuts in the filter
+      if(shortcut && sum(is.element(tolower(names(filter)), c(names(shortcuts_filter), "values"))) < 1 ){
+        result <- FALSE
+        stop("It is neccessary to set shortcut = FALSE")
+      }
     }
   }
 
