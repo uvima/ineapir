@@ -253,4 +253,28 @@ get_metadata_series_filter <- function(operation = NULL, filter = NULL, periodic
   return(data)
 }
 
+#' Get metadata information of series belonging to an operation
+#'
+#' @param operation (string): code of the operation
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
+#' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
+#' @param verbose (logical): print additional information
+#'
+#' @return Data frame with information about the variables and values that
+#' define the series belonging to an operation
+#' @export
+#'
+#' @examples \dontrun{
+#' get_metadata_series_varval(operation = "IPC")
+#' }
+#'
+get_metadata_series_varval <- function(operation = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
+
+  # Get the metadata information of the table
+  df <- get_metadata_variable_values_operation(operation, verbose, validate, lang)
+
+  return(df$values)
+}
+
+
 
