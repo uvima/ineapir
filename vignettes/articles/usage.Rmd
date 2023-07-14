@@ -152,3 +152,37 @@ fig
 
 ```
 
+```{r example_6}
+
+# Table: Resident population by date, sex, age group and nationality
+# Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=9674&L=0
+poblacion <- get_data_table(idTable = 9674, filter = filter, validate = FALSE, 
+                            tip = "AM", unnest = TRUE, extractmetadata = TRUE)
+
+# Filter totals and calculate percentages
+pob <- poblacion %>% 
+  filter(Edad != "Total" & T3_Periodo == "1 de enero de" & Anyo == 2022) %>%
+  mutate(Total = sum(Valor), 
+         Porcentaje = Valor/Total*100, 
+         Edad = fct_inorder(trimws(Edad))) %>%
+  mutate(Porcentaje = ifelse(Sexo == "Hombres",
+                             -Porcentaje, Porcentaje))
+pob <- poblacion %>% 
+  filter(Edad != "Total" & T3_Periodo == "1 de enero de") %>%
+  group_by(Anyo) %>% 
+  mutate(Total = sum(Valor), 
+         Porcentaje = Valor/Total*100, 
+         Edad = fct_inorder(trimws(Edad))) %>% ungroup() %>%
+  mutate(Porcentaje = ifelse(Sexo == "Hombres",
+                             -Porcentaje, Porcentaje))
+  
+fig <- plot_ly(pob, x = ~Porcentaje , y = ~Edad, color = ~Sexo, colors = c("blue", "red"), type = 'bar') %>% 
+       #add_bars(orientation = 'h') %>%
+       layout(bargap = 0.1, barmode = 'overlay',
+              xaxis = list(hoverformat = '.2f'),
+              title = 'Población residente por sexo y grupo de edad') %>%
+       #animation_slider(currentvalue = list(prefix = "Año: ")) %>%
+       config(displayModeBar = FALSE)
+
+fig
+```
