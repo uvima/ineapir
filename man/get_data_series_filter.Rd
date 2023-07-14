@@ -16,8 +16,7 @@ get_data_series_filter(
   validate = TRUE,
   verbose = FALSE,
   unnest = FALSE,
-  inecode = FALSE,
-  shortcut = FALSE
+  inecode = FALSE
 )
 }
 \arguments{
@@ -45,8 +44,6 @@ get_data_series_filter(
 \item{unnest}{(logical): obtain a single data frame of data}
 
 \item{inecode}{(logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities}
-
-\item{shortcut}{(logical): set to TRUE to enable the use of shortcut names in the filter}
 }
 \value{
 Data frame with data of series
@@ -58,6 +55,6 @@ Get data from series that fulfill the conditions of a filter
 \dontrun{
 get_data_series_filter(operation = "IPC", filter = list("115"= "29", "3" = "84", "762" = ""),
  periodicity = 1)
- }
+}
 
 }

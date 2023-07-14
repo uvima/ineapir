@@ -208,7 +208,6 @@ get_metadata_series_table <- function(idTable = NULL, det = 0, tip = NULL, lang 
 #' @param page (int): page number. The retrieved result of the query is paginated
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
-#' @param shortcut (logical): enable the use of shortcut names in the filter
 #'
 #' @return Data frame with information of the series that fulfill the conditions of a filter
 #' @export
@@ -218,7 +217,7 @@ get_metadata_series_table <- function(idTable = NULL, det = 0, tip = NULL, lang 
 #'  periodicity = 1)
 #'  }
 #'
-get_metadata_series_filter <- function(operation = NULL, filter = NULL, periodicity = NULL, det = 0, tip = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE, shortcut = FALSE){
+get_metadata_series_filter <- function(operation = NULL, filter = NULL, periodicity = NULL, det = 0, tip = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){
 
   # List of values to define the call to the API
   definition <- list()
@@ -236,7 +235,7 @@ get_metadata_series_filter <- function(operation = NULL, filter = NULL, periodic
   parameters <- append(parameters, if(page == 0) list(page = 1) else list(page = page))
 
   # List of addons
-  addons <- list(validate = validate, verbose = verbose,  shortcut = shortcut)
+  addons <- list(validate = validate, verbose = verbose)
 
   # List of definitions and parameters
   request <- list(definition = definition, parameters = parameters, addons = addons)

@@ -15,7 +15,6 @@ get_data_table(
   verbose = FALSE,
   unnest = FALSE,
   inecode = FALSE,
-  shortcut = FALSE,
   extractmetadata = FALSE
 )
 }
@@ -39,8 +38,6 @@ get_data_table(
 \item{unnest}{(logical): set to TRUE to obtain a single data frame of data}
 
 \item{inecode}{(logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities}
-
-\item{shortcut}{(logical): set to TRUE to enable the use of shortcut names in the filter}
 
 \item{extractmetadata}{(logical): set to TRUE to extract metadata to individual data frame columns}
 }

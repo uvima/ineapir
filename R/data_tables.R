@@ -10,7 +10,6 @@
 #' @param verbose (logical): print additional information
 #' @param unnest (logical): set to TRUE to obtain a single data frame of data
 #' @param inecode (logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities
-#' @param shortcut (logical): set to TRUE to enable the use of shortcut names in the filter
 #' @param extractmetadata (logical): set to TRUE to extract metadata to individual data frame columns
 #'
 #' @return Data frame with data of a table
@@ -25,7 +24,7 @@
 #' filter = list(edad3gruposdeedad = "015anos", sexo = c("mujeres", "hombres")))
 #' }
 #'
-get_data_table <- function(idTable = NULL, filter = NULL, nlast = NULL, det = NULL, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, unnest = FALSE, inecode = FALSE, shortcut = FALSE, extractmetadata = FALSE){
+get_data_table <- function(idTable = NULL, filter = NULL, nlast = NULL, det = NULL, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, unnest = FALSE, inecode = FALSE, extractmetadata = FALSE){
 
   # List of values to define the call to the API
   definition <- list()
@@ -42,7 +41,7 @@ get_data_table <- function(idTable = NULL, filter = NULL, nlast = NULL, det = NU
   parameters <- append(parameters, list(tip = tip))
 
   # List of addons
-  addons <- list(validate = validate, verbose = verbose, unnest = unnest, inecode = inecode, shortcut = shortcut, extractmetadata = extractmetadata)
+  addons <- list(validate = validate, verbose = verbose, unnest = unnest, inecode = inecode, extractmetadata = extractmetadata)
 
   # List of definitions and parameters
   request <- list(definition = definition, parameters = parameters, addons = addons)

@@ -13,8 +13,7 @@ get_metadata_series_filter(
   lang = "ES",
   page = 1,
   validate = TRUE,
-  verbose = FALSE,
-  shortcut = FALSE
+  verbose = FALSE
 )
 }
 \arguments{
@@ -36,8 +35,6 @@ get_metadata_series_filter(
 \item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
 
 \item{verbose}{(logical): print additional information}
-
-\item{shortcut}{(logical): enable the use of shortcut names in the filter}
 }
 \value{
 Data frame with information of the series that fulfill the conditions of a filter

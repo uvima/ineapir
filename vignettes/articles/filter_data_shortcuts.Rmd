@@ -62,7 +62,7 @@ variables are shown below.
 ## Filtering data from tables
 
 To use a filter with shortcuts it is necessary to pass the argument
-`shortcut = TRUE` too. As variable we use a shortcut and as a value a name.
+`filter` using a shortcut as variable and a name as value.
 
 ### Example one
 
@@ -75,8 +75,8 @@ filter <- list(tipodato = "variación anual" , # variable id = 3
                )
 
 # Request data using the filter and shortcut = TRUE
-ipc <- get_data_table(idTable = 50902, shortcut = TRUE, filter = filter,
-                      unnest = TRUE, tip = "A", nlast = 5)
+ipc <- get_data_table(idTable = 50902, filter = filter, unnest = TRUE,
+                      tip = "A", nlast = 5)
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
@@ -88,8 +88,8 @@ also use the *values* wrapper.
 filter <- list(values = c("variación anual" , "índice general"))
 
 # Request data using the filter and shortcut = TRUE
-ipc <- get_data_table(idTable = 50902, shortcut = TRUE, filter = filter,
-                      unnest = TRUE, tip = "A", nlast = 5)
+ipc <- get_data_table(idTable = 50902, filter = filter, unnest = TRUE,
+                      tip = "A", nlast = 5)
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
@@ -100,8 +100,8 @@ ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 filter <- list(values = c("producto interior", "datos ajustados", "variación anual"))
 
 # Request data using the filter and shortcut = TRUE
-pib <- get_data_table(idTable = 30679, shortcut = TRUE, filter = filter,
-                      unnest = TRUE, tip = "A", nlast = 5)
+pib <- get_data_table(idTable = 30679, filter = filter, unnest = TRUE,
+                      tip = "A", nlast = 5)
 pib[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
@@ -112,15 +112,15 @@ pib[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 filter <- list(values = c("todas las edades", "total"))
 
 # Request data using the filter and shortcut = TRUE
-pob <- get_data_table(idTable = 56934, shortcut = TRUE, filter = filter,
-                      unnest = TRUE, tip = "A", nlast = 5)
+pob <- get_data_table(idTable = 56934, filter = filter, unnest = TRUE, 
+                      tip = "A", nlast = 5)
 pob[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
 ## Filtering data from series
-It is necessary to pass the arguments `shortcut = TRUE` and `filter` of the 
-`get_data_series_filter()` function. As variable we use a shortcut and as a
-value a name.
+It is necessary to pass the argument `filter` of the 
+`get_data_series_filter()` function. We use a shortcut as variable 
+and a name as value.
 
 ### Example one
 
@@ -129,7 +129,7 @@ value a name.
 filter <- list(values = c("variación anual" , "índice general", "total nacional"))
 
 # Request data using the filter
-ipc <- get_data_series_filter(operation = "IPC", shortcut = TRUE, filter = filter,
+ipc <- get_data_series_filter(operation = "IPC", filter = filter,
                               periodicity = 1, unnest = TRUE, tip = "A")
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
@@ -142,7 +142,7 @@ filter <- list(values = c("producto interior", "datos ajustados",
                        "volumen encadenado", "variación anual"))
 
 # Request data using the filter
-pib <- get_data_series_filter(operation = "CNTR2010", shortcut = TRUE, filter = filter,
+pib <- get_data_series_filter(operation = "CNTR2010", filter = filter,
                               periodicity = 3, unnest = TRUE, tip = "A")
 pib[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
@@ -156,7 +156,7 @@ filter <- list(values = c("todas las edades", "total nacional"), nacionalidad = 
                sexo = "total", paisnacimiento = "total" )
 
 # Request data using the filter
-pob <- get_data_series_filter(operation = "ECP", shortcut = TRUE, filter = filter,
+pob <- get_data_series_filter(operation = "ECP", filter = filter,
                               periodicity = 3, unnest = TRUE, tip = "A")
 pob[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```

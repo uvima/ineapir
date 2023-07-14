@@ -74,7 +74,6 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #' @param verbose (logical): print additional information
 #' @param unnest (logical): obtain a single data frame of data
 #' @param inecode (logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities
-#' @param shortcut (logical): set to TRUE to enable the use of shortcut names in the filter
 #'
 #' @return Data frame with data of series
 #' @export
@@ -82,9 +81,9 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #' @examples \dontrun{
 #' get_data_series_filter(operation = "IPC", filter = list("115"= "29", "3" = "84", "762" = ""),
 #'  periodicity = 1)
-#'  }
+#' }
 #'
-get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity = NULL, nlast = 1, det = 0, tip = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE, unnest = FALSE, inecode = FALSE, shortcut = FALSE){
+get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity = NULL, nlast = 1, det = 0, tip = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE, unnest = FALSE, inecode = FALSE){
 
   # List of values to define the call to the API
   definition <- list()
@@ -103,7 +102,7 @@ get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity 
   parameters <- append(parameters, if(page == 0) list(page = 1) else list(page = page))
 
   # List of addons
-  addons <- list(validate = validate, verbose = verbose, unnest = unnest, inecode = inecode, shortcut = shortcut)
+  addons <- list(validate = validate, verbose = verbose, unnest = unnest, inecode = inecode)
 
   # List of definitions and parameters
   request <- list(definition = definition, parameters = parameters, addons = addons)
@@ -118,6 +117,5 @@ get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity 
   data <- get_api_data(url, request, verbose = verbose, unnest = unnest, inecode = inecode)
 
   return(data)
-
 }
 

@@ -20,8 +20,8 @@ filter <- list(values = c("variación anual" , "índice general"))
 
 # Request data of cpi
 # Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=50902&L=0
-general <- get_data_table(idTable = 50902, shortcut = TRUE, 
-                          filter = filter, unnest = TRUE, tip = "A" )
+general <- get_data_table(idTable = 50902, filter = filter, unnest = TRUE,
+                          tip = "A" )
 
 # Filter core cpi
 filter <- list(values = c("variación anual" , 
@@ -29,8 +29,8 @@ filter <- list(values = c("variación anual" ,
 
 # Request data of core cpi
 # Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=50907&L=0
-subyacente <- get_data_table(idTable = 50907, shortcut = TRUE, 
-                             filter = filter, unnest = TRUE, tip = "A" )
+subyacente <- get_data_table(idTable = 50907, filter = filter, unnest = TRUE,
+                             tip = "A" )
 
 # Format Fecha column as date
 general$Fecha <- as.Date(general$Fecha)
@@ -56,10 +56,8 @@ filter <- list(nacionalidad = "total", sexo = c("hombres", "mujeres"))
 
 # Table: Resident population by date, sex, age group and nationality
 # Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=9674&L=0
-poblacion <- get_data_table(idTable = 9674, shortcut = TRUE ,
-                            filter = filter, validate = FALSE, 
-                            tip = "AM", unnest = TRUE,
-                            extractmetadata = TRUE)
+poblacion <- get_data_table(idTable = 9674, filter = filter, validate = FALSE, 
+                            tip = "AM", unnest = TRUE, extractmetadata = TRUE)
 
 # Filter totals and calculate percentages
 poblacion %>% 
@@ -112,9 +110,8 @@ filter = list(ccaa = "", sexo = "ambos", edad = "total")
 
 # Table: Unemployment rates by different age groups, sex and Autonomous Community
 # Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=4247&L=0
-paro <- get_data_table(idTable = 4247, shortcut = TRUE, filter = filter,
-                       nlast = 1, unnest = TRUE, extractmetadata = TRUE,
-                       tip = "AM")
+paro <- get_data_table(idTable = 4247, filter = filter, nlast = 1, inecode = TRUE,
+                       unnest = TRUE, extractmetadata = TRUE, tip = "AM")
 
 # Bar chart using plotly library
 fig <- plot_ly(paro, 
@@ -123,7 +120,9 @@ fig <- plot_ly(paro,
        config(displayModeBar = FALSE) %>%
        layout(xaxis = list(title="", tickangle = -45),
               yaxis = list(title = "Tasa de paro (%)"),
-              title = "Tasa de paro por Comunidad Autónoma (T1 2023)")
+              title = sprintf("Tasa de paro por Comunidad Autónoma (%s %s)",
+                              paro$T3_Periodo[1], paro$Anyo[1])
+              )
 
 fig
   
@@ -152,5 +151,4 @@ fig <- fig %>% add_trace(y = ~subyacente$Valor, name = 'Subyacente',
 fig
 
 ```
-
 

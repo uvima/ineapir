@@ -68,8 +68,8 @@ We can use the English language as well filtering data using shortcuts.
 filter <- list(values = c("annual change" , "overall index"))
 
 # Request data using the filter with shortcut = TRUE and lang = "EN"
-cpi <- get_data_table(idTable = 50902, shortcut = TRUE, filter = filter,
-                      unnest = TRUE, tip = "A", nlast = 5, lang = "EN")
+cpi <- get_data_table(idTable = 50902, filter = filter, unnest = TRUE,
+                      tip = "A", nlast = 5, lang = "EN")
 
 cpi[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
@@ -85,8 +85,7 @@ When we request data from tables or series using the functions
 filter <- list(values = c("variación anual" , "variación mensual", "índice general"))
 
 # Request data using the filter and unnest = FALSE
-ipc <- get_data_table(idTable = 50902, shortcut = TRUE, filter = filter,
-                      tip = "A", nlast = 3)
+ipc <- get_data_table(idTable = 50902, filter = filter, tip = "A", nlast = 3)
 
 # We have two entries
  ipc[,c("COD","Nombre")]
@@ -103,8 +102,8 @@ the argument `unnest = TRUE`.
 filter <- list(values = c("variación anual" , "variación mensual", "índice general"))
 
 # Request data using the filter and unnest = TRUE
-ipc <- get_data_table(idTable = 50902, shortcut = TRUE, filter = filter,
-                      tip = "A", nlast = 3, unnest = TRUE)
+ipc <- get_data_table(idTable = 50902, filter = filter, tip = "A",
+                      nlast = 3, unnest = TRUE)
 
 # Unique data frame with 6 rows
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
@@ -121,8 +120,8 @@ is required for it to work.
 filter <- list(values = c("índice$" , "índice general"), prov = "")
 
 # Request data using the filter with inecode = TRUE and tip = "AM"
-ipc <- get_data_table(idTable = 50918, shortcut = TRUE, filter = filter,
-                      tip = "AM", nlast = 2, unnest = TRUE, inecode = TRUE)
+ipc <- get_data_table(idTable = 50918, filter = filter, tip = "AM", nlast = 2,
+                      unnest = TRUE, inecode = TRUE)
 
 # The CODIGO_INE column contains the INE code of the different provinces
 ipc[1:5,c("CODIGO_INE","Nombre", "T3_Periodo", "Anyo", "Valor")]
@@ -137,15 +136,13 @@ the data frame with the metadata information about the variables and their value
 filter <- list(nacionalidad = "total", sexo = c("hombres", "mujeres"))
 
 # Table: Resident population by date, sex, age group and nationality
-poblacion <- get_data_table(idTable = 9674, shortcut = TRUE ,
-                            filter = filter, validate = FALSE, 
+poblacion <- get_data_table(idTable = 9674, filter = filter, validate = FALSE, 
                             tip = "AM", unnest = TRUE, nlast = 1)
 # Names of columns
 names(poblacion)
 
 # Request data with extractmetadata = TRUE
-poblacion <- get_data_table(idTable = 9674, shortcut = TRUE ,
-                            filter = filter, validate = FALSE, 
+poblacion <- get_data_table(idTable = 9674, filter = filter, validate = FALSE, 
                             tip = "AM", unnest = TRUE, nlast = 1,
                             extractmetadata = TRUE)
 
@@ -162,8 +159,8 @@ regular expressions if this helps us filter the data better.
 filter <- list(sexo = "total", edad = "2[0-5]+")
 
 # Request data using the filter with a regular expression
-pob <- get_data_table(idTable = 56934, shortcut = TRUE, filter = filter,
-                      tip = "A", nlast = 1, unnest = TRUE)
+pob <- get_data_table(idTable = 56934, filter = filter, tip = "A", nlast = 1,
+                      unnest = TRUE)
 
 # Only ages between 20 and 25 years old
 pob[,c("Nombre", "Anyo", "Valor")]
