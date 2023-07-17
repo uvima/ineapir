@@ -9,11 +9,12 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Example 1. Time series
+## Example 1. Interactive time series
 
 ```{r example_1}
 library(ineapir)
-library(ggplot2)
+#library(ggplot2)
+library(plotly)
 
 # Filter cpi overall index
 filter <- list(values = c("variación anual" , "índice general"))
@@ -36,74 +37,66 @@ subyacente <- get_data_table(idTable = 50907, filter = filter, unnest = TRUE,
 general$Fecha <- as.Date(general$Fecha)
 subyacente$Fecha <- as.Date(subyacente$Fecha)
 
-# Plot both time series
-ggplot(data = general, aes(Fecha, Valor)) +
-  geom_line(aes(colour = 'General')) +
-  geom_line(data= subyacente, aes(colour = 'Subyacente')) +
-  labs(y = 'Variación anual (%)', colour = 'IPC') +
-  theme(legend.position = "bottom")
+# Plot cpi overall index
+fig <- plot_ly(general, x = ~Fecha, y = ~Valor, name = 'General',
+               type = 'scatter', mode = 'lines')
+
+## Plot core cpi
+fig <- fig %>% add_trace(y = ~subyacente$Valor, name = 'Subyacente',
+                         mode = 'lines') %>%
+  layout(yaxis = list(title="Variación anual (%)"),
+         legend = list(title=list(text='<b> IPC </b>'),
+                       x = 0.25,
+                       y = -0.25,
+                       orientation = 'h'),
+         hovermode = 'x') %>%
+  config(displayModeBar = FALSE)
+
+fig
 
 ```
 
 ## Example 2. Population pyramid
 
 ```{r example_2}
-library(dplyr, quietly = TRUE)
+#library(dplyr, quietly = TRUE)
 library(forcats)
 
 # Filter for total population of men and women 
 filter <- list(nacionalidad = "total", sexo = c("hombres", "mujeres"))
 
 # Table: Resident population by date, sex, age group and nationality
-# Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=9674&L=0
-poblacion <- get_data_table(idTable = 9674, filter = filter, validate = FALSE, 
+# Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=56936&L=0
+poblacion <- get_data_table(idTable = 56936, filter = filter, validate = FALSE, 
                             tip = "AM", unnest = TRUE, extractmetadata = TRUE)
 
 # Filter totals and calculate percentages
-poblacion %>% 
-  filter(Edad != "Total" & T3_Periodo == "1 de enero de" & Anyo == 2022) %>%
-  mutate(Total = sum(Valor), 
-         Porcentaje = Valor/Total*100, 
-         Edad = fct_inorder(Edad)) %>%
-  mutate(Porcentaje = ifelse(Sexo == "Hombres",
-                             -Porcentaje, Porcentaje)) %>%
-# Plot the pyramid
-  ggplot(aes(x = Edad, y = Porcentaje ,fill = Sexo)) +
-    geom_col(position = "stack", alpha = 0.8) +
-    coord_flip() + theme(legend.position = "bottom", 
-                         plot.title = element_text(hjust = 0.5)) +
-    scale_y_continuous(labels = abs) +
-    labs(title = 'Población residente por sexo y grupo de edad (2022)')
-
-```
-
-## Example 3. Animate polulation pyramids
-```{r example_3}
-library(gganimate)
-
-# Filter totals and calculate percentages
-poblacion %>% 
-  filter(Edad != "Total" & T3_Periodo == "1 de enero de") %>%
+pob <- poblacion %>% 
+  filter(Edad != "Todas las edades" & T3_Periodo == "1 de enero de") %>%
   group_by(Anyo) %>% 
   mutate(Total = sum(Valor), 
          Porcentaje = Valor/Total*100, 
-         Edad = fct_inorder(Edad)) %>% ungroup() %>%
+         Edad = fct_inorder(trimws(Edad))) %>% ungroup() %>%
   mutate(Porcentaje = ifelse(Sexo == "Hombres",
-                             -Porcentaje, Porcentaje)) %>%
+                             -Porcentaje, Porcentaje))
+  
 # Plot the pyramid
-ggplot(aes(x = Edad, y = Porcentaje ,fill = Sexo)) +
-  geom_col(position = "stack", alpha = 0.8) +
-  coord_flip() + theme(legend.position = "bottom",
-                       plot.title = element_text(hjust = 0.5)) +
-  scale_y_continuous(labels = abs) + transition_time(Anyo) + 
-  labs(title = 'Población residente por sexo y grupo de edad (Año: {as.integer(frame_time)})')
+fig <- plot_ly(pob, x = ~Porcentaje , y = ~Edad, color = ~Sexo, 
+               colors = c("blue", "red"), type = 'bar', frame = ~Anyo) %>% 
+       #add_bars(orientation = 'h') %>%
+       layout(bargap = 0.1, barmode = 'overlay',
+              xaxis = list(hoverformat = '.2f'),
+              title = 'Población residente por sexo y grupo de edad') %>%
+       animation_slider(currentvalue = list(prefix = "Año: ")) %>%
+       config(displayModeBar = FALSE)
+
+fig
 
 ```
 
 
-## Example 4. Interactive bar chart.
+## Example 3. Interactive bar chart.
 ```{r example_4}
-library(plotly)
 
 # Filter for unemployment rates
 filter = list(ccaa = "", sexo = "ambos", edad = "total")
@@ -128,53 +121,6 @@ fig
   
 ```
 
-## Example 5. Interactive time series.
-```{r example_5}
-# we reuse the data from example 1.
-# cpi overall index
-fig <- plot_ly(general, x = ~Fecha, y = ~Valor, name = 'General',
-               type = 'scatter', mode = 'lines')
 
-# Core cpi
-fig <- fig %>% add_trace(y = ~subyacente$Valor, name = 'Subyacente',
-                         mode = 'lines') %>%
-  layout(yaxis = list(title="Variación anual (%)"),
-         legend = list(title=list(text='<b> IPC </b>'),
-                       x = 0.25,
-                       y = -0.25,
-                       orientation = 'h'),
-         hovermode = 'x') %>%
-  config(displayModeBar = FALSE)
-  
-                       
 
-fig
 
-```
-
-```{r example_6}
-
-# Table: Resident population by date, sex, age group and nationality
-# Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=9674&L=0
-poblacion <- get_data_table(idTable = 9674, filter = filter, validate = FALSE, 
-                            tip = "AM", unnest = TRUE, extractmetadata = TRUE)
-
-pob <- poblacion %>% 
-  filter(Edad != "Total" & T3_Periodo == "1 de enero de") %>%
-  group_by(Anyo) %>% 
-  mutate(Total = sum(Valor), 
-         Porcentaje = Valor/Total*100, 
-         Edad = fct_inorder(trimws(Edad))) %>% ungroup() %>%
-  mutate(Porcentaje = ifelse(Sexo == "Hombres",
-                             -Porcentaje, Porcentaje))
-  
-fig <- plot_ly(pob, x = ~Porcentaje , y = ~Edad, color = ~Sexo, colors = c("blue", "red"), type = 'bar', frame = ~Anyo) %>% 
-       #add_bars(orientation = 'h') %>%
-       layout(bargap = 0.1, barmode = 'overlay',
-              xaxis = list(hoverformat = '.2f'),
-              title = 'Población residente por sexo y grupo de edad') %>%
-       animation_slider(currentvalue = list(prefix = "Año: ")) %>%
-       config(displayModeBar = FALSE)
-
-fig
-```
