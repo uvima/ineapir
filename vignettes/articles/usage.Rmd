@@ -70,7 +70,7 @@ filter <- list(nacionalidad = "total", sexo = c("hombres", "mujeres"))
 poblacion <- get_data_table(idTable = 56936, filter = filter, validate = FALSE, 
                             tip = "AM", unnest = TRUE, extractmetadata = TRUE)
 
-# Filter totals and calculate percentages
+# Filter and calculate percentages
 pob <- poblacion %>% 
   filter(Edad != "Todas las edades" & T3_Periodo == "1 de enero de") %>%
   group_by(Anyo) %>% 
@@ -80,10 +80,9 @@ pob <- poblacion %>%
   mutate(Porcentaje = ifelse(Sexo == "Hombres",
                              -Porcentaje, Porcentaje))
   
-# Plot the pyramid
+# Pyramid using plotly
 fig <- plot_ly(pob, x = ~Porcentaje , y = ~Edad, color = ~Sexo, 
                colors = c("blue", "red"), type = 'bar', frame = ~Anyo) %>% 
-       #add_bars(orientation = 'h') %>%
        layout(bargap = 0.1, barmode = 'overlay',
               xaxis = list(hoverformat = '.2f'),
               title = 'Población residente por sexo y grupo de edad') %>%
@@ -96,7 +95,7 @@ fig
 
 
 ## Example 3. Interactive bar chart.
-```{r example_4}
+```{r example_3}
 
 # Filter for unemployment rates
 filter = list(ccaa = "", sexo = "ambos", edad = "total")
@@ -106,7 +105,7 @@ filter = list(ccaa = "", sexo = "ambos", edad = "total")
 paro <- get_data_table(idTable = 4247, filter = filter, nlast = 1, inecode = TRUE,
                        unnest = TRUE, extractmetadata = TRUE, tip = "AM")
 
-# Bar chart using plotly library
+# Bar chart using plotly
 fig <- plot_ly(paro, 
                x = ~paro$`Comunidades y Ciudades Autónomas`,
                y = ~Valor, type = "bar") %>%
@@ -114,13 +113,12 @@ fig <- plot_ly(paro,
        layout(xaxis = list(title="", tickangle = -45),
               yaxis = list(title = "Tasa de paro (%)"),
               title = sprintf("Tasa de paro por Comunidad Autónoma (%s %s)",
-                              paro$T3_Periodo[1], paro$Anyo[1])
+                              paro$Anyo[1], paro$T3_Periodo[1])
               )
 
 fig
   
 ```
-
 
 
 

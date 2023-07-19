@@ -1473,7 +1473,7 @@ check_filter2 <- function(parameter, verbose, lang, shortcut){
     #groups <- get_metadata_table_groups(idTable = id, validate = FALSE, verbose = verbose, lang = lang)
 
     # Get the metadata information of the table
-    df <- get_metadata_variable_values_table(id, verbose, FALSE, lang)
+    df <- get_metadata_variable_values_table2(id, verbose, FALSE, lang)
 
     # Make sure the response is valid or null
     if(!check_result_status(df$groups)){
@@ -1493,12 +1493,12 @@ check_filter2 <- function(parameter, verbose, lang, shortcut){
 
       # The table is stored in tempus
       }else{
-        result <- check_table_tempus_filter(id, filter, verbose, lang, df$metadata, shortcut)
+        result <- check_table_tempus_filter2(id, filter, verbose, lang, df$metadata, shortcut)
       }
     }
   # The filter comes from a series
   }else{
-    result <- check_series_filter(id, filter, verbose, lang, shortcut)
+    result <- check_series_filter2(id, filter, verbose, lang, shortcut)
   }
 
   return(result)
