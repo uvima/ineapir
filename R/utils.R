@@ -114,7 +114,7 @@ get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inegeoco
   )
 
   # Check the result retrieved for the API
-  if(!check_result_status(result)){
+  if(!check_result_status(result) && !is.null(result)){
 
     # Include an identifying territorial code when applicable
     if(inegeocode){
@@ -2295,7 +2295,7 @@ get_inegeocode <- function(datain, verbose){
     varid <- do.call(rbind,lapply(metadata, function(x) subset(x, select = c("Variable.Id"))))
 
     # national, ccaa, provinces or municipalities present in the metadata
-    if(length(intersect(c(349, 115, 70, 19, 20), varid$Variable.Id) > 0)){
+    if(length(intersect(c(349, 115, 70, 19, 20, 846, 847), varid$Variable.Id) > 0)){
       # obtain the code of national, ccaa, provinces or municipalities
       sel <- lapply(metadata, function(x) subset(x, x$Variable.Id == 349 | x$Variable.Id == 115 | x$Variable.Id == 70 |
                                                     x$Variable.Id == 19 | x$Variable.Id == 20 | x$Variable.Id == 846 |
@@ -2336,7 +2336,6 @@ extract_metadata <- function(datain, request){
 
     # Case one: tpx or px table
     if(is.pxtable(metadata)){
-
       # Obtain variable codigo column from metadata
       #varcode <- unique(do.call(rbind,
       #                          lapply(metadata, function(x) subset(x,

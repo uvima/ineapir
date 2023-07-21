@@ -123,8 +123,8 @@ filter <- list(values = c("índice$" , "índice general"), prov = "")
 ipc <- get_data_table(idTable = 50918, filter = filter, tip = "AM", nlast = 2,
                       unnest = TRUE, inegeocode = TRUE)
 
-# The CODIGO_INE column contains the INE code of the different provinces
-ipc[1:5,c("CODIGO_INE","Nombre", "T3_Periodo", "Anyo", "Valor")]
+# The inegeocode column contains the INE code of the different provinces
+ipc[1:5,c("inegeocode","Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
 ## Use of `extractmetadata`
