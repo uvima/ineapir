@@ -184,7 +184,7 @@ for an specific group.
 
 ```{r group_values}
 # We use the function get_metadata_table_values with arguments idTable and idGroup
-values <- get_metadata_table_Values(idTable = 50902, idGroup = 110889)
+values <- get_metadata_table_values(idTable = 50902, idGroup = 110889)
 head(values, 4)
 ```
 

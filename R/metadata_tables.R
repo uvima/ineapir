@@ -107,10 +107,10 @@ get_metadata_table_groups <- function(idTable = NULL, lang = "ES", validate = TR
 #' @export
 #'
 #' @examples \dontrun{
-#' get_metadata_table_Values(idTable = 50902, idGroup = 110889)
+#' get_metadata_table_values(idTable = 50902, idGroup = 110889)
 #' }
 #'
-get_metadata_table_Values <- function(idTable = NULL, idGroup = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
+get_metadata_table_values <- function(idTable = NULL, idGroup = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
 
   # List of values to define the call to the API
   definition <- list()

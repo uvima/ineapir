@@ -41,7 +41,7 @@ library(ineapir)
 series <- get_data_series(codSeries = "IPC251856")
 series$Data
 #>         Fecha FK_TipoDato FK_Periodo Anyo Valor Secreto
-#> 1 1.68557e+12           3          6 2023   1.9   FALSE
+#> 1 1.68557e+12           1          6 2023   1.9   FALSE
 ```
 
 To get the last n data from a series it is necessary to pass the `nlast`
@@ -56,7 +56,7 @@ series$Data
 #> 2 1.677625e+12           1          3 2023   3.3   FALSE
 #> 3 1.680300e+12           1          4 2023   4.1   FALSE
 #> 4 1.682892e+12           1          5 2023   3.2   FALSE
-#> 5 1.685570e+12           3          6 2023   1.9   FALSE
+#> 5 1.685570e+12           1          6 2023   1.9   FALSE
 ```
 
 Additionally, it is possible to obtain data from a series between two
@@ -88,12 +88,12 @@ table[1,c("COD", "Nombre")]
 #> 1 IPC251852 Total Nacional. Índice general. Índice.
 head(table$Data[[1]])
 #>          Fecha FK_TipoDato FK_Periodo Anyo   Valor Secreto
-#> 1 1.682892e+12           1          5 2023 111.719   FALSE
-#> 2 1.680300e+12           1          4 2023 111.773   FALSE
-#> 3 1.677625e+12           1          3 2023 111.111   FALSE
-#> 4 1.675206e+12           1          2 2023 110.703   FALSE
-#> 5 1.672528e+12           1          1 2023 109.668   FALSE
-#> 6 1.669849e+12           1         12 2022 109.899   FALSE
+#> 1 1.685570e+12           1          6 2023 112.354   FALSE
+#> 2 1.682892e+12           1          5 2023 111.719   FALSE
+#> 3 1.680300e+12           1          4 2023 111.773   FALSE
+#> 4 1.677625e+12           1          3 2023 111.111   FALSE
+#> 5 1.675206e+12           1          2 2023 110.703   FALSE
+#> 6 1.672528e+12           1          1 2023 109.668   FALSE
 ```
 
 To get the last n data from a table it is necessary to pass the `nlast`
@@ -251,7 +251,7 @@ values for an specific group.
 
 ``` r
 # We use the function get_metadata_table_values with arguments idTable and idGroup
-values <- get_metadata_table_Values(idTable = 50902, idGroup = 110889)
+values <- get_metadata_table_values(idTable = 50902, idGroup = 110889)
 head(values, 4)
 #>       Id Fk_Variable                             Nombre Codigo
 #> 1 304092         762                     Índice general     00
