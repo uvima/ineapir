@@ -59,7 +59,7 @@ shortcuts_operations <- list(ipc = "IPC", cpi = "IPC",
 #                              )
 
 # Function to retrieve data from the aPI
-get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inecode = FALSE, extractmetadata = FALSE){
+get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inegeocode = FALSE, extractmetadata = FALSE){
 
   result <- NULL
 
@@ -117,8 +117,8 @@ get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inecode 
   if(!check_result_status(result)){
 
     # Include an identifying territorial code when applicable
-    if(inecode){
-      result <- get_inecode(result, verbose)
+    if(inegeocode){
+      result <- get_inegeocode(result, verbose)
     }
 
     # extract metadata to columns
@@ -137,7 +137,7 @@ get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inecode 
 }
 
 # Function to retrieve data from the aPI when the result is paginated
-get_api_data_all_pages <- function(url, request, verbose = FALSE, unnest = FALSE, inecode = FALSE, extractmetadata = FALSE){
+get_api_data_all_pages <- function(url, request, verbose = FALSE, unnest = FALSE, inegeocode = FALSE, extractmetadata = FALSE){
 
   result <- NULL
 
@@ -161,7 +161,7 @@ get_api_data_all_pages <- function(url, request, verbose = FALSE, unnest = FALSE
     url <- get_url(request)
 
     # Call de API
-    result <- get_api_data(url, request, verbose = verbose, unnest = unnest, inecode = inecode, extractmetadata = extractmetadata)
+    result <- get_api_data(url, request, verbose = verbose, unnest = unnest, inegeocode = inegeocode, extractmetadata = extractmetadata)
 
     # Number of rows
     numrows <- if(!is.null(nrow(result))) nrow(result) else 1
@@ -180,7 +180,7 @@ get_api_data_all_pages <- function(url, request, verbose = FALSE, unnest = FALSE
       url <- get_url(request)
 
       # Call the API
-      resultpage <- get_api_data(url, request, verbose = verbose, unnest = unnest, inecode = inecode, extractmetadata = extractmetadata)
+      resultpage <- get_api_data(url, request, verbose = verbose, unnest = unnest, inegeocode = inegeocode, extractmetadata = extractmetadata)
 
       # Number of rows
       numrows <- if(!is.null(nrow(resultpage))) nrow(resultpage) else 1
@@ -190,7 +190,7 @@ get_api_data_all_pages <- function(url, request, verbose = FALSE, unnest = FALSE
     }
   # Request a specific page
   }else{
-    result <- get_api_data(url, request, verbose = verbose, unnest = unnest, inecode = inecode, extractmetadata = extractmetadata)
+    result <- get_api_data(url, request, verbose = verbose, unnest = unnest, inegeocode = inegeocode, extractmetadata = extractmetadata)
   }
 
   return(result)
@@ -410,8 +410,11 @@ build_filter <- function(parameter, definition, addons, checkfilter){
     # Dataframe with the values
     dfval <- checkfilter$values
 
-    # If there ad shortcuts present in the filter
+    # If there are shortcuts present in the filter
     shortcut <- checkfilter$shortcut
+
+    # Type of object: pxtable, tempustable or series
+    origin <- checkfilter$origin
 
   # If validate = FALSE we get the values
   }else{
@@ -423,6 +426,7 @@ build_filter <- function(parameter, definition, addons, checkfilter){
 
     # Dataframe with the values
     dfval <- get_filter_values(parameter, definition$lang, shortcut, verbose = FALSE, progress = addons$verbose)
+    origin <- dfval$origin
     dfval <- dfval$values
   }
 
@@ -444,14 +448,15 @@ build_filter <- function(parameter, definition, addons, checkfilter){
       if(tolower(n) == "values"){
         #varope <- get_metadata_variables(operation = shortcuts_operations[[tolower(n)]],
         #                               validate = FALSE, verbose = TRUE)
-        varid <- unique(dfval$Fk_Variable)
+        varid <- if(origin == "tablepx") unique(dfval$Variable.Codigo) else unique(dfval$Fk_Variable)
 
       }else{
         # id of variables
         varid <- shortcuts_filter[[tolower(n)]]
       }
       # We select only the values of variables present in the filter
-      dfvalfilter <- subset(dfval, dfval$Fk_Variable %in% varid)
+      dfvalfilter <- if(origin == "tablepx") subset(dfval, dfval$Variable.Codigo %in% varid)
+                     else subset(dfval, dfval$Fk_Variable %in% varid)
 
       # Reset the values found
       dfvalgrep <- NULL
@@ -480,11 +485,19 @@ build_filter <- function(parameter, definition, addons, checkfilter){
         dfvalgrep2 <- subset(dfvalfilter, ind2)
 
         # Intersect the values from these two different ways
-        dfvalgreptmp <- merge(dfvalgrep1, dfvalgrep2, by = c("Id", "Fk_Variable"))
+        if(origin == "tablepx"){
+          dfvalgreptmp <- merge(dfvalgrep1, dfvalgrep2, by = c("Codigo", "Variable.Codigo"))
+        }else{
+          dfvalgreptmp <- merge(dfvalgrep1, dfvalgrep2, by = c("Id", "Fk_Variable"))
+        }
 
         # If there is no match result look in the id
         if(nrow(dfvalgreptmp) == 0){
-          dfvalgreptmp <- subset(dfvalfilter, grepl(paste0("^",f,"$"), dfvalfilter$Id))
+          if(origin == "tablepx"){
+            dfvalgreptmp <- subset(dfvalfilter, grepl(paste0("^",f,"$"), dfvalfilter$Codigo))
+          }else{
+            dfvalgreptmp <- subset(dfvalfilter, grepl(paste0("^",f,"$"), dfvalfilter$Id))
+          }
         }
 
         # We add a column with the counter
@@ -498,24 +511,34 @@ build_filter <- function(parameter, definition, addons, checkfilter){
 
             # We go through all the matches
             for(r in 1:nrow(dfvalgreptmp)){
-              # Variable id
-              var <- dfvalgreptmp$Fk_Variable[r]
+              if(origin == "tablepx"){
+                # Variable code
+                var <- dfvalgreptmp$Variable.Codigo[r]
 
-              # Value id
-              filterout[[var]] <- dfvalgreptmp$Id[r]
+                # Value code
+                filterout[[var]] <- dfvalgreptmp$Codigo[r]
 
-              if(exists("dfvalgrep") && is.data.frame(get("dfvalgrep")) ){
+              }else{
+                # Variable id
+                var <- dfvalgreptmp$Fk_Variable[r]
 
-                # If the variable id has been used in the filter, set the same counter
-                if(is.element(var, dfvalgrep$Fk_Variable)){
-                  i <- dfvalgrep[dfvalgrep$Fk_Variable == var,]$i[1]
-                  dfvalgreptmp$i[r] <- i
-                }else{
-                  if(nrow(dfvalgrep) > 0){
-                    i <- max(dfvalgrep$i) + 1
+                # Value id
+                filterout[[var]] <- dfvalgreptmp$Id[r]
+
+                if(exists("dfvalgrep") && is.data.frame(get("dfvalgrep")) ){
+
+                  # If the variable id has been used in the filter, set the same counter
+                  if(is.element(var, dfvalgrep$Fk_Variable)){
+                    i <- dfvalgrep[dfvalgrep$Fk_Variable == var,]$i[1]
+                    dfvalgreptmp$i[r] <- i
+                  }else{
+                    if(nrow(dfvalgrep) > 0){
+                      i <- max(dfvalgrep$i) + 1
+                    }
                   }
                 }
               }
+
               # Check the filter comes from a table or a series
               parurl <- if(is.element("idtable",parnames)) "tv" else paste0("g", i)
 
@@ -693,7 +716,7 @@ get_filter_values2 <- function(parameter, lang, shortcut, verbose){
       # We obtain the values of all the groups
       i <- 1
       for(g in groups$Id){
-        tmp <- get_metadata_table_Values(idTable = id, idGroup = g, validate = FALSE, lang = lang, verbose = FALSE)
+        tmp <- get_metadata_table_values(idTable = id, idGroup = g, validate = FALSE, lang = lang, verbose = FALSE)
         tmp <- subset(tmp, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
 
         if(verbose){
@@ -862,7 +885,7 @@ check_addons <- function(parameters, addons, definition){
               "validate" = check_islogical(x, val),
               "verbose" = check_islogical(x, val),
               "unnest" = check_islogical(x, val),
-              "inecode"= check_inecode(x, val, parameters$tip),
+              "inegeocode"= check_inegeocode(x, val, parameters$tip),
               #"shortcut" = check_shortcut(parameters$filter$filter, addons$shortcut, definition),
               "extractmetadata"= check_extractmetadata(x, val, parameters$tip)
       )
@@ -1542,19 +1565,36 @@ check_table_px_filter <- function(idTable, pxfilter, verbose, df){
     for( v in var){
 
       # If the variable in the filter is not in the metadata is not valid
-      if(!is.element(v, df$Variable.Codigo)){
+      if(!is.element(v, c(df$Variable.Codigo, "values"))){
         result <- FALSE
         stop(sprintf("%s is not a valid variable for %s idTable",v,idTable))
       }
 
+      # Has been used a shortcut name for the variable or not
+      short <- is.element(tolower(v), c("values"))
+
+      # Identify a filter with shortcuts
+      shortcut <- shortcut | short
+
       # subset of the metadata for an specific variable
-      metavar <- df[df$Variable.Codigo == v,]
+      metavar <- if(v == "values") df else df[df$Variable.Codigo == v,]
 
       # Go through all the values in the filter for the specific variable
       for(val in pxfilter[[v]]){
 
+        # Split the value
+        valshort <- if(nchar(val) > 0 ) unlist(strsplit(as.character(val), "\\s+")) else val
+
+        validnames <- TRUE
+        for(vs in valshort){
+          validnames <- validnames & sum(grepl(vs, metavar$Nombre, ignore.case = TRUE)) > 0
+        }
+
+        # Obtain the largest element
+        valshort <- valshort[which.max(nchar(valshort))]
+
         # If the value in the filter is not in the metadata is not valid
-        if(val != "" && !is.element(val, metavar$Codigo)){
+        if(val != "" && !(is.element(val, metavar$Codigo) || validnames )){
           result <- FALSE
           stop(sprintf("%s is not a valid value for variable %s", val, v))
         }
@@ -1625,7 +1665,7 @@ check_table_tempus_filter2 <- function(idTable, filter, verbose, lang, df, short
     #i <- 1
     #metadata <- NULL
     #for(g in groups$Id){
-    #  dfmeta <- get_metadata_table_Values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
+    #  dfmeta <- get_metadata_table_values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
     #  dfmeta <- subset(dfmeta, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
 
     #  if (exists("metadata") && is.data.frame(get("metadata"))){
@@ -1973,11 +2013,16 @@ check_tempus_filter <- function(id, filter, parnames, df){
         # Split the value
         valshort <- if(nchar(f) > 0 ) unlist(strsplit(as.character(f), "\\s+")) else f
 
+        validnames <- TRUE
+        for(vs in valshort){
+          validnames <- validnames & sum(grepl(vs, metavar$Nombre, ignore.case = TRUE)) > 0
+        }
+
         # Obtain the largest element
-        valshort <- valshort[which.max(nchar(valshort))]
+        #valshort <- valshort[which.max(nchar(valshort))]
 
         # The id or the shortcut name of the value must exist in the metadata information
-        if(f != "" && !(is.element(f, metavar$Id) || sum(grepl(valshort, metavar$Nombre, ignore.case = TRUE)) > 0)){
+        if(f != "" && !(is.element(f, metavar$Id) || validnames)){
           result <- FALSE
 
           if(is.element("idtable",parnames)){
@@ -2019,7 +2064,9 @@ check_shortcut <- function(filter, definition){
 
       # PX table
       if(is.null(groups)){
-        result <- FALSE
+        if(sum(is.element(tolower(names(filter)), c("values"))) > 0){
+          result <- TRUE
+        }
 
       # Tempus table
       }else{
@@ -2080,8 +2127,8 @@ check_shortcut2 <- function(filter, shortcut, definition){
   return(result)
 }
 
-# Check if the inecode argument is valid
-check_inecode <- function(name, val, tip){
+# Check if the inegeocode argument is valid
+check_inegeocode <- function(name, val, tip){
 
   result <- check_islogical(name, val)
 
@@ -2090,12 +2137,12 @@ check_inecode <- function(name, val, tip){
 
     if(val && tip != "M" && tip != "AM"){
       result <- FALSE
-      stop("when inecode is set TRUE, tip must be equal to 'M' or 'AM'")
+      stop("when inegeocode is set TRUE, tip must be equal to 'M' or 'AM'")
     }
   }else{
     if(val){
       result <- FALSE
-      stop("when inecode is set TRUE, tip must be equal to 'M' or 'AM'")
+      stop("when inegeocode is set TRUE, tip must be equal to 'M' or 'AM'")
     }
   }
 
@@ -2236,7 +2283,7 @@ unnest_data <- function(datain){
 }
 
 # Return a code of the administrative entity present in the data
-get_inecode <- function(datain, verbose){
+get_inegeocode <- function(datain, verbose){
   # Obtain metadata
   metadata <- datain$MetaData
 
@@ -2250,25 +2297,27 @@ get_inecode <- function(datain, verbose){
     # national, ccaa, provinces or municipalities present in the metadata
     if(length(intersect(c(349, 115, 70, 19, 20), varid$Variable.Id) > 0)){
       # obtain the code of national, ccaa, provinces or municipalities
-      sel <- lapply(metadata, function(x) subset(x, x$Variable.Id == 349 | x$Variable.Id == 115 | x$Variable.Id == 70 | x$Variable.Id == 19 | x$Variable.Id == 20, select = c("Codigo")))
+      sel <- lapply(metadata, function(x) subset(x, x$Variable.Id == 349 | x$Variable.Id == 115 | x$Variable.Id == 70 |
+                                                    x$Variable.Id == 19 | x$Variable.Id == 20 | x$Variable.Id == 846 |
+                                                    x$Variable.Id == 847, select = c("Codigo")))
 
       # Unique dataframe of codes
-      inecode <- do.call(rbind, sel)
+      inegeocode <- do.call(rbind, sel)
 
       # Rename
-      names(inecode) <- "CODIGO_INE"
+      names(inegeocode) <- "inegeocode"
 
       # Adding code to dataframe
-      dataout <- cbind(dataout, inecode)
+      dataout <- cbind(dataout, inegeocode)
 
     }else{
       if(verbose){
-        cat("- The metadata not contains a inecode variable\n")
+        cat("- The metadata not contains a inegeocode variable\n")
       }
     }
   }else{
     if(verbose){
-      cat("- The metadata not contains a inecode variable\n")
+      cat("- The metadata not contains a inegeocode variable\n")
     }
   }
 
@@ -2302,8 +2351,21 @@ extract_metadata <- function(datain, request){
       for(i in 1:nummeta){
         varcode <- append(varcode,
                           as.data.frame(unique(do.call(rbind,
-                                                       lapply(metadata, '[',c(i),))$Variable.Codigo)))
+                                                       lapply(metadata, '[',c(i),c("Variable.Codigo"))))))
       }
+
+      # Metadata columns to extract
+      metacols <- character()
+      metacolsnames <- character()
+
+      #if(request$addons$extractmetaname){
+      #  metacols <- append(metacols, "Nombre")
+      #  metacolsnames <- append(metacolsnames, "")
+      #}
+      #if(request$addons$extractmetacode){
+      #  metacols <- append(metacols, "Codigo")
+      #  metacolsnames <- append(metacolsnames, ".Codigo")
+      #}
 
       # Loop through all variables
       for(var in varcode){
@@ -2313,10 +2375,11 @@ extract_metadata <- function(datain, request){
                            lapply(metadata,
                                   function(x) subset(x,
                                                      x$Variable.Codigo %in% var,
-                                                     select = c("Nombre"))))
+                                                     select = c("Nombre", "Codigo"))))
 
         # Rename column with variable code
-        names(dfcodes) <- var[1]
+        newname <- gsub("\\s+",".", var[1])
+        names(dfcodes) <- paste0(newname, c("", ".Codigo"))
 
         # Adding column to dataframe
         if(nrow(dfcodes) == nrow(dataout)){
@@ -2330,25 +2393,43 @@ extract_metadata <- function(datain, request){
       # Get groups of the table
       groups <- get_metadata_table_groups(idTable = request$definition$input, validate = FALSE, lang = request$definition$lang)
 
+      # Metadata columns to extract
+      metacols <- character()
+      metacolsnames <- character()
+
+      #if(request$addons$extractmetaname){
+      #  metacols <- append(metacols, "Nombre")
+      #  metacolsnames <- append(metacolsnames, "")
+      #}
+      #if(request$addons$extractmetaid){
+      #  metacols <- append(metacols, "Id")
+      #  metacolsnames <- append(metacolsnames, ".Id")
+      #}
+      #if(request$addons$extractmetacode){
+      #  metacols <- append(metacols, "Codigo")
+      #  metacolsnames <- append(metacolsnames, ".Codigo")
+      #}
+
       # Loop through all groups
       for (g in groups$Id){
         # Get th values of the group
-        values <- get_metadata_table_Values(idTable = request$definition$input, idGroup = g, validate = FALSE, lang = request$definition$lang)
+        values <- get_metadata_table_values(idTable = request$definition$input, idGroup = g, validate = FALSE, lang = request$definition$lang)
 
         # Select a variable id and build a Unique dataframe of variable names
         dfcodes <- do.call(rbind,
                            lapply(metadata,
                                   function(x) subset(x,
                                                      x$Variable.Id %in% unique(values$Fk_Variable),
-                                                     select = c("Nombre"))))
+                                                     select = c("Nombre", "Id", "Codigo"))))
         # New name of the column
         newname <- unlist(subset(groups, groups$Id == g, select = c("Nombre")))
+        newname <- gsub("\\s+",".", newname)
 
         # In case of a column of ages, simplify name to Edad
-        newname <- if(grepl("edad", newname, ignore.case = TRUE)) "Edad" else newname
+        #newname <- if(grepl("edad", newname, ignore.case = TRUE)) "Edad" else newname
 
         # Rename column
-        names(dfcodes) <- newname
+        names(dfcodes) <- paste0(newname, c("",".Id",".Codigo"))
 
         # Adding column to dataframe
         dataout <- cbind(dataout, dfcodes)
@@ -2367,11 +2448,28 @@ extract_metadata <- function(datain, request){
     for(i in 1:nummeta){
       varcode <- append(varcode,
                         as.data.frame(unique(do.call(rbind,
-                                                     lapply(metadata, '[',c(i),))$Variable.Id)))
+                                                     lapply(metadata, '[',c(i),c("Variable.Id"))))))
       varname <- append(varname,
                         as.data.frame(unique(do.call(rbind,
-                                                     lapply(metadata, '[',c(i),))$Variable.Nombre)))
+                                                     lapply(metadata, '[',c(i),c("Variable.Nombre"))))))
       }
+
+    # Metadata columns to extract
+    metacols <- character()
+    metacolsnames <- character()
+
+    #if(request$addons$extractmetaname){
+    #  metacols <- append(metacols, "Nombre")
+    #  metacolsnames <- append(metacolsnames, "")
+    #}
+    #if(request$addons$extractmetaid){
+    #  metacols <- append(metacols, "Id")
+    #  metacolsnames <- append(metacolsnames, ".Id")
+    #}
+    #if(request$addons$extractmetacode){
+    #  metacols <- append(metacols, "Codigo")
+    #  metacolsnames <- append(metacolsnames, ".Codigo")
+    #}
 
     # Loop through all variables
     k <- 1
@@ -2382,10 +2480,11 @@ extract_metadata <- function(datain, request){
                          lapply(metadata,
                                 function(x) subset(x,
                                                    x$Variable.Id %in% var,
-                                                   select = c("Nombre"))))
+                                                   select = c("Nombre", "Id", "Codigo"))))
 
       # Rename column with variable code
-      names(dfcodes) <- varname[k][1]
+      newname <- gsub("\\s+",".", varname[k][1])
+      names(dfcodes) <- paste0(newname, c("", ".Id", ".Codigo"))
 
       # Adding column to dataframe
       if(nrow(dfcodes) == nrow(dataout)){
@@ -2421,7 +2520,7 @@ get_metadata_variable_values_table2 <- function(idTable, verbose, validate, lang
       # The table is stored in tempus
     }else{
       for(g in groups$Id){
-        df <- get_metadata_table_Values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
+        df <- get_metadata_table_values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
         df <- subset(df, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
 
         if (exists("dfmetadata") && is.data.frame(get("dfmetadata"))){
@@ -2465,7 +2564,7 @@ get_metadata_variable_values_table <- function(idTable, verbose, validate, lang,
 
       i <- 1
       for(g in groups$Id){
-        df <- get_metadata_table_Values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
+        df <- get_metadata_table_values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
         df <- subset(df, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
 
         if(progress){
