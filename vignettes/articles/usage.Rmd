@@ -72,19 +72,20 @@ poblacion <- get_data_table(idTable = 56936, filter = filter, validate = FALSE,
 
 # Filter and calculate percentages
 pob <- poblacion %>% 
-  filter(Edad != "Todas las edades" & T3_Periodo == "1 de enero de") %>%
+  filter(Grupo.quinquenal.de.edad != "Todas las edades" & T3_Periodo == "1 de enero de") %>%
   group_by(Anyo) %>% 
   mutate(Total = sum(Valor), 
          Porcentaje = Valor/Total*100, 
-         Edad = fct_inorder(trimws(Edad))) %>% ungroup() %>%
+         Grupo.quinquenal.de.edad = fct_inorder(trimws(Grupo.quinquenal.de.edad))) %>% ungroup() %>%
   mutate(Porcentaje = ifelse(Sexo == "Hombres",
                              -Porcentaje, Porcentaje))
   
 # Pyramid using plotly
-fig <- plot_ly(pob, x = ~Porcentaje , y = ~Edad, color = ~Sexo, 
+fig <- plot_ly(pob, x = ~Porcentaje , y = ~Grupo.quinquenal.de.edad, color = ~Sexo, 
                colors = c("blue", "red"), type = 'bar', frame = ~Anyo) %>% 
        layout(bargap = 0.1, barmode = 'overlay',
               xaxis = list(hoverformat = '.2f'),
+              yaxis = list(title="Edad"),
               title = 'Población residente por sexo y grupo de edad') %>%
        animation_slider(currentvalue = list(prefix = "Año: ")) %>%
        config(displayModeBar = FALSE)
@@ -107,7 +108,7 @@ paro <- get_data_table(idTable = 4247, filter = filter, nlast = 1, inecode = TRU
 
 # Bar chart using plotly
 fig <- plot_ly(paro, 
-               x = ~paro$`Comunidades y Ciudades Autónomas`,
+               x = ~paro$Comunidades.y.Ciudades.Autónomas,
                y = ~Valor, type = "bar") %>%
        config(displayModeBar = FALSE) %>%
        layout(xaxis = list(title="", tickangle = -45),
@@ -120,5 +121,54 @@ fig
   
 ```
 
+## Example 4. Interactive map.
+```{r example_4}
+library(leaflet)
+library(sf)
 
+# Get the boundaries of the autonomous communities
+ccaa <- read_sf("https://difusion.interna.ine.es/wstempus/geojs/ES/CONTORNOS/70")
+
+# Select a set on columns from data of example 3
+paro <- subset(paro, select = c("Comunidades.y.Ciudades.Autónomas.Id", "T3_Periodo", "Anyo","Valor"))
+
+# Join boundaries information with data information
+ccaa <- merge(ccaa, paro, by.x = "id_region", by.y = "Comunidades.y.Ciudades.Autónomas.Id" )
+
+# Palette of the legend
+pal <- colorBin("plasma", domain = NULL, bins = c(quantile(ccaa$Valor)))
+
+# Labels of the map
+labels <- sprintf(
+  "<strong>%s</strong><br/> Tasa de paro: %s%% ",
+  ccaa$nom_region, ccaa$Valor
+) %>% lapply(htmltools::HTML)
+
+# Create the map
+m <- leaflet(ccaa) %>% 
+  addTiles() %>%
+  #addProviderTiles(providers$Esri.WorldGrayCanvas) %>%
+  setView(-4, 40, zoom = 6) %>%
+  addPolygons(fillOpacity = 0.8,
+              fillColor = ~pal(Valor),
+              weight = 1,
+              color = "white",
+              label = labels,
+              labelOptions = labelOptions(
+                style = list("font-weight" = "normal", padding = "3px 8px"),
+                textsize = "15px",
+                direction = "auto"
+              ),
+              highlightOptions = highlightOptions(fillOpacity = 1, bringToFront = TRUE, 
+                                                  weight = 2, color = "white")
+  ) %>%
+  addLegend(pal = pal, values = ~Valor, opacity = 1.0, position = "bottomright",
+            labFormat = labelFormat(suffix = "%", digits = 2),
+            title = sprintf("Tasa de paro (%s %s)",
+                            paro$T3_Periodo[1], paro$Anyo[1]))
+
+
+
+m
+```
 
