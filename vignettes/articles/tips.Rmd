@@ -109,19 +109,19 @@ ipc <- get_data_table(idTable = 50902, filter = filter, tip = "A",
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
-## Use of `inecode`
+## Use of `inegeocode`
 When we request data that involves administrative units (Autonomous Communities,
 provinces or municipalities), we can obtain the INE code corresponding to each
-one by passing the argument `inecode = TRUE`. Including metadata with `tip="M"`
+one by passing the argument `inegeocode = TRUE`. Including metadata with `tip="M"`
 is required for it to work.
 
-```{r inecode}
+```{r inegeocode}
 # Filter with the values wrapper (CPI)
 filter <- list(values = c("índice$" , "índice general"), prov = "")
 
-# Request data using the filter with inecode = TRUE and tip = "AM"
+# Request data using the filter with inegeocode = TRUE and tip = "AM"
 ipc <- get_data_table(idTable = 50918, filter = filter, tip = "AM", nlast = 2,
-                      unnest = TRUE, inecode = TRUE)
+                      unnest = TRUE, inegeocode = TRUE)
 
 # The CODIGO_INE column contains the INE code of the different provinces
 ipc[1:5,c("CODIGO_INE","Nombre", "T3_Periodo", "Anyo", "Valor")]

@@ -73,7 +73,7 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
 #' @param unnest (logical): obtain a single data frame of data
-#' @param inecode (logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities
+#' @param inegeocode (logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities
 #'
 #' @return Data frame with data of series
 #' @export
@@ -83,7 +83,7 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #'  periodicity = 1)
 #' }
 #'
-get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity = NULL, nlast = 1, det = 0, tip = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE, unnest = FALSE, inecode = FALSE){
+get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity = NULL, nlast = 1, det = 0, tip = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE, unnest = FALSE, inegeocode = FALSE){
 
   # List of values to define the call to the API
   definition <- list()
@@ -102,7 +102,7 @@ get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity 
   parameters <- append(parameters, if(page == 0) list(page = 1) else list(page = page))
 
   # List of addons
-  addons <- list(validate = validate, verbose = verbose, unnest = unnest, inecode = inecode)
+  addons <- list(validate = validate, verbose = verbose, unnest = unnest, inegeocode = inegeocode)
 
   # List of definitions and parameters
   request <- list(definition = definition, parameters = parameters, addons = addons)
@@ -114,7 +114,7 @@ get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity 
   url <- get_url(request)
 
   # Obtain the data retrieved calling the API
-  data <- get_api_data(url, request, verbose = verbose, unnest = unnest, inecode = inecode)
+  data <- get_api_data(url, request, verbose = verbose, unnest = unnest, inegeocode = inegeocode)
 
   return(data)
 }

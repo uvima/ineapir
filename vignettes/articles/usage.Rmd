@@ -103,7 +103,7 @@ filter = list(ccaa = "", sexo = "ambos", edad = "total")
 
 # Table: Unemployment rates by different age groups, sex and Autonomous Community
 # Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=4247&L=0
-paro <- get_data_table(idTable = 4247, filter = filter, nlast = 1, inecode = TRUE,
+paro <- get_data_table(idTable = 4247, filter = filter, nlast = 1,
                        unnest = TRUE, extractmetadata = TRUE, tip = "AM")
 
 # Bar chart using plotly
@@ -125,17 +125,23 @@ fig
 ```{r example_4}
 library(leaflet)
 library(sf)
+library(htmltools)
 
 # Get the boundaries of the autonomous communities
-ccaa <- read_sf("https://difusion.interna.ine.es/wstempus/geojs/ES/CONTORNOS/70")
+ccaa <- read_sf("https://www.ine.es/wstempus/geojs/ES/CONTORNOS/70")
 
-# Select a set on columns from data of example 3
+# Table: Unemployment rates by different age groups, sex and Autonomous Community
+# Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=4247&L=0
+paro <- get_data_table(idTable = 4247, filter = filter, nlast = 1,
+                       unnest = TRUE, extractmetadata = TRUE, tip = "AM")
+
+# Select a set on columns from data
 paro <- subset(paro, select = c("Comunidades.y.Ciudades.Autónomas.Id", "T3_Periodo", "Anyo","Valor"))
 
 # Join boundaries information with data information
 ccaa <- merge(ccaa, paro, by.x = "id_region", by.y = "Comunidades.y.Ciudades.Autónomas.Id" )
 
-# Palette of the legend
+# Create the palette of the legend
 pal <- colorBin("plasma", domain = NULL, bins = c(quantile(ccaa$Valor)))
 
 # Labels of the map
@@ -144,11 +150,12 @@ labels <- sprintf(
   ccaa$nom_region, ccaa$Valor
 ) %>% lapply(htmltools::HTML)
 
+
 # Create the map
 m <- leaflet(ccaa) %>% 
   addTiles() %>%
   #addProviderTiles(providers$Esri.WorldGrayCanvas) %>%
-  setView(-4, 40, zoom = 6) %>%
+  setView(-4, 40, zoom = 5) %>%
   addPolygons(fillOpacity = 0.8,
               fillColor = ~pal(Valor),
               weight = 1,
@@ -165,10 +172,9 @@ m <- leaflet(ccaa) %>%
   addLegend(pal = pal, values = ~Valor, opacity = 1.0, position = "bottomright",
             labFormat = labelFormat(suffix = "%", digits = 2),
             title = sprintf("Tasa de paro (%s %s)",
-                            paro$T3_Periodo[1], paro$Anyo[1]))
-
-
+                            paro$Anyo[1], paro$T3_Periodo[1]))
 
 m
+
 ```
 
