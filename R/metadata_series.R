@@ -156,6 +156,7 @@ get_metadata_series_values <- function(codSeries = NULL, det = 0, tip = NULL, la
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
+#' @param extractmetadata (logical): set to TRUE to extract metadata to individual data frame columns
 #'
 #' @return Data frame with information of the series belonging to a table
 #' @export
@@ -164,7 +165,7 @@ get_metadata_series_values <- function(codSeries = NULL, det = 0, tip = NULL, la
 #' get_metadata_series_table(idTable = 50902)
 #' }
 #'
-get_metadata_series_table <- function(idTable = NULL, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
+get_metadata_series_table <- function(idTable = NULL, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, extractmetadata = FALSE){
 
   # List of values to define the call to the API
   definition <- list()
@@ -179,7 +180,7 @@ get_metadata_series_table <- function(idTable = NULL, det = 0, tip = NULL, lang 
   parameters <- append(parameters, list(tip = tip))
 
   # List of addons
-  addons <- list(validate = validate, verbose = verbose)
+  addons <- list(validate = validate, verbose = verbose, extractmetadata = extractmetadata)
 
   # List of definitions and parameters
   request <- list(definition = definition, parameters = parameters, addons = addons)
@@ -191,7 +192,7 @@ get_metadata_series_table <- function(idTable = NULL, det = 0, tip = NULL, lang 
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, request, verbose = verbose)
+  data <- get_api_data(url, request, verbose = verbose, extractmetadata = extractmetadata)
 
   return(data)
 }

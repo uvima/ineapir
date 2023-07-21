@@ -10,7 +10,8 @@ get_metadata_series_table(
   tip = NULL,
   lang = "ES",
   validate = TRUE,
-  verbose = FALSE
+  verbose = FALSE,
+  extractmetadata = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ get_metadata_series_table(
 \item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
 
 \item{verbose}{(logical): print additional information}
+
+\item{extractmetadata}{(logical): set to TRUE to extract metadata to individual data frame columns}
 }
 \value{
 Data frame with information of the series belonging to a table
