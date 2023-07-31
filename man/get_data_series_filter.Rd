@@ -15,8 +15,7 @@ get_data_series_filter(
   page = 1,
   validate = TRUE,
   verbose = FALSE,
-  unnest = FALSE,
-  inegeocode = FALSE
+  unnest = FALSE
 )
 }
 \arguments{
@@ -42,8 +41,6 @@ get_data_series_filter(
 \item{verbose}{(logical): print additional information}
 
 \item{unnest}{(logical): obtain a single data frame of data}
-
-\item{inegeocode}{(logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities}
 }
 \value{
 Data frame with data of series

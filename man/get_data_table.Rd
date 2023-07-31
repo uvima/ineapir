@@ -14,7 +14,6 @@ get_data_table(
   validate = TRUE,
   verbose = FALSE,
   unnest = FALSE,
-  inegeocode = FALSE,
   extractmetadata = FALSE
 )
 }
@@ -36,8 +35,6 @@ get_data_table(
 \item{verbose}{(logical): print additional information}
 
 \item{unnest}{(logical): set to TRUE to obtain a single data frame of data}
-
-\item{inegeocode}{(logical): set to TRUE to obtain the code of national, ccaa, provinces or municipalities}
 
 \item{extractmetadata}{(logical): set to TRUE to extract metadata to individual data frame columns}
 }
