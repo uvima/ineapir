@@ -16,7 +16,14 @@ available statistical information published by INE.
 
 ## Installation
 
-You can install the development version of **ineapir** like so:
+To install the development version of **ineapir** you can download the
+source code as a zip file and then install it as follows.
+
+``` r
+remotes::install_local(path = "path/to/file.zip")
+```
+
+Alternatively, in case you have a personal access token.
 
 ``` r
 remotes::install_github("uvima/ineapir")
@@ -29,58 +36,14 @@ grouped together into statistical tables. The field named ‘*Valor*’ is
 the only one that contains data. The rest of the fields are necessary
 for the data to be well defined.
 
-### Obtaining data from a series
-
-To get the last data of a series it is necessary to pass the `codSeries`
-argument which is the identification code of the series.
-
-``` r
-library(ineapir)
-
-# We use the function get_data_series with the argument codSeries
-series <- get_data_series(codSeries = "IPC251856")
-series$Data
-#>         Fecha FK_TipoDato FK_Periodo Anyo Valor Secreto
-#> 1 1.68557e+12           1          6 2023   1.9   FALSE
-```
-
-To get the last n data from a series it is necessary to pass the `nlast`
-argument as well.
-
-``` r
-# We use the function get_data_series with arguments codSeries and nlast
-series <- get_data_series(codSeries = "IPC251856", nlast = 5)
-series$Data
-#>          Fecha FK_TipoDato FK_Periodo Anyo Valor Secreto
-#> 1 1.675206e+12           1          2 2023   6.0   FALSE
-#> 2 1.677625e+12           1          3 2023   3.3   FALSE
-#> 3 1.680300e+12           1          4 2023   4.1   FALSE
-#> 4 1.682892e+12           1          5 2023   3.2   FALSE
-#> 5 1.685570e+12           1          6 2023   1.9   FALSE
-```
-
-Additionally, it is possible to obtain data from a series between two
-dates. The date must have and specific format (*yyyy/mm/dd*). If the end
-date is not specified we obtain all the data from the start date.
-
-``` r
-# We use the function get_data_series with arguments codSeries, dateStart and dataEnd
-series <- get_data_series(codSeries = "IPC251856", dateStart = "2023/01/01", 
-                          dateEnd = "2023/04/01")
-series$Data
-#>          Fecha FK_TipoDato FK_Periodo Anyo Valor Secreto
-#> 1 1.672528e+12           1          1 2023   5.9   FALSE
-#> 2 1.675206e+12           1          2 2023   6.0   FALSE
-#> 3 1.677625e+12           1          3 2023   3.3   FALSE
-#> 4 1.680300e+12           1          4 2023   4.1   FALSE
-```
-
 ### Obtaining data from a table
 
 To get all the data of a table it is necessary to pass the `idTable`
 argument which is the identification code of the table.
 
 ``` r
+library(ineapir)
+
 # We use the function get_data_table with the argument idTable
 table <- get_data_table(idTable = 50902)
 table[1,c("COD", "Nombre")]
@@ -98,6 +61,61 @@ head(table$Data[[1]])
 
 To get the last n data from a table it is necessary to pass the `nlast`
 argument as well.
+
+``` r
+# We use the function get_data_table with the argument idTable
+table <- get_data_table(idTable = 50902, nlast = 2)
+table[1,c("COD", "Nombre")]
+#>         COD                                   Nombre
+#> 1 IPC251852 Total Nacional. Índice general. Índice.
+head(table$Data[[1]])
+#>         Fecha FK_TipoDato FK_Periodo Anyo   Valor Secreto
+#> 1 1.68557e+12           1          6 2023 112.354   FALSE
+```
+
+### Obtaining data from a series
+
+To get the last data of a series it is necessary to pass the `codSeries`
+argument which is the identification code of the series.
+
+``` r
+# We use the function get_data_series with the argument codSeries
+series <- get_data_series(codSeries = "IPC251856")
+series$Data
+#>          Fecha FK_TipoDato FK_Periodo Anyo Valor Secreto
+#> 1 1.688162e+12           3          7 2023   2.3   FALSE
+```
+
+To get the last n data from a series it is necessary to pass the `nlast`
+argument as well.
+
+``` r
+# We use the function get_data_series with arguments codSeries and nlast
+series <- get_data_series(codSeries = "IPC251856", nlast = 5)
+series$Data
+#>          Fecha FK_TipoDato FK_Periodo Anyo Valor Secreto
+#> 1 1.677625e+12           1          3 2023   3.3   FALSE
+#> 2 1.680300e+12           1          4 2023   4.1   FALSE
+#> 3 1.682892e+12           1          5 2023   3.2   FALSE
+#> 4 1.685570e+12           1          6 2023   1.9   FALSE
+#> 5 1.688162e+12           3          7 2023   2.3   FALSE
+```
+
+Additionally, it is possible to obtain data from a series between two
+dates. The date must have and specific format (*yyyy/mm/dd*). If the end
+date is not specified we obtain all the data from the start date.
+
+``` r
+# We use the function get_data_series with arguments codSeries, dateStart and dataEnd
+series <- get_data_series(codSeries = "IPC251856", dateStart = "2023/01/01", 
+                          dateEnd = "2023/04/01")
+series$Data
+#>          Fecha FK_TipoDato FK_Periodo Anyo Valor Secreto
+#> 1 1.672528e+12           1          1 2023   5.9   FALSE
+#> 2 1.675206e+12           1          2 2023   6.0   FALSE
+#> 3 1.677625e+12           1          3 2023   3.3   FALSE
+#> 4 1.680300e+12           1          4 2023   4.1   FALSE
+```
 
 ## Metadata request examples
 

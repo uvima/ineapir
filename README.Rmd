@@ -28,8 +28,14 @@ available statistical information published by INE.
 
 ## Installation
 
-You can install the development version of **ineapir** like so:
+To install the development version of **ineapir** you can download the
+source code as a zip file and then install it as follows.
 
+```{r, eval = FALSE}
+remotes::install_local(path = "path/to/file.zip")
+```
+
+Alternatively, in case you have a personal access token.
 ```{r, eval = FALSE}
 remotes::install_github("uvima/ineapir")
 ```
@@ -41,14 +47,36 @@ together into statistical tables. The field named '*Valor*' is the only one
 that contains data. The rest of the fields are necessary for the data to be
 well defined.
 
+### Obtaining data from a table
+
+To get all the data of a table it is necessary to pass the `idTable`
+argument which is the identification code of the table.
+
+```{r table_data}
+library(ineapir)
+
+# We use the function get_data_table with the argument idTable
+table <- get_data_table(idTable = 50902)
+table[1,c("COD", "Nombre")]
+head(table$Data[[1]])
+```
+
+To get the last n data from a table it is necessary to pass the `nlast`
+argument as well.
+
+```{r table_data_n}
+# We use the function get_data_table with the argument idTable
+table <- get_data_table(idTable = 50902, nlast = 2)
+table[1,c("COD", "Nombre")]
+head(table$Data[[1]])
+```
+
 ### Obtaining data from a series
 
 To get the last data of a series it is necessary to pass the `codSeries`
 argument which is the identification code of the series.
 
 ```{r series_data}
-library(ineapir)
-
 # We use the function get_data_series with the argument codSeries
 series <- get_data_series(codSeries = "IPC251856")
 series$Data
@@ -74,20 +102,7 @@ series <- get_data_series(codSeries = "IPC251856", dateStart = "2023/01/01",
 series$Data
 ```
 
-### Obtaining data from a table
 
-To get all the data of a table it is necessary to pass the `idTable`
-argument which is the identification code of the table.
-
-```{r table_data}
-# We use the function get_data_table with the argument idTable
-table <- get_data_table(idTable = 50902)
-table[1,c("COD", "Nombre")]
-head(table$Data[[1]])
-```
-
-To get the last n data from a table it is necessary to pass the `nlast`
-argument as well.
 
 ## Metadata request examples
 
