@@ -10,8 +10,9 @@ knitr::opts_chunk$set(
 ```
 
 Instead of using numeric codes, it is possible to use certain shortcut names
-when the `filter` argument is passed. The available shortcuts for
-variables are shown below.
+when the `filter` argument is passed. However, for a better performance is
+recommended to use numeric codes. The available shortcuts for variables are
+shown below.
 
 |Shortcut | Variable ID | Comment|
 |---------|----|--------|

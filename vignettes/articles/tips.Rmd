@@ -129,7 +129,8 @@ ipc[1:5,c("inegeocode","Nombre", "T3_Periodo", "Anyo", "Valor")]
 
 ## Use of `extractmetadata`
 When we pass the argument `extractmetadata = TRUE` we get additional columns in
-the data frame with the metadata information about the variables and their values.
+the data frame with the metadata information about the variables and their
+values (including their codes).
 
 ```{r extractmetadata}
 # Filter for total population of men and women 

@@ -50,7 +50,7 @@ ipc <- get_data_table(idTable = 50902, filter = filter, unnest = TRUE,
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
-### Case two (pc-axis and tpx files)
+### Case two (pc-axis file)
 
 - **URL:** https://www.ine.es/jaxi/Tabla.htm?path=/t20/e245/p08/l0/&file=01001.px
 
@@ -75,6 +75,34 @@ filter <- list(sexo = "ambossexos",
 poblacion <- get_data_table(idTable = "t20/e245/p08/l0/01001.px", unnest = TRUE,
                     tip = "A", nlast = 5, filter = filter)
 poblacion
+```
+
+### Case three (tpx file)
+
+- **URL:** https://www.ine.es/jaxi/Tabla.htm?tpx=33387&L=0
+
+1. The first step is to obtain the metadata information from a table.
+
+```{r tabla_filter_4}
+# Get metadata information of the table
+metadata <- get_metadata_table_varval(idTable = 33387)
+metadata[grepl("^\\d{1}\\D+",metadata$Codigo),]
+```
+
+2. With this information we build the filter as follows.
+
+```{r tabla_filter_5}
+# Build the filter with the codes of variables and values
+# A variable can take more than one value
+filter <- list(tipodematerial = c("1biomasa", "2mineralesmetalicosmineralenbruto",
+                                  "3mineralesnometalicos", "4combustiblesfosiles")
+               )
+
+
+# Request data using the filter
+materiales <- get_data_table(idTable = 33387, unnest = TRUE, tip = "A",
+                             nlast = 1, filter = filter)
+materiales
 ```
 
 ## Filtering data from series
