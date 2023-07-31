@@ -10,7 +10,7 @@ knitr::opts_chunk$set(
 ```
 
 The downloaded data can be plotted using packages like
-[plotly](https://plotly.com/r/) or[leaflet](https://rstudio.github.io/leaflet/).
+[plotly](https://plotly.com/r/) or [leaflet](https://rstudio.github.io/leaflet/).
 
 ## Example 1. Interactive time series
 
@@ -77,7 +77,8 @@ pob <- poblacion %>%
   group_by(Anyo) %>% 
   mutate(Total = sum(Valor), 
          Porcentaje = Valor/Total*100, 
-         Grupo.quinquenal.de.edad = fct_inorder(trimws(Grupo.quinquenal.de.edad))) %>% ungroup() %>%
+         Grupo.quinquenal.de.edad = fct_inorder(trimws(Grupo.quinquenal.de.edad))) %>%
+  ungroup() %>%
   mutate(Porcentaje = ifelse(Sexo == "Hombres",
                              -Porcentaje, Porcentaje))
   
@@ -139,10 +140,12 @@ paro <- get_data_table(idTable = 4247, filter = filter, nlast = 1,
                        unnest = TRUE, extractmetadata = TRUE, tip = "AM")
 
 # Select a set on columns from data
-paro <- subset(paro, select = c("Comunidades.y.Ciudades.Autónomas.Id", "T3_Periodo", "Anyo","Valor"))
+paro <- subset(paro, select = c("Comunidades.y.Ciudades.Autónomas.Id", "T3_Periodo",
+                                "Anyo","Valor"))
 
 # Join boundaries information with data information
-ccaa <- merge(ccaa, paro, by.x = "id_region", by.y = "Comunidades.y.Ciudades.Autónomas.Id" )
+ccaa <- merge(ccaa, paro, by.x = "id_region", 
+              by.y = "Comunidades.y.Ciudades.Autónomas.Id" )
 
 # Create the palette of the legend
 pal <- colorBin("plasma", domain = NULL, bins = c(quantile(ccaa$Valor)))

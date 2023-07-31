@@ -32,7 +32,9 @@ variables <- get_metadata_variables(operation = "IPC", verbose = TRUE,
 ```
 
 This is useful when we are filtering data and the filter we are using is
-the one we want. Turning off validation means making fewer API calls
+the one we want. Turning off validation means making fewer API calls.
+For better performance, it is recommended to use codes in the filter instead
+of shortcuts and disable validation if we are sure that the filter is correct.
 
 ```{r validate_2}
 # The filter 
