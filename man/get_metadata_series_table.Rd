@@ -11,7 +11,8 @@ get_metadata_series_table(
   lang = "ES",
   validate = TRUE,
   verbose = FALSE,
-  extractmetadata = FALSE
+  metanames = FALSE,
+  metacodes = FALSE
 )
 }
 \arguments{
@@ -27,7 +28,11 @@ get_metadata_series_table(
 
 \item{verbose}{(logical): print additional information}
 
-\item{extractmetadata}{(logical): set to TRUE to extract metadata to individual data frame columns}
+\item{metanames}{(logical): set to TRUE to extract the name of the values to individual data frame columns
+from metadata information}
+
+\item{metacodes}{(logical): set to TRUE to extract the codes and ids of the values to individual data frame columns
+from metadata information}
 }
 \value{
 Data frame with information of the series belonging to a table

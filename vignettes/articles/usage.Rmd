@@ -69,7 +69,7 @@ filter <- list(nacionalidad = "total", sexo = c("hombres", "mujeres"))
 # Table: Resident population by date, sex, age group and nationality
 # Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=56936&L=0
 poblacion <- get_data_table(idTable = 56936, filter = filter, validate = FALSE, 
-                            tip = "AM", unnest = TRUE, extractmetadata = TRUE)
+                            tip = "AM", unnest = TRUE, metanames = TRUE)
 
 # Filter and calculate percentages
 pob <- poblacion %>% 
@@ -105,7 +105,7 @@ filter = list(ccaa = "", sexo = "ambos", edad = "total")
 # Table: Unemployment rates by different age groups, sex and Autonomous Community
 # Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=4247&L=0
 paro <- get_data_table(idTable = 4247, filter = filter, nlast = 1,
-                       unnest = TRUE, extractmetadata = TRUE, tip = "AM")
+                       unnest = TRUE, metanames = TRUE, tip = "AM")
 
 # Bar chart using plotly
 fig <- plot_ly(paro, 
@@ -137,7 +137,7 @@ filter = list(ccaa = "", sexo = "ambos", edad = "total")
 # Table: Unemployment rates by different age groups, sex and Autonomous Community
 # Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=4247&L=0
 paro <- get_data_table(idTable = 4247, filter = filter, nlast = 1,
-                       unnest = TRUE, extractmetadata = TRUE, tip = "AM")
+                       unnest = TRUE, metacodes = TRUE, tip = "AM")
 
 # Select a set on columns from data
 paro <- subset(paro, select = c("Comunidades.y.Ciudades.Autónomas.Id", "T3_Periodo",

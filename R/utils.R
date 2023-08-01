@@ -33,15 +33,7 @@ shortcuts_filter <- list(nac = "349",                        # national
                   lugarnacimiento = c("97"),          # place of birth
                   birthplace = c("97"),               # place of birth
                   efectoscorr = "544",                # correction of effects
-                  effectscorr = "544",                # correction of effects
-                  cnae = c("393", "389", "387"),
-                  #pob = c("349", "70", "115", "18", "19", "20", "355", "356", "360", "357", "141", "431"),
-                  #pop = c("349", "70", "115", "18", "19", "20", "355", "356", "360", "357", "141", "431"),
-                  #pib = c("544", "501", "482", "495", "481", "480", "3"),
-                  #gdp = c("544", "501", "482", "495", "481", "480", "3"),
-                  #ipc = c("762", "763", "764", "765", "349", "115", "70", "3", "269", "270"),
-                  #cpi = c("762", "763", "764", "765", "349", "115", "70", "3", "269", "270"),
-                  epa = c("349", "70", "115", "356", "360", "357", "18", "3", "141", "386", "393", "389", "387")
+                  effectscorr = "544"                 # correction of effects
                   )
 
 shortcuts_operations <- list(ipc = "IPC", cpi = "IPC",
@@ -49,17 +41,10 @@ shortcuts_operations <- list(ipc = "IPC", cpi = "IPC",
                              pob = "ECP", pop = "ECP"
                              )
 
-# Shortcuts used with periodicities
-#shortcuts_periodicity <- list("m" = "1", # monthly
-#                              "t" = "3", # trimestral (Spanish)
-#                              "q" = "3", # quarterly
-#                              "s" = "6", # semestral (Spanish)
-#                              "b" = "6", # bi-annual
-#                              "a" = "12" # annual
-#                              )
+shortcut_wrapper <- c("values")
 
 # Function to retrieve data from the aPI
-get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inegeocode = FALSE, extractmetadata = FALSE){
+get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, metanames = FALSE, metacodes = FALSE){
 
   result <- NULL
 
@@ -101,7 +86,6 @@ get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inegeoco
       if(jsonlite::validate(content)){
         result <- jsonlite::fromJSON(content , flatten = TRUE)
       }
-      #result <- jsonlite::fromJSON(url, flatten = TRUE)
     },
     error=function(e) {
       message('An error occurred calling the API')
@@ -116,16 +100,10 @@ get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inegeoco
   # Check the result retrieved for the API
   if(!check_result_status(result) && !is.null(result)){
 
-    # Include an identifying territorial code when applicable
-    if(inegeocode){
-      result <- get_inegeocode(result, verbose)
-    }
-
     # extract metadata to columns
-    if(extractmetadata){
+    if(metanames || metacodes){
       result <- extract_metadata(result, request)
     }
-
 
     # Unnest the Data column in one single dataframe
     if(unnest){
@@ -137,31 +115,23 @@ get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, inegeoco
 }
 
 # Function to retrieve data from the aPI when the result is paginated
-get_api_data_all_pages <- function(url, request, verbose = FALSE, unnest = FALSE, inegeocode = FALSE, extractmetadata = FALSE){
+get_api_data_all_pages <- function(url, request, verbose = FALSE, unnest = FALSE, metanames = FALSE, metacodes = FALSE){
 
   result <- NULL
 
   # Request all pages
   if(request$parameters$page == 0){
-
-    #definition <- request$definition
-    #parameters <- request$parameters
-    #addons     <- request$addons
-
     # Page counter
     numpage <- 1
 
     # Update page
     request$parameters[["page"]] <- numpage
 
-    # List of definitions and parameters
-    #request <- list(definition = definition, parameters = parameters, addons = addons)
-
     # Build the URL to call the API
     url <- get_url(request)
 
     # Call de API
-    result <- get_api_data(url, request, verbose = verbose, unnest = unnest, inegeocode = inegeocode, extractmetadata = extractmetadata)
+    result <- get_api_data(url, request, verbose = verbose, unnest = unnest, metanames = metanames, metacodes = metacodes)
 
     # Number of rows
     numrows <- if(!is.null(nrow(result))) nrow(result) else 1
@@ -173,14 +143,11 @@ get_api_data_all_pages <- function(url, request, verbose = FALSE, unnest = FALSE
       # Update page
       request$parameters[["page"]] <- numpage
 
-      # Update the list of definitions and parameters
-      #request <- list(definition = definition, parameters = parameters, addons = addons)
-
       # Update the URL to call the API
       url <- get_url(request)
 
       # Call the API
-      resultpage <- get_api_data(url, request, verbose = verbose, unnest = unnest, inegeocode = inegeocode, extractmetadata = extractmetadata)
+      resultpage <- get_api_data(url, request, verbose = verbose, unnest = unnest, metanames = metanames, metacodes = metacodes)
 
       # Number of rows
       numrows <- if(!is.null(nrow(resultpage))) nrow(resultpage) else 1
@@ -190,49 +157,13 @@ get_api_data_all_pages <- function(url, request, verbose = FALSE, unnest = FALSE
     }
   # Request a specific page
   }else{
-    result <- get_api_data(url, request, verbose = verbose, unnest = unnest, inegeocode = inegeocode, extractmetadata = extractmetadata)
+    result <- get_api_data(url, request, verbose = verbose, unnest = unnest, metanames = metanames, metacodes = metacodes)
   }
 
   return(result)
 
 }
 
-# Function to retrieve data from the aPI
-get_api_data_pages <- function(request, verbose = FALSE){
-
-  definition <- request$definition
-  parameters <- request$parameters
-  addons     <- request$addons
-
-  # Number of entries to retrieve
-  n <- parameters$page
-
-  # Convert number of entries to pages
-  pages <- ceiling(n/page_lenght)
-
-  data <- NULL
-  for(i in 1:pages){
-    # Update page
-    parameters[["page"]] <- i
-
-    # List of definitions and parameters
-    request <- list(definition = definition, parameters = parameters, addons = addons)
-
-    # Build the complete URL to call the API
-    url <- get_url(request)
-
-    # Obtain the retrieved data calling the API
-    tmp <- get_api_data(url, verbose = verbose)
-
-    if (exists("data") && is.data.frame(get("data"))){
-      data <- rbind(data,tmp)
-    }else{
-      data <- tmp
-    }
-  }
-
-  return(data[1:n,])
-}
 
 # Get the url endpoint
 get_definition_path <- function(request){
@@ -332,52 +263,6 @@ get_url <- function(request){
   return(result)
 }
 
-# Build the URL to call the API
-get_url2 <- function(request){
-  # API url
-  url <- API_URL
-
-  # Build the definition part. We remove tag (last one) from definition
-  for(x in unlist(request$definition[-length(request$definition)])){
-    if(!is.null(x)){
-      url <- paste0(url,"/", x)
-    }
-  }
-
-  #Build the parameters part
-  i <- 1
-  for(x in names(request$parameters)){
-    val <- request$parameters[[x]]
-    sep <- "="
-
-    if(!is.null(val)){
-      if(x == "date"){
-        val <- build_date(val)
-
-      }else if(x == "p"){
-        #val <- if(is.element(val[[x]], unlist(shortcuts_periodicity, use.names = FALSE))) val[[x]] else shortcuts_periodicity[val[[x]]]
-        val <- val[[x]]
-
-      }else if (x == "filter"){
-        val <- build_filter(val, request$definition[["lang"]], request$addons)
-        x <- ""
-        sep <- ""
-      }
-
-      par <- paste(x,val, sep = sep)
-
-      if(i == 1){
-        url <- paste0(url,"?", par)
-      }else{
-        url <- paste0(url,"&", par)
-      }
-      i <- i + 1
-    }
-  }
-
-  return(url)
-}
-
 # Return the dates in the format used by the API
 build_date <- function(date){
   dateStart <- format.Date(date$dateStart,'%Y%m%d')
@@ -413,14 +298,11 @@ build_filter <- function(parameter, definition, addons, checkfilter){
     # If there are shortcuts present in the filter
     shortcut <- checkfilter$shortcut
 
-    # Type of object: pxtable, tempustable or series
+    # Type of object: pxtable, tempus table or series
     origin <- checkfilter$origin
 
   # If validate = FALSE we get the values
   }else{
-    # First we check that shortcut is set correctly
-    #check_shortcut(filter, addons$shortcut, filter)
-
     # If there are shortcuts present in the filter
     shortcut <- check_shortcut(filter, definition)
 
@@ -436,27 +318,33 @@ build_filter <- function(parameter, definition, addons, checkfilter){
   for(n in names(filter)){
 
     # check if in the filter there are shortcuts
-    #short <- is.element(tolower(n), c(names(shortcuts_filter), names(shortcuts_operations)))
-    short <- is.element(tolower(n), c(names(shortcuts_filter), "values"))
+    short <- is.element(tolower(n), c(names(shortcuts_filter), shortcut_wrapper))
 
     # It is necessary to include shortcut in the case of a px table with a code equal to a shortcut (eg sexo)
     if(shortcut && short){
       # filter with ids
       filterout <- list()
 
-      #if(tolower(n) %in% names(shortcuts_operations)){
-      if(tolower(n) == "values"){
-        #varope <- get_metadata_variables(operation = shortcuts_operations[[tolower(n)]],
-        #                               validate = FALSE, verbose = TRUE)
-        varid <- if(origin == "tablepx") unique(dfval$Variable.Codigo) else unique(dfval$Fk_Variable)
+      if(origin == "tablepx"){
+        # Select codes
+        varid <- unique(dfval$Variable.Codigo)
+
+        # We select only the values of variables present in the filter
+        dfvalfilter <- subset(dfval, dfval$Variable.Codigo %in% varid)
 
       }else{
-        # id of variables
-        varid <- shortcuts_filter[[tolower(n)]]
+        if(tolower(n) %in% shortcut_wrapper){
+          # Select ids
+          varid <- unique(dfval$Fk_Variable)
+
+        }else{
+          # id of variables
+          varid <- shortcuts_filter[[tolower(n)]]
+        }
+
+        # We select only the values of variables present in the filter
+        dfvalfilter <- subset(dfval, dfval$Fk_Variable %in% varid)
       }
-      # We select only the values of variables present in the filter
-      dfvalfilter <- if(origin == "tablepx") subset(dfval, dfval$Variable.Codigo %in% varid)
-                     else subset(dfval, dfval$Fk_Variable %in% varid)
 
       # Reset the values found
       dfvalgrep <- NULL
@@ -551,14 +439,6 @@ build_filter <- function(parameter, definition, addons, checkfilter){
               # List with all the values
               lval <- append(lval, list(paste0(var, ":", filterout[[var]])))
               names(lval)[length(lval)] <- parurl
-
-              #if(is.element("idtable",parnames)){
-              #  lval <- append(lval, list(tv = paste0(var, ":", filterout[[var]])))
-              #}else{
-              #  lval <- append(lval, list(paste0(var, ":", filterout[[var]])))
-              #  names(lval)[length(lval)] <- parurl
-                #lval[[parurl]] <- paste0(var, ":", filterout[[var]])
-              #}
             }
           }
         }else{
@@ -579,14 +459,6 @@ build_filter <- function(parameter, definition, addons, checkfilter){
             # List with all the values
             lval <- append(lval, list(paste0(varid, ":", filterout[[varid]])))
             names(lval)[length(lval)] <- parurl
-
-            #if(is.element("idtable",parnames)){
-            #  lval <- append(lval, list(tv = paste0(varid, ":", filterout[[varid]])))
-            #}else{
-            #  lval <- append(lval, list(paste0(var, ":", filterout[[var]])))
-            #  names(lval)[length(lval)] <- parurl
-              #lval[[parurl]] <- paste0(varid, ":", filterout[[varid]])
-            #}
           }
         }
 
@@ -619,12 +491,6 @@ build_filter <- function(parameter, definition, addons, checkfilter){
         lval <- append(lval, list(paste0(n, ":", f)))
         names(lval)[length(lval)] <- parurl
 
-        #if(is.element("idtable",parnames)){
-        #  lval <- append(lval, list(tv = paste0(n, ":", f)))
-        #}else{
-        #  lval[[parurl]] <- paste0(n, ":", f)
-        #}
-
         if(addons$verbose){
           cat(sprintf("- Processing filter: %s%%        \r", round(50 + j/sum(lengths(filter))*50,0)))
         }
@@ -639,7 +505,7 @@ build_filter <- function(parameter, definition, addons, checkfilter){
   if(addons$verbose){
     cat("- Processing filter: 100%         \n")
   }
-  #return(paste(val, collapse = "&"))
+
   return(lval)
 }
 
@@ -660,11 +526,6 @@ get_filter_values <- function(parameter, lang, shortcut, verbose, progress = TRU
 
   # The filter includes shortcuts in the names of variables and values
   if(shortcut){
-
-    #if(progress){
-    #  cat("- Processing filter: 0% \r")
-    #}
-
     # The filter comes from a table
     if(is.element("idtable",parnames)){
 
@@ -676,123 +537,6 @@ get_filter_values <- function(parameter, lang, shortcut, verbose, progress = TRU
       # We obtain the variables and values from the operation of the series
       dfval <- get_metadata_variable_values_operation(operation = id, verbose = verbose, validate = FALSE, lang, progress)
     }
-  }
-
-  #if(progress){
-  #  cat("- Processing filter: 100%         \n")
-  #}
-
-  return(dfval)
-}
-
-# Get the all values used in a table or operation
-get_filter_values2 <- function(parameter, lang, shortcut, verbose){
-
-  # id to identify a table or a operation
-  id <- parameter[[1]]
-
-  # List of variables and values
-  filter <- parameter[[2]]
-
-  # Names in the list of the parameter
-  parnames <- tolower(names(parameter))
-
-  # Dataframe to return the values
-  dfval <- NULL
-
-  # The filter includes shortcuts in the names of variables and values
-  if(shortcut){
-
-    if(verbose){
-      cat("- Processing filter: 0% \r")
-    }
-
-    # The filter comes from a table
-    if(is.element("idtable",parnames)){
-
-      # We obtain the groups of the table
-      groups <- get_metadata_table_groups(idTable = id, validate = FALSE, verbose = FALSE)
-
-      # We obtain the values of all the groups
-      i <- 1
-      for(g in groups$Id){
-        tmp <- get_metadata_table_values(idTable = id, idGroup = g, validate = FALSE, lang = lang, verbose = FALSE)
-        tmp <- subset(tmp, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
-
-        if(verbose){
-          cat(sprintf("- Processing filter: %s%%        \r", round(i/nrow(groups)*100,0)))
-          i <- i + 1
-        }
-
-        if (exists("dfval") && is.data.frame(get("dfval"))){
-          dfval <- rbind(dfval,tmp)
-        }else{
-          dfval <- tmp
-        }
-      }
-
-      # The filter comes from a series we collect the possible values from operation values
-    }else{
-      # We obtain the variables from the operation of the series
-      opevar <- get_metadata_variables(operation = id, validate = FALSE, verbose = FALSE, lang = lang, page = 0)
-
-      # Number of rows
-      #numrows <- nrow(opevar)
-
-      # Page counter
-      #numpage <- 1
-
-      # if the number of rows is equal to the length of a page, we query the next page
-      #while (numrows == page_lenght){
-      #  numpage <- numpage + 1
-
-      #  opevarpage <- get_metadata_variables(operation = operation, validate = FALSE, page = numpage, verbose = verbose, lang = lang)
-
-      #  numrows <- nrow(opevarpage)
-
-      #  opevar <- rbind(opevar, opevarpage)
-      #}
-
-      # We obtain the values of all the variables
-      i <- 1
-      for(var in opevar$Id){
-        tmp <- get_metadata_values(operation = id, variable = var, validate = FALSE, verbose = FALSE, lang = lang, page = 0)
-        tmp <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
-
-        # Number of rows
-        #numrows <- nrow(tmp)
-
-        # Page counter
-        #numpage <- 1
-
-        # if the number of rows is equal to the length of a page, we query the next page
-        #while (numrows == page_lenght){
-        #  numpage <- numpage + 1
-
-        #  tmpage <- get_metadata_values(operation = id, variable = var, page = numpage, validate = FALSE, verbose = FALSE, lang = lang)
-        #  tmpage <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
-
-        #  numrows <- nrow(tmpage)
-
-        #  tmp <- rbind(tmp, tmpage)
-        #}
-
-        if(verbose){
-          cat(sprintf("- Processing filter: %s%%        \r", round(i/nrow(opevar)*100,0)))
-          i <- i + 1
-        }
-
-        if (exists("dfval") && is.data.frame(get("dfval"))){
-          dfval <- rbind(dfval,tmp)
-        }else{
-          dfval <- tmp
-        }
-      }
-    }
-  }
-
-  if(verbose){
-    cat("- Processing filter: 100%         \n")
   }
 
   return(dfval)
@@ -861,7 +605,7 @@ check_parameters <- function(parameters, addons, definition){
                 "tip" = check_tip(val, addons$verbose),
                 "geo" = check_geo(val, addons$verbose),
                 "page" = check_page(val, addons$verbose),
-                "filter" = check_filter(val, addons$verbose, definition) #definition$lang, addons$shortcut)
+                "filter" = check_filter(val, addons$verbose, definition)
         )
         # Check results to return
         result <- append(result, r)
@@ -885,9 +629,8 @@ check_addons <- function(parameters, addons, definition){
               "validate" = check_islogical(x, val),
               "verbose" = check_islogical(x, val),
               "unnest" = check_islogical(x, val),
-              "inegeocode"= check_inegeocode(x, val, parameters$tip),
-              #"shortcut" = check_shortcut(parameters$filter$filter, addons$shortcut, definition),
-              "extractmetadata"= check_extractmetadata(x, val, parameters$tip)
+              "metanames"= check_extractmetadata(x, val, parameters$tip),
+              "metacodes"= check_extractmetadata(x, val, parameters$tip)
       )
       # Check results to return
       result <- append(result, r)
@@ -959,23 +702,6 @@ check_operation <- function(operation, active_null = FALSE, verbose){
   if(!is.null(operation)){
     # Get all aperations
     opes <- get_metadata_operations(validate = FALSE, verbose = verbose, page = 0)
-
-    # Number of rows
-    #numrows <- nrow(opes)
-
-    # Page counter
-    #numpage <- 1
-
-    # if the number of rows is equal to the length of a page, we query the next page
-    #while (numrows == page_lenght){
-    #  numpage <- numpage + 1
-
-    #  opespage <- get_metadata_operations(validate = FALSE, page = numpage, verbose = verbose)
-
-    #  numrows <- nrow(opespage)
-
-    #  opes <- rbind(opes, opespage)
-    #}
 
     # Logical controls
     id <- FALSE
@@ -1054,23 +780,6 @@ check_variablesoperation <- function(operation, variable, verbose){
   if(!is.null(variable)){
     vars <- get_metadata_variables(operation = operation, validate = FALSE, verbose = verbose, page = 0)
 
-    # Number of rows
-    #numrows <- nrow(vars)
-
-    # Page counter
-    #numpage <- 1
-
-    # if the number of rows is equal to the length of a page, we query the next page
-    #while (numrows == page_lenght){
-    #  numpage <- numpage + 1
-
-    #  varspage <- get_metadata_variables(operation = operation, page = numpage, validate = FALSE, verbose = verbose)
-
-    #  numrows <- nrow(varspage)
-
-    #  vars <- rbind(vars, varspage)
-    #}
-
     if(!is.element(variable, vars$Id)){
       result <- FALSE
       stop(sprintf("%s is not a valid variable for operation %s. Valid ids: %s", variable, operation, paste0(vars$Id, collapse = ", ")))
@@ -1093,23 +802,6 @@ check_variable <- function(variable, verbose){
 
   if(!is.null(variable)){
     vars <- get_metadata_variables(validate = FALSE, verbose = verbose, page = 0)
-
-    # Number of rows
-    #numrows <- nrow(vars)
-
-    # Page counter
-    #numpage <- 1
-
-    # if the number of rows is equal to the length of a page, we query the next page
-    #while (numrows == page_lenght){
-    #  numpage <- numpage + 1
-
-    #  varspage <- get_metadata_variables(page = numpage, validate = FALSE, verbose = verbose)
-
-    #  numrows <- nrow(varspage)
-
-    #  vars <- rbind(vars, varspage)
-    #}
 
     if(!is.element(variable, vars$Id)){
       result <- FALSE
@@ -1134,23 +826,6 @@ check_publication <- function(publication, verbose){
   if(!is.null(publication)){
     # Get all the publications
     pubs <- get_metadata_publications(validate = FALSE, verbose = verbose, page = 0)
-
-    # Number of rows
-    #numrows <- nrow(pubs)
-
-    # Page counter
-    #numpage <- 1
-
-    # if the number of rows is equal to the length of a page, we query the next page
-    #while (numrows == page_lenght){
-    #  numpage <- numpage + 1
-
-    #  pubspage <- get_metadata_publications(page = numpage, validate = FALSE, verbose = verbose)
-
-    #  numrows <- nrow(pubspage)
-
-    #  pubs <- rbind(pubs, pubspage)
-    #}
 
     if(!is.element(publication, pubs$Id)){
       result <- FALSE
@@ -1275,25 +950,9 @@ check_periodicity <- function(operation, p, verbose){
 
   result <- TRUE
 
-  # Admissible shortcuts for periodicities
-  #shortp <- list("1" = "m", # monthly
-  #               "3" = c("t", "q"),  # quarterly
-  #               "12" = "a" #annual
-  #               )
-
   if(!is.null(p)){
-    # Get all the publications of the operation
-    #pub <- get_metadata_publications(operation= operation, validate = FALSE, verbose = verbose)
-
+    # Get periodicities of an operation
     periodicity <- get_metadata_periodicity(operation = operation, validate = FALSE, verbose = verbose)
-
-    # Periodicity of the publications
-    #periodicity <- pub$FK_Periodicidad
-
-    # We add the possible shortcuts
-    #for(i in pub$FK_Periodicidad){
-    #  periodicity <- append(periodicity, shortp[[as.character(i)]])
-    #}
 
     if(!is.element(p, periodicity$Id)){
       result <- FALSE
@@ -1360,7 +1019,7 @@ check_tip <- function(tip, verbose){
   if(!is.null(tip)){
     tip <- toupper(tip)
 
-    if(tip != "A" && tip != "M" && tip != "AM"){
+    if(tip != "A" && tip != "M" && tip != "AM" && tip != "MA"){
       result <- FALSE
       stop("tip must be equal to 'A', 'M' or 'AM'")
     }
@@ -1395,7 +1054,7 @@ check_geo <- function(geo, verbose){
   return(result)
 }
 
-# check if the n argument is valid
+# check if the page argument is valid
 check_page <- function(n, verbose){
   result <- TRUE
 
@@ -1439,15 +1098,10 @@ check_filter <- function(parameter, verbose, definition){
 
     # The filter comes from a px table
     if(df$origin == "tablepx"){
-      #if(shortcut){
-      #  stop("- For a px table shortcut mus be set to FALSE")
+      check <- check_table_px_filter(id, filter, verbose, df$values)
 
-      #}else{
-        check <- check_table_px_filter(id, filter, verbose, df$values)
-
-        result <- check$result
-        shortcut <- check$shortcut
-      #}
+      result <- check$result
+      shortcut <- check$shortcut
 
     # The filter comes from a tempus table
     }else if(df$origin == "tablet3"){
@@ -1472,71 +1126,16 @@ check_filter <- function(parameter, verbose, definition){
   return(list(df))
 }
 
-# Check if the filter argument is valid
-check_filter2 <- function(parameter, verbose, lang, shortcut){
-  result <- TRUE
-
-  # id to identify a table or a operation
-  id <- parameter[[1]]
-
-  # List of variables and values
-  filter <- parameter[[2]]
-
-  # Names in the list of the parameter
-  parnames <- tolower(names(parameter))
-
-  # The filter comes from a table
-  if(is.element("idtable",parnames)){
-
-    # Obtain table information including metadata
-    #df <- get_data_table(idTable = id, nlast = 1, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
-    #df <- get_metadata_series_table(idTable = id, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
-
-    # Get the groups of the table
-    #groups <- get_metadata_table_groups(idTable = id, validate = FALSE, verbose = verbose, lang = lang)
-
-    # Get the metadata information of the table
-    df <- get_metadata_variable_values_table2(id, verbose, FALSE, lang)
-
-    # Make sure the response is valid or null
-    if(!check_result_status(df$groups)){
-
-      # The table is in px or tpx format
-      #if(is.pxtable(df$MetaData)){
-      if(is.null(df$groups)){
-        # Obtain metadata information
-        #df <- get_metadata_series_table(idTable = id, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
-
-        if(shortcut){
-          stop("- For a px table shortcut mus be set to FALSE")
-
-        }else{
-          result <- check_table_px_filter(id, filter, verbose, df$metadata)
-        }
-
-      # The table is stored in tempus
-      }else{
-        result <- check_table_tempus_filter2(id, filter, verbose, lang, df$metadata, shortcut)
-      }
-    }
-  # The filter comes from a series
-  }else{
-    result <- check_series_filter2(id, filter, verbose, lang, shortcut)
-  }
-
-  return(result)
-}
-
-# Confirm if the table is in px or tpx format
-is.pxtable <- function(metadata){
-  result <- TRUE
+# Confirm if the metadata of the table contains information about the values id
+exists_values_id <- function(metadata){
+  result <- FALSE
 
   # Column names of the metadata of the table
   metacols <- tolower(unique(unlist(lapply(metadata, names))))
 
   # If there is a id column then is not a px table
   if(is.element("id", metacols)){
-    result <- FALSE
+    result <- TRUE
   }
 
   return(result)
@@ -1555,29 +1154,25 @@ check_table_px_filter <- function(idTable, pxfilter, verbose, df){
     # Variables of the filter
     var <- names(pxfilter)
 
-    # There is a list of dataframes with metadata information
-    #dfmeta <- lapply(df$MetaData, function(x) subset(x, select = c("Codigo", "Variable.Codigo")))
-
-    # Unique dataframe with metadata information
-    #metadata <- do.call(rbind, dfmeta)
-
     # Go through all the variables
-    for( v in var){
+    for(v in var){
 
       # If the variable in the filter is not in the metadata is not valid
-      if(!is.element(v, c(df$Variable.Codigo, "values"))){
+      if(!is.element(v, c(df$Variable.Codigo, shortcut_wrapper))){
         result <- FALSE
-        stop(sprintf("%s is not a valid variable for %s idTable",v,idTable))
+        msg <- sprintf("%s is not a valid variable for %s idTable",v,idTable)
+        msg <- if(is.element(v, names(shortcuts_filter))) paste0(msg,". The only shortcut valid for this table is the wrapper 'values'") else msg
+        stop(msg)
       }
 
       # Has been used a shortcut name for the variable or not
-      short <- is.element(tolower(v), c("values"))
+      short <- is.element(tolower(v), shortcut_wrapper)
 
       # Identify a filter with shortcuts
       shortcut <- shortcut | short
 
       # subset of the metadata for an specific variable
-      metavar <- if(v == "values") df else df[df$Variable.Codigo == v,]
+      metavar <- if(v %in% shortcut_wrapper) df else df[df$Variable.Codigo == v,]
 
       # Go through all the values in the filter for the specific variable
       for(val in pxfilter[[v]]){
@@ -1589,9 +1184,6 @@ check_table_px_filter <- function(idTable, pxfilter, verbose, df){
         for(vs in valshort){
           validnames <- validnames & sum(grepl(vs, metavar$Nombre, ignore.case = TRUE)) > 0
         }
-
-        # Obtain the largest element
-        valshort <- valshort[which.max(nchar(valshort))]
 
         # If the value in the filter is not in the metadata is not valid
         if(val != "" && !(is.element(val, metavar$Codigo) || validnames )){
@@ -1645,119 +1237,6 @@ check_table_tempus_filter <- function(parameter, verbose, df){
   return(list(result = result, shortcut = shortcut))
 }
 
-# Check if the filter argument is valid for a tempus table
-check_table_tempus_filter2 <- function(idTable, filter, verbose, lang, df, shortcut){
-  result <- TRUE
-
-  # The filter must be a list
-  if(is.list(filter)){
-
-    # Variables of the filter
-    var <- names(filter)
-
-    # There is a list of dataframes with metadata information
-    #dfmeta <- lapply(df$MetaData, function(x) subset(x, select = c("Id", "Variable.Id", "Nombre")))
-
-    # Unique dataframe with metadata information
-    #metadata <- do.call(rbind, dfmeta)
-
-    # We obtain the values of all the groups
-    #i <- 1
-    #metadata <- NULL
-    #for(g in groups$Id){
-    #  dfmeta <- get_metadata_table_values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
-    #  dfmeta <- subset(dfmeta, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
-
-    #  if (exists("metadata") && is.data.frame(get("metadata"))){
-    #    metadata <- rbind(metadata,dfmeta)
-    #  }else{
-    #    metadata <- dfmeta
-    #   }
-    #}
-
-    # Go through all the variables
-    for(v in var){
-      # Has been used a shortcut name for the variable or not
-      #short <- is.element(tolower(v), c(names(shortcuts_filter), names(shortcuts_operations)))
-      short <- is.element(tolower(v), c(names(shortcuts_filter), "values"))
-
-      if(shortcut){
-        if(short){
-          #if(tolower(v) %in% names(shortcuts_operations)){
-          if(tolower(v) == "values"){
-            #varope <- get_metadata_variables(operation = shortcuts_operations[[tolower(v)]],
-            #                                 validate = FALSE, verbose = TRUE)
-            variable <- unique(df$Fk_Variable)
-          }else{
-            # If there is a shortcut obtain the corresponding id
-            variable <- shortcuts_filter[[tolower(v)]]
-          }
-        }else{
-          variable <- v
-        }
-      }else{
-        if(short){
-          result <- FALSE
-          stop("It is neccessary to set shortcut = TRUE")
-        }else{
-          variable <- v
-        }
-      }
-
-      # If there is a shortcut obtain the corresponding id
-      #variable <- if(short) shortcuts[[tolower(v)]] else v
-
-      # The variable id is in the metadata information
-      validvar <- intersect(variable, df$Fk_Variable)
-
-      if(!(is.element(v, df$Fk_Variable) || length(validvar) > 0 )){
-        result <- FALSE
-        stop(sprintf("%s is not a valid variable for %s idTable",v,idTable))
-      }
-
-      # If the shortcut name includes more than one variable
-      # obtain the metadata information for all the variables
-      metavar <- NULL
-      for(i in validvar){
-        tmp <- df[df$Fk_Variable == i,]
-
-        if (exists("metavar") && is.data.frame(get("metavar"))){
-          metavar <- rbind(metavar,tmp)
-        }else{
-          metavar <- tmp
-        }
-      }
-
-      # Go through all the values of an specific variable
-      for(val in filter[[v]]){
-        # permitir multiples valores
-        for(f in val){
-          # Split the value
-          valshort <- if(nchar(f) > 0 ) unlist(strsplit(as.character(f), "\\s+")) else f
-
-          # Obtain the largest element
-          valshort <- valshort[which.max(nchar(valshort))]
-
-          # The id or the shortcut name of the value must exist in the metadata information
-          if(f != "" && !(is.element(f, metavar$Id) || sum(grepl(valshort, metavar$Nombre, ignore.case = TRUE)) > 0)){
-            result <- FALSE
-            stop(sprintf("%s is not a valid value for variable %s or is not present in the values of the groups of the table", f, v))
-          }
-        }
-      }
-    }
-  }else{
-    result <- FALSE
-    stop("filter must be a list")
-  }
-
-  if(verbose){
-    cat(sprintf("- Check filter: OK\n"))
-  }
-
-  return(result)
-}
-
 # Check if the filter argument is valid for a series
 check_series_filter <- function(parameter, verbose, df){
   result <- TRUE
@@ -1805,146 +1284,6 @@ check_series_filter <- function(parameter, verbose, df){
   return(list(result = result, shortcut = shortcut))
 }
 
-# Check if the filter argument is valid for a series
-check_series_filter2 <- function(operation, filter, verbose, lang, shortcut){
-
-  result <- TRUE
-
-  # The filter must be a list
-  if(is.list(filter)){
-    # Variables of the filter
-    var <- names(filter)
-
-    # Values of the filter
-    val <- unlist(filter, use.names = FALSE)
-
-    # The list must contain at least two values in the filter
-    if(length(var) > 1 || (length(var) < 2 && length(val) > 1)){
-      # Obtain the possible variables for an operation
-      opevar <- get_metadata_variables(operation = operation, validate = FALSE, verbose = verbose, lang = lang, page = 0)
-
-      # Number of files
-      #numrows <- nrow(opevar)
-
-      # Page counter
-      #numpage <- 1
-
-      # if the number of rows is equal to the length of a page, we query the next page
-      #while (numrows == page_lenght){
-      #  numpage <- numpage + 1
-
-      #  opevarpage <- get_metadata_variables(operation = operation, validate = FALSE, page = numpage, verbose = verbose, lang = lang)
-
-      #  numrows <- nrow(opevarpage)
-
-      #  opevar <- rbind(opevar, opevarpage)
-      #}
-
-      # Go through all the variables
-      validvartotal <- NULL
-      for(v in var){
-        # Has been used a shortcut name for the variable or not
-        #short <- is.element(tolower(v), c(names(shortcuts_filter), names(shortcuts_operations)))
-        short <- is.element(tolower(v), c(names(shortcuts_filter), "values"))
-
-        if(shortcut){
-          if(short){
-            #if(tolower(v) %in% names(shortcuts_operations)){
-            if(tolower(v) == "values"){
-              variable <- opevar$Id
-            }else{
-              # If there is a shortcut obtain the corresponding id
-              variable <- shortcuts_filter[[tolower(v)]]
-            }
-          }else{
-            variable <- v
-          }
-        }else{
-          if(short){
-            result <- FALSE
-            stop("It is neccessary to set shortcut = TRUE")
-          }else{
-            variable <- v
-          }
-        }
-
-        # If there is a shortcut obtain the corresponding id
-        # variable <- if(short) shortcuts[[tolower(v)]] else v
-
-        # The variable id is in the metadata information
-        validvar <- intersect(variable, opevar$Id)
-
-        if(!(is.element(v, opevar$Id) || length(validvar) > 0)){
-          result <- FALSE
-          stop(sprintf("%s is not a valid variable for %s operation",v,operation))
-        }
-
-        validvartotal <- append(validvartotal, as.numeric(validvar))
-      }
-
-        # If the shortcut name includes more than one variable
-        # obtain the metadata information for all the variables
-        opeval <- NULL
-        for(i in unique(validvartotal)){
-          tmp <- get_metadata_values(operation = operation, variable = i, validate = FALSE, verbose = verbose, lang = lang, page = 0)
-          tmp <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
-
-          # Number of files
-          #numrows <- nrow(tmp)
-
-          # Page counter
-          #numpage <- 1
-
-          # if the number of rows is equal to the length of a page, we query the next page
-          #while (numrows == page_lenght){
-          #  numpage <- numpage + 1
-
-          #  tmpage <- get_metadata_values(operation = operation, variable = i, page = numpage, validate = FALSE, verbose = verbose, lang = lang)
-          #  tmpage <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
-
-          #  numrows <- nrow(tmpage)
-
-          #  tmp <- rbind(tmp, tmpage)
-          #}
-
-          if (exists("opeval") && is.data.frame(get("opeval"))){
-            opeval <- rbind(opeval,tmp)
-          }else{
-            opeval <- tmp
-          }
-        }
-
-        # Go through all the values of an specific variable
-        for(f in filter[[v]]){
-          # Split the value
-          valshort <- if(nchar(f) > 0 ) unlist(strsplit(f, "\\s+")) else f
-
-          # Obtain the largest element
-          valshort <- valshort[which.max(nchar(valshort))]
-
-          # The id or the shortcut name of the value must exist in the metadata information
-          if(f != "" && !(is.element(f, opeval$Id) || sum(grepl(valshort, opeval$Nombre, ignore.case = TRUE)) > 0)){
-            result <- FALSE
-            stop(sprintf("%s is not a valid value for variable %s", f, v))
-          }
-        }
-
-    }else{
-      result <- FALSE
-      stop("The list must contain at least two values in the filter")
-    }
-  }else{
-    result <- FALSE
-    stop("Values must be a list")
-  }
-
-  if(verbose){
-    cat(sprintf("- Check filter: OK\n"))
-  }
-
-  return(result)
-}
-
 # Check if the filter argument is valid
 check_tempus_filter <- function(id, filter, parnames, df){
   result <- TRUE
@@ -1957,33 +1296,23 @@ check_tempus_filter <- function(id, filter, parnames, df){
 
   for(v in var){
     # Has been used a shortcut name for the variable or not
-    short <- is.element(tolower(v), c(names(shortcuts_filter), "values"))
+    short <- is.element(tolower(v), c(names(shortcuts_filter), shortcut_wrapper))
 
     # Identify a filter with shortcuts
     shortcut <- shortcut | short
 
-    #if(shortcut){
-      if(short){
-        # The values wrapper is present
-        if(tolower(v) == "values"){
-          variable <- unique(df$Fk_Variable)
+    if(short){
+      # The values wrapper is present
+      if(tolower(v) %in% shortcut_wrapper){
+        variable <- unique(df$Fk_Variable)
 
-          # A shortcut is present
-        }else{
-          variable <- shortcuts_filter[[tolower(v)]]
-        }
+        # A shortcut is present
       }else{
-        variable <- v
+        variable <- shortcuts_filter[[tolower(v)]]
       }
-
-    #}else{
-    #  if(short){
-    #    result <- FALSE
-    #    stop("It is neccessary to set shortcut = TRUE")
-    #  }else{
-    #    variable <- v
-    #  }
-    #}
+    }else{
+      variable <- v
+    }
 
     # The variable id is in the metadata information
     validvar <- intersect(variable, df$Fk_Variable)
@@ -1995,31 +1324,20 @@ check_tempus_filter <- function(id, filter, parnames, df){
 
     # If the shortcut name includes more than one variable
     # obtain the metadata information for all the variables
-    metavar <- NULL
-    for(i in validvar){
-      tmp <- df[df$Fk_Variable == i,]
-
-      if (exists("metavar") && is.data.frame(get("metavar"))){
-        metavar <- rbind(metavar,tmp)
-      }else{
-        metavar <- tmp
-      }
-    }
+    metavar <- subset(df, df$Fk_Variable %in% validvar)
 
     # Go through all the values of an specific variable
     for(val in filter[[v]]){
-      # permitir multiples valores
+      # Multiple values
       for(f in val){
         # Split the value
         valshort <- if(nchar(f) > 0 ) unlist(strsplit(as.character(f), "\\s+")) else f
 
         validnames <- TRUE
+        # Check each part of the value
         for(vs in valshort){
           validnames <- validnames & sum(grepl(vs, metavar$Nombre, ignore.case = TRUE)) > 0
         }
-
-        # Obtain the largest element
-        #valshort <- valshort[which.max(nchar(valshort))]
 
         # The id or the shortcut name of the value must exist in the metadata information
         if(f != "" && !(is.element(f, metavar$Id) || validnames)){
@@ -2059,19 +1377,20 @@ check_shortcut <- function(filter, definition){
 
     # Tables
     if(grepl("IdTable", definition$tag, ignore.case = TRUE)){
-      # Get the groups of the table
-      groups <- get_metadata_table_groups(idTable = definition$input, validate = FALSE, verbose = FALSE, lang = "ES")
+
+      # check the type of the table
+      checktable <- check_type_table(idTable = definition$input)
 
       # PX table
-      if(is.null(groups)){
-        if(sum(is.element(tolower(names(filter)), c("values"))) > 0){
+      if(checktable$ispxtable){
+        if(sum(is.element(tolower(names(filter)), shortcut_wrapper)) > 0){
           result <- TRUE
         }
 
       # Tempus table
       }else{
         # There are shortcuts in the filter
-        if(sum(is.element(tolower(names(filter)), c(names(shortcuts_filter), "values"))) > 0 ){
+        if(sum(is.element(tolower(names(filter)), c(names(shortcuts_filter), shortcut_wrapper))) > 0 ){
           result <- TRUE
         }
       }
@@ -2079,7 +1398,7 @@ check_shortcut <- function(filter, definition){
     # Tempus series
     }else{
       # There are shortcuts in the filter
-      if(sum(is.element(tolower(names(filter)), c(names(shortcuts_filter), "values"))) > 0 ){
+      if(sum(is.element(tolower(names(filter)), c(names(shortcuts_filter), shortcut_wrapper))) > 0 ){
         result <- TRUE
       }
     }
@@ -2088,66 +1407,6 @@ check_shortcut <- function(filter, definition){
   return(result)
 }
 
-# Check if the argument shortcut is set correctly
-check_shortcut2 <- function(filter, shortcut, definition){
-
-  result <- check_islogical("shortcut", shortcut)
-
-  if(!is.null(filter)){
-
-    if(grepl("IdTable", definition$tag, ignore.case = TRUE)){
-      # Get the groups of the table
-      groups <- get_metadata_table_groups(idTable = definition$input, validate = FALSE, verbose = FALSE, lang = "ES")
-
-      # PX table = TRUE
-      result <- if(is.null(groups)) TRUE else FALSE
-    }
-
-    # If px table
-    if(result){
-      if(shortcut){
-        result <- FALSE
-        stop("It is neccessary to set shortcut = FALSE")
-      }
-    }else{
-      # if shortcut = FALSE and there are shortcuts in the filter
-      if(!shortcut && sum(is.element(tolower(names(filter)), c(names(shortcuts_filter), "values"))) > 0 ){
-        result <- FALSE
-        stop("It is neccessary to set shortcut = TRUE")
-      }
-
-      # if shortcut = TRUE and there are not shortcuts in the filter
-      if(shortcut && sum(is.element(tolower(names(filter)), c(names(shortcuts_filter), "values"))) < 1 ){
-        result <- FALSE
-        stop("It is neccessary to set shortcut = FALSE")
-      }
-    }
-  }
-
-  return(result)
-}
-
-# Check if the inegeocode argument is valid
-check_inegeocode <- function(name, val, tip){
-
-  result <- check_islogical(name, val)
-
-  if(!is.null(tip)){
-    tip <- toupper(tip)
-
-    if(val && tip != "M" && tip != "AM"){
-      result <- FALSE
-      stop("when inegeocode is set TRUE, tip must be equal to 'M' or 'AM'")
-    }
-  }else{
-    if(val){
-      result <- FALSE
-      stop("when inegeocode is set TRUE, tip must be equal to 'M' or 'AM'")
-    }
-  }
-
-  return(result)
-}
 
 # Check if the extractmetadata argument is valid
 check_extractmetadata <- function(name, val, tip){
@@ -2157,14 +1416,14 @@ check_extractmetadata <- function(name, val, tip){
   if(!is.null(tip)){
     tip <- toupper(tip)
 
-    if(val && tip != "M" && tip != "AM"){
+    if(val && tip != "M" && tip != "AM" && tip != "MA"){
       result <- FALSE
-      stop("when extractmetadata is set TRUE, tip must be equal to 'M' or 'AM'")
+      stop(sprintf("when %s is set TRUE, tip must be equal to 'M' or 'AM'", name))
     }
   }else{
     if(val){
       result <- FALSE
-      stop("when extractmetadata is set TRUE, tip must be equal to 'M' or 'AM'")
+      stop(sprint("when %s is set TRUE, tip must be equal to 'M' or 'AM'"), name)
     }
   }
 
@@ -2244,12 +1503,6 @@ unnest_data <- function(datain){
 
   # We have a list (series case)
   if(is.list(datain) && !is.data.frame(datain)){
-    # Discard data and notas columns
-    #sel <- tolower(names(datain)) != "metadata" & tolower(names(datain)) != "data" & tolower(names(datain)) != "notas"
-
-    # Selection of metadata
-    #selmeta <- tolower(names(datain)) == "metadata"
-
     # Selection of single columns
     sel <- lengths(datain) == 1
 
@@ -2263,8 +1516,7 @@ unnest_data <- function(datain){
     if(sum(selmeta) > 0){
       for(n in names(selmeta)){
         if(selmeta[[n]]){
-        tmp[[n]] <- datain[n]
-        #tmp$MetaData <- datain[selmeta]
+          tmp[[n]] <- datain[n]
         }
       }
     }
@@ -2282,46 +1534,18 @@ unnest_data <- function(datain){
   return(dataout)
 }
 
-# Return a code of the administrative entity present in the data
-get_inegeocode <- function(datain, verbose){
-  # Obtain metadata
-  metadata <- datain$MetaData
 
-  dataout <- datain
+# Check if the table is a px file or not
+check_type_table <- function(idTable, verbose = FALSE, validate = FALSE, lang = "ES"){
 
-  if(sum(grepl("Variable.Id", names(metadata[[1]]), ignore.case = TRUE)) > 0){
+  # Get the groups of the table
+  groups <- get_metadata_table_groups(idTable = idTable, verbose = verbose, validate = validate, lang = lang)
 
-    # Obtain variable id column from metadata
-    varid <- do.call(rbind,lapply(metadata, function(x) subset(x, select = c("Variable.Id"))))
+  # If the result of the query is null is a px table
+  result <- if(is.null(groups)) TRUE else FALSE
+  origin <- if(result) "tablepx" else "tablet3"
 
-    # national, ccaa, provinces or municipalities present in the metadata
-    if(length(intersect(c(349, 115, 70, 19, 20, 846, 847), varid$Variable.Id) > 0)){
-      # obtain the code of national, ccaa, provinces or municipalities
-      sel <- lapply(metadata, function(x) subset(x, x$Variable.Id == 349 | x$Variable.Id == 115 | x$Variable.Id == 70 |
-                                                    x$Variable.Id == 19 | x$Variable.Id == 20 | x$Variable.Id == 846 |
-                                                    x$Variable.Id == 847, select = c("Codigo")))
-
-      # Unique dataframe of codes
-      inegeocode <- do.call(rbind, sel)
-
-      # Rename
-      names(inegeocode) <- "inegeocode"
-
-      # Adding code to dataframe
-      dataout <- cbind(dataout, inegeocode)
-
-    }else{
-      if(verbose){
-        cat("- The metadata not contains a inegeocode variable\n")
-      }
-    }
-  }else{
-    if(verbose){
-      cat("- The metadata not contains a inegeocode variable\n")
-    }
-  }
-
-  return(dataout)
+  return(list(groups = groups, ispxtable = result, origin = origin))
 }
 
 # Extract metadata information from tables into columns
@@ -2331,16 +1555,28 @@ extract_metadata <- function(datain, request){
 
   dataout <- datain
 
+  # Metadata columns to extract
+  metacols <- character()
+  metacolsnames <- character()
+
+  if(request$addons$metanames){
+    metacols <- append(metacols, "Nombre")
+    metacolsnames <- append(metacolsnames, "")
+  }
+
+  if(request$addons$metacodes){
+    metacols <- append(metacols, "Codigo")
+    metacolsnames <- append(metacolsnames, ".Codigo")
+  }
+
   # Tables
   if(grepl("IdTable",request$definition$tag, ignore.case = TRUE)){
 
-    # Case one: tpx or px table
-    if(is.pxtable(metadata)){
-      # Obtain variable codigo column from metadata
-      #varcode <- unique(do.call(rbind,
-      #                          lapply(metadata, function(x) subset(x,
-      #                                                              select = c("Variable.Codigo")))))
+    # check the type of the table
+    checktable <- check_type_table(idTable = request$definition$input, lang = request$definition$lang)
 
+    # Case one: tpx or px table
+    if(checktable$ispxtable){
       # Number of variables in metadata information
       nummeta <- min(unique(do.call(rbind,lapply(metadata,nrow))))
 
@@ -2353,19 +1589,6 @@ extract_metadata <- function(datain, request){
                                                        lapply(metadata, '[',c(i),c("Variable.Codigo"))))))
       }
 
-      # Metadata columns to extract
-      metacols <- character()
-      metacolsnames <- character()
-
-      #if(request$addons$extractmetaname){
-      #  metacols <- append(metacols, "Nombre")
-      #  metacolsnames <- append(metacolsnames, "")
-      #}
-      #if(request$addons$extractmetacode){
-      #  metacols <- append(metacols, "Codigo")
-      #  metacolsnames <- append(metacolsnames, ".Codigo")
-      #}
-
       # Loop through all variables
       for(var in varcode){
 
@@ -2374,11 +1597,11 @@ extract_metadata <- function(datain, request){
                            lapply(metadata,
                                   function(x) subset(x,
                                                      x$Variable.Codigo %in% var,
-                                                     select = c("Nombre", "Codigo"))))
+                                                     select = metacols)))
 
         # Rename column with variable code
         newname <- gsub("\\s+",".", var[1])
-        names(dfcodes) <- paste0(newname, c("", ".Codigo"))
+        names(dfcodes) <- paste0(newname, metacolsnames)
 
         # Adding column to dataframe
         if(nrow(dfcodes) == nrow(dataout)){
@@ -2388,29 +1611,13 @@ extract_metadata <- function(datain, request){
     # Case two: tempus table
     }else{
 
-      #if(grepl("IdTable",request$definition$tag, ignore.case = TRUE)){
-      # Get groups of the table
-      groups <- get_metadata_table_groups(idTable = request$definition$input, validate = FALSE, lang = request$definition$lang)
-
-      # Metadata columns to extract
-      metacols <- character()
-      metacolsnames <- character()
-
-      #if(request$addons$extractmetaname){
-      #  metacols <- append(metacols, "Nombre")
-      #  metacolsnames <- append(metacolsnames, "")
-      #}
-      #if(request$addons$extractmetaid){
-      #  metacols <- append(metacols, "Id")
-      #  metacolsnames <- append(metacolsnames, ".Id")
-      #}
-      #if(request$addons$extractmetacode){
-      #  metacols <- append(metacols, "Codigo")
-      #  metacolsnames <- append(metacolsnames, ".Codigo")
-      #}
+      if(request$addons$metacodes){
+        metacols <- append(metacols, "Id")
+        metacolsnames <- append(metacolsnames, ".Id")
+      }
 
       # Loop through all groups
-      for (g in groups$Id){
+      for (g in checktable$groups$Id){
         # Get th values of the group
         values <- get_metadata_table_values(idTable = request$definition$input, idGroup = g, validate = FALSE, lang = request$definition$lang)
 
@@ -2419,16 +1626,13 @@ extract_metadata <- function(datain, request){
                            lapply(metadata,
                                   function(x) subset(x,
                                                      x$Variable.Id %in% unique(values$Fk_Variable),
-                                                     select = c("Nombre", "Id", "Codigo"))))
+                                                     select = metacols)))
         # New name of the column
-        newname <- unlist(subset(groups, groups$Id == g, select = c("Nombre")))
+        newname <- unlist(subset(checktable$groups, checktable$groups$Id == g, select = c("Nombre")))
         newname <- gsub("\\s+",".", newname)
 
-        # In case of a column of ages, simplify name to Edad
-        #newname <- if(grepl("edad", newname, ignore.case = TRUE)) "Edad" else newname
-
         # Rename column
-        names(dfcodes) <- paste0(newname, c("",".Id",".Codigo"))
+        names(dfcodes) <- paste0(newname, metacolsnames)
 
         # Adding column to dataframe
         dataout <- cbind(dataout, dfcodes)
@@ -2453,22 +1657,10 @@ extract_metadata <- function(datain, request){
                                                      lapply(metadata, '[',c(i),c("Variable.Nombre"))))))
       }
 
-    # Metadata columns to extract
-    metacols <- character()
-    metacolsnames <- character()
-
-    #if(request$addons$extractmetaname){
-    #  metacols <- append(metacols, "Nombre")
-    #  metacolsnames <- append(metacolsnames, "")
-    #}
-    #if(request$addons$extractmetaid){
-    #  metacols <- append(metacols, "Id")
-    #  metacolsnames <- append(metacolsnames, ".Id")
-    #}
-    #if(request$addons$extractmetacode){
-    #  metacols <- append(metacols, "Codigo")
-    #  metacolsnames <- append(metacolsnames, ".Codigo")
-    #}
+    if(request$addons$metacodes){
+      metacols <- append(metacols, "Id")
+      metacolsnames <- append(metacolsnames, ".Id")
+    }
 
     # Loop through all variables
     k <- 1
@@ -2479,11 +1671,11 @@ extract_metadata <- function(datain, request){
                          lapply(metadata,
                                 function(x) subset(x,
                                                    x$Variable.Id %in% var,
-                                                   select = c("Nombre", "Id", "Codigo"))))
+                                                   select = metacols)))
 
       # Rename column with variable code
       newname <- gsub("\\s+",".", varname[k][1])
-      names(dfcodes) <- paste0(newname, c("", ".Id", ".Codigo"))
+      names(dfcodes) <- paste0(newname, metacolsnames)
 
       # Adding column to dataframe
       if(nrow(dfcodes) == nrow(dataout)){
@@ -2496,57 +1688,24 @@ extract_metadata <- function(datain, request){
   return(dataout)
 }
 
-get_metadata_variable_values_table2 <- function(idTable, verbose, validate, lang){
-
-  # Get the groups of the table
-  groups <- get_metadata_table_groups(idTable = idTable, validate = validate, verbose = verbose, lang = lang)
-
-  dfmetadata <- NULL
-  # Make sure the response is valid or null
-  if(!check_result_status(groups)){
-
-    # The table is in px or tpx format
-    if(is.null(groups)){
-      # Obtain metadata information
-      df <- get_metadata_series_table(idTable = idTable, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
-
-      # Get the metadata with information of variables and values
-      dfmetadata <- lapply(df$MetaData,
-                         function(x) subset(x, select = c("Nombre", "Codigo", "Variable.Nombre","Variable.Codigo")))
-
-      dfmetadata <- unique(do.call(rbind, dfmetadata))
-
-      # The table is stored in tempus
-    }else{
-      for(g in groups$Id){
-        df <- get_metadata_table_values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
-        df <- subset(df, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
-
-        if (exists("dfmetadata") && is.data.frame(get("dfmetadata"))){
-          dfmetadata <- rbind(dfmetadata,df)
-        }else{
-          dfmetadata <- df
-        }
-      }
-    }
-  }
-
-  return(list(groups = groups, metadata = dfmetadata))
-}
-
+# Get metadata information about the variables and values present in a table
 get_metadata_variable_values_table <- function(idTable, verbose, validate, lang, progress = FALSE){
 
-  # Get the groups of the table
-  groups <- get_metadata_table_groups(idTable = idTable, validate = validate, verbose = verbose, lang = lang)
+  # Check the type of the table
+  checktable <- check_type_table(idTable = idTable, validate = validate, verbose = verbose, lang = lang)
 
   dfvalues <- NULL
   origin <- ""
   # Make sure the response is valid or null
-  if(!check_result_status(groups)){
+  if(!check_result_status(checktable$groups)){
 
     # The table is in px or tpx format
-    if(is.null(groups)){
-      origin <- "tablepx"
+    if(checktable$ispxtable){
+      origin <- checktable$origin
+
+      if(progress){
+        cat(sprintf("- Processing filter: %s%%        \r", 50))
+      }
 
       # Obtain metadata information
       df <- get_metadata_series_table(idTable = idTable, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
@@ -2559,17 +1718,18 @@ get_metadata_variable_values_table <- function(idTable, verbose, validate, lang,
 
       # The table is stored in tempus
     }else{
-      origin <- "tablet3"
+      origin <- checktable$origin
 
       i <- 1
-      for(g in groups$Id){
-        df <- get_metadata_table_values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
-        df <- subset(df, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
-
+      for(g in checktable$groups$Id){
         if(progress){
           cat(sprintf("- Processing filter: %s%%        \r", round(i/nrow(groups)*50,0)))
           i <- i + 1
         }
+
+        df <- get_metadata_table_values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
+        df <- subset(df, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
+
         if (exists("dfvalues") && is.data.frame(get("dfvalues"))){
           dfvalues <- rbind(dfvalues,df)
         }else{
@@ -2582,6 +1742,7 @@ get_metadata_variable_values_table <- function(idTable, verbose, validate, lang,
   return(list(origin = origin, values = dfvalues))
 }
 
+# Get metadata information about the variables and values present in an operation
 get_metadata_variable_values_operation <- function(operation, verbose, validate, lang, progress = FALSE){
 
   dfvalues <- NULL
@@ -2592,13 +1753,13 @@ get_metadata_variable_values_operation <- function(operation, verbose, validate,
   # We obtain the values of all the variables
   i <- 1
   for(var in opevar$Id){
-    tmp <- get_metadata_values(operation = operation, variable = var, validate = FALSE, verbose = verbose, lang = lang, page = 0)
-    tmp <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
-
     if(progress){
       cat(sprintf("- Processing filter: %s%%        \r", round(i/nrow(opevar)*50,0)))
       i <- i + 1
     }
+
+    tmp <- get_metadata_values(operation = operation, variable = var, validate = FALSE, verbose = verbose, lang = lang, page = 0)
+    tmp <- subset(tmp, select = c("Id","Fk_Variable","Nombre","Codigo"))
 
     if (exists("dfvalues") && is.data.frame(get("dfvalues"))){
       dfvalues <- rbind(dfvalues,tmp)

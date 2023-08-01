@@ -14,7 +14,8 @@ get_data_table(
   validate = TRUE,
   verbose = FALSE,
   unnest = FALSE,
-  extractmetadata = FALSE
+  metanames = FALSE,
+  metacodes = FALSE
 )
 }
 \arguments{
@@ -36,7 +37,11 @@ get_data_table(
 
 \item{unnest}{(logical): set to TRUE to obtain a single data frame of data}
 
-\item{extractmetadata}{(logical): set to TRUE to extract metadata to individual data frame columns}
+\item{metanames}{(logical): set to TRUE to extract the name of the values to individual data frame columns
+from metadata information}
+
+\item{metacodes}{(logical): set to TRUE to extract the codes and ids of the values to individual data frame columns
+from metadata information}
 }
 \value{
 Data frame with data of a table
