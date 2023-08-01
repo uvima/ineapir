@@ -11,7 +11,7 @@
 #'
 #' @examples \dontrun{
 #' get_metadata_operations()
-#' get_metadata_operations("IPC")
+#' get_metadata_operations(operation = "IPC")
 #' }
 #'
 get_metadata_operations <- function(operation = NULL, lang = "ES", page = 0, validate = TRUE, verbose = FALSE){
@@ -39,7 +39,7 @@ get_metadata_operations <- function(operation = NULL, lang = "ES", page = 0, val
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data_all_pages(url, request, verbose = verbose)
+  data <- get_api_data_all_pages(url, request)
 
   return(data)
 }
@@ -85,7 +85,7 @@ get_metadata_variables <- function(operation = NULL, lang = "ES", page = 0, vali
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data_all_pages(url, request, verbose = verbose)
+  data <- get_api_data_all_pages(url, request)
 
   return(data)
 }
@@ -134,7 +134,7 @@ get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lan
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data_all_pages(url, request, verbose = verbose)
+  data <- get_api_data_all_pages(url, request)
 
   return(data)
 }
@@ -182,7 +182,7 @@ get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", pa
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data_all_pages(url, request, verbose = verbose)
+  data <- get_api_data_all_pages(url, request)
 
   return(data)
 }
@@ -231,7 +231,7 @@ get_metadata_publication_dates <- function(publication = NULL, det = 0, tip = NU
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data_all_pages(url, request, verbose = verbose)
+  data <- get_api_data_all_pages(url, request)
 
   return(data)
 }
@@ -275,7 +275,7 @@ get_metadata_periodicity <- function(operation = NULL, lang = "ES", validate = T
     url <- get_url(request)
 
     # Obtain the retrieved data calling the API
-    data <- get_api_data(url, request, verbose = verbose)
+    data <- get_api_data(url, request)
 
     return(data)
   }

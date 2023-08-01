@@ -5,7 +5,7 @@ API_URL = "https://servicios.ine.es/wstempus/js"
 page_lenght = 500
 
 # Shortcuts used in filters
-shortcuts_filter <- list(nac = "349",                        # national
+shortcuts_filter <- list(nac = "349",                 # national
                   prov = "115" ,                      # provinces
                   ccaa = "70",                        # ccaa
                   mun = "19",                         # municipalities
@@ -18,12 +18,12 @@ shortcuts_filter <- list(nac = "349",                        # national
                   heading = "270",                    # cpi headings
                   grupoespecial = "269",              # cpi special groups
                   specialgroup = "269",               # cpi special groups
-                  tipodato = "3", datatype = "3",             # type of data
+                  tipodato = "3", datatype = "3",     # type of data
                   sexo = "18", sex = "18",            # sex
                   edad1 = "355", age1 = "355",        # simple age
-                  edadt = "356", aget = "356",    # total age
+                  edadt = "356", aget = "356",        # total age
                   edadg = "360", ageg = "360",        # age groups
-                  edads = "357", ages = "357",  # semi-age intervals
+                  edads = "357", ages = "357",        # semi-age intervals
                   edad = c("355", "356", "360", "357"),
                   age = c("355", "356", "360", "357"),
                   nacionalidad = "141", nationality = "141",
@@ -36,15 +36,10 @@ shortcuts_filter <- list(nac = "349",                        # national
                   effectscorr = "544"                 # correction of effects
                   )
 
-shortcuts_operations <- list(ipc = "IPC", cpi = "IPC",
-                             pib = "CNTR2010", gdp = "CNTR2010",
-                             pob = "ECP", pop = "ECP"
-                             )
-
 shortcut_wrapper <- c("values")
 
 # Function to retrieve data from the aPI
-get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, metanames = FALSE, metacodes = FALSE){
+get_api_data <- function(url, request){
 
   result <- NULL
 
@@ -69,7 +64,7 @@ get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, metaname
 
       # we use the GET method
       }else{
-        if(verbose){
+        if(request$addons$verbose){
           cat(sprintf("- API URL: %s\n", url$complete))
         }
 
@@ -101,12 +96,13 @@ get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, metaname
   if(!check_result_status(result) && !is.null(result)){
 
     # extract metadata to columns
-    if(metanames || metacodes){
+    if((!is.null(request$addons$metanames) && request$addons$metanames) ||
+       (!is.null(request$addons$metacodes) && request$addons$metacodes)){
       result <- extract_metadata(result, request)
     }
 
     # Unnest the Data column in one single dataframe
-    if(unnest){
+    if(!is.null(request$addons$unnest) && request$addons$unnest){
       result <- unnest_data(result)
     }
   }
@@ -115,7 +111,7 @@ get_api_data <- function(url, request, verbose = FALSE, unnest = FALSE, metaname
 }
 
 # Function to retrieve data from the aPI when the result is paginated
-get_api_data_all_pages <- function(url, request, verbose = FALSE, unnest = FALSE, metanames = FALSE, metacodes = FALSE){
+get_api_data_all_pages <- function(url, request){
 
   result <- NULL
 
@@ -131,7 +127,7 @@ get_api_data_all_pages <- function(url, request, verbose = FALSE, unnest = FALSE
     url <- get_url(request)
 
     # Call de API
-    result <- get_api_data(url, request, verbose = verbose, unnest = unnest, metanames = metanames, metacodes = metacodes)
+    result <- get_api_data(url, request)
 
     # Number of rows
     numrows <- if(!is.null(nrow(result))) nrow(result) else 1
@@ -147,7 +143,7 @@ get_api_data_all_pages <- function(url, request, verbose = FALSE, unnest = FALSE
       url <- get_url(request)
 
       # Call the API
-      resultpage <- get_api_data(url, request, verbose = verbose, unnest = unnest, metanames = metanames, metacodes = metacodes)
+      resultpage <- get_api_data(url, request)
 
       # Number of rows
       numrows <- if(!is.null(nrow(resultpage))) nrow(resultpage) else 1
@@ -157,7 +153,7 @@ get_api_data_all_pages <- function(url, request, verbose = FALSE, unnest = FALSE
     }
   # Request a specific page
   }else{
-    result <- get_api_data(url, request, verbose = verbose, unnest = unnest, metanames = metanames, metacodes = metacodes)
+    result <- get_api_data(url, request)
   }
 
   return(result)

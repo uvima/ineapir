@@ -55,7 +55,7 @@ get_data_table <- function(idTable = NULL, filter = NULL, nlast = NULL, det = NU
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, request, verbose = verbose, unnest = unnest, metanames = metanames, metacodes = metacodes)
+  data <- get_api_data(url, request)
 
   return(data)
 }

@@ -54,7 +54,7 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, request, verbose = verbose, unnest = unnest)
+  data <- get_api_data(url, request)
 
   return(data)
 }
@@ -113,7 +113,7 @@ get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity 
   url <- get_url(request)
 
   # Obtain the data retrieved calling the API
-  data <- get_api_data(url, request, verbose = verbose, unnest = unnest)
+  data <- get_api_data(url, request)
 
   return(data)
 }
