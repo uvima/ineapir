@@ -49,7 +49,7 @@ get_api_data <- function(url, request){
       # if the url is too large we used the method POST
       if(nchar(url$complete) > 2000){
 
-        if(verbose){
+        if(request$addons$verbose){
           cat(sprintf("- API URL: %s\n", url$endpointpar))
         }
 
@@ -696,7 +696,7 @@ check_operation <- function(operation, active_null = FALSE, verbose){
   result <- TRUE
 
   if(!is.null(operation)){
-    # Get all aperations
+    # Get all operations
     opes <- get_metadata_operations(validate = FALSE, verbose = verbose, page = 0)
 
     # Logical controls
@@ -1419,7 +1419,7 @@ check_extractmetadata <- function(name, val, tip){
   }else{
     if(val){
       result <- FALSE
-      stop(sprint("when %s is set TRUE, tip must be equal to 'M' or 'AM'"), name)
+      stop(sprintf("when %s is set TRUE, tip must be equal to 'M' or 'AM'"), name)
     }
   }
 
@@ -1719,7 +1719,7 @@ get_metadata_variable_values_table <- function(idTable, verbose, validate, lang,
       i <- 1
       for(g in checktable$groups$Id){
         if(progress){
-          cat(sprintf("- Processing filter: %s%%        \r", round(i/nrow(groups)*50,0)))
+          cat(sprintf("- Processing filter: %s%%        \r", round(i/nrow(checktable$groups)*50,0)))
           i <- i + 1
         }
 

@@ -32,7 +32,7 @@ Get available operations
 \examples{
 \dontrun{
 get_metadata_operations()
-get_metadata_operations("IPC")
+get_metadata_operations(operation = "IPC")
 }
 
 }
