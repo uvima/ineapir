@@ -58,7 +58,7 @@ shown below.
 |lugarnacimiento | 97  | Place of birth |
 |effectscorr     | 544 | Correction of effects |
 |efectoscorr     | 544 | Correction of effects |
-|values       | `get_metadata_variables(operation = operation)`    | values wrapper |
+|values       | `get_metadata_variables(operation = operation)`    | Values wrapper |
 
 ## Filtering data from tables
 

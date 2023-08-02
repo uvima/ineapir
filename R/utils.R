@@ -59,7 +59,7 @@ get_api_data <- function(url, request){
                                body = url$filter,
                                encode = "form",
                                httr::content_type("application/x-www-form-urlencoded"),
-                               httr::user_agent("ineapir")
+                               httr::user_agent("ineapir"),
                               )
 
       # we use the GET method
@@ -1129,12 +1129,34 @@ exists_values_id <- function(metadata){
   # Column names of the metadata of the table
   metacols <- tolower(unique(unlist(lapply(metadata, names))))
 
-  # If there is a id column then is not a px table
+  # If there is a id column then
   if(is.element("id", metacols)){
     result <- TRUE
   }
 
   return(result)
+}
+
+# Confirm if the metadata of the table contains information about the values id
+exists_variables_id <- function(metadata){
+  result <- FALSE
+  colname <- ""
+
+  # Column names of the metadata of the table
+  metacols <- unique(unlist(lapply(metadata, names)))
+
+  # If there is a id column
+  if(is.element("variable.id", tolower(metacols))){
+    result <- TRUE
+    colname <- metacols[grep("variable.id", metacols, ignore.case = TRUE)]
+  }
+
+  if(is.element("fk_variable", tolower(metacols))){
+    result <- TRUE
+    colname <- metacols[grep("fk_variable", metacols, ignore.case = TRUE)]
+  }
+
+  return(list(result = result, name = colname))
 }
 
 # Check if the filter argument is valid for a px table
@@ -1156,8 +1178,8 @@ check_table_px_filter <- function(idTable, pxfilter, verbose, df){
       # If the variable in the filter is not in the metadata is not valid
       if(!is.element(v, c(df$Variable.Codigo, shortcut_wrapper))){
         result <- FALSE
-        msg <- sprintf("%s is not a valid variable for %s idTable",v,idTable)
-        msg <- if(is.element(v, names(shortcuts_filter))) paste0(msg,". The only shortcut valid for this table is the wrapper 'values'") else msg
+        msg <- sprintf("%s is not a valid variable for %s idTable. Valid variable codes: %s",v,idTable, paste0(unique(df$Variable.Codigo), collapse = ", "))
+        msg <- if(is.element(v, names(shortcuts_filter))) paste0(msg,"\nThe only shortcut valid for this table is the wrapper 'values'") else msg
         stop(msg)
       }
 
@@ -1419,7 +1441,7 @@ check_extractmetadata <- function(name, val, tip){
   }else{
     if(val){
       result <- FALSE
-      stop(sprintf("when %s is set TRUE, tip must be equal to 'M' or 'AM'"), name)
+      stop(sprintf("when %s is set TRUE, tip must be equal to 'M' or 'AM'", name))
     }
   }
 
@@ -1576,13 +1598,24 @@ extract_metadata <- function(datain, request){
       # Number of variables in metadata information
       nummeta <- min(unique(do.call(rbind,lapply(metadata,nrow))))
 
+      # Check if exits and id fo variables
+      existsvarid <- exists_variables_id(metadata)
+
+      # Column to extract metadata
+      varmeta <- if(exists_values_id(metadata) && existsvarid$result) existsvarid$name else "Variable.Codigo"
+
+      if(exists_values_id(metadata)){
+        metacols <- append(metacols, "Id")
+        metacolsnames <- append(metacolsnames, ".Id")
+      }
+
       # Obtain variable codes for each row in metadata information
       varcode <- list()
 
       for(i in 1:nummeta){
         varcode <- append(varcode,
                           as.data.frame(unique(do.call(rbind,
-                                                       lapply(metadata, '[',c(i),c("Variable.Codigo"))))))
+                                                       lapply(metadata, '[',c(i),c(varmeta))))))
       }
 
       # Loop through all variables
@@ -1592,7 +1625,7 @@ extract_metadata <- function(datain, request){
         dfcodes <- do.call(rbind,
                            lapply(metadata,
                                   function(x) subset(x,
-                                                     x$Variable.Codigo %in% var,
+                                                     x[[varmeta]] %in% var,
                                                      select = metacols)))
 
         # Rename column with variable code
@@ -1670,7 +1703,7 @@ extract_metadata <- function(datain, request){
                                                    select = metacols)))
 
       # Rename column with variable code
-      newname <- gsub("\\s+",".", varname[k][1])
+      newname <- gsub("\\s+",".", varname[[k]][1])
       names(dfcodes) <- paste0(newname, metacolsnames)
 
       # Adding column to dataframe
