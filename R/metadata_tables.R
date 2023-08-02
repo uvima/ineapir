@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples \dontrun{
-#' get_metadata_tables(operation = "IPC")
+#' get_metadata_tables_operation(operation = "IPC")
 #' }
 #'
 get_metadata_tables_operation <- function(operation = NULL, det = 0, tip = NULL, geo = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){
@@ -196,7 +196,7 @@ get_metadata_operation_table <- function(idTable = NULL, lang = "ES", validate =
 #' @export
 #'
 #' @examples \dontrun{
-#' get_metadata_table(idTable = 50902)
+#' get_metadata_table_varval(idTable = 50902)
 #' }
 #'
 get_metadata_table_varval <- function(idTable = NULL, lang = "ES", validate = TRUE, verbose = FALSE){

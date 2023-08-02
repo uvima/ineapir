@@ -41,7 +41,7 @@ Get all the tables present in a operation
 }
 \examples{
 \dontrun{
-get_metadata_tables(operation = "IPC")
+get_metadata_tables_operation(operation = "IPC")
 }
 
 }
