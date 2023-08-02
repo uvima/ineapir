@@ -24,7 +24,7 @@ filter <- list(values = c("variación anual" , "índice general"))
 # Request data of cpi
 # Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=50902&L=0
 general <- get_data_table(idTable = 50902, filter = filter, unnest = TRUE,
-                          tip = "A" )
+                          tip = "A", validate = FALSE)
 
 # Filter core cpi
 filter <- list(values = c("variación anual" , 
@@ -33,7 +33,7 @@ filter <- list(values = c("variación anual" ,
 # Request data of core cpi
 # Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=50907&L=0
 subyacente <- get_data_table(idTable = 50907, filter = filter, unnest = TRUE,
-                             tip = "A" )
+                             tip = "A", validate = FALSE)
 
 # Format Fecha column as date
 general$Fecha <- as.Date(general$Fecha)
@@ -104,8 +104,8 @@ filter = list(ccaa = "", sexo = "ambos", edad = "total")
 
 # Table: Unemployment rates by different age groups, sex and Autonomous Community
 # Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=4247&L=0
-paro <- get_data_table(idTable = 4247, filter = filter, nlast = 1,
-                       unnest = TRUE, metanames = TRUE, tip = "AM")
+paro <- get_data_table(idTable = 4247, filter = filter, nlast = 1, unnest = TRUE,
+                       metanames = TRUE, tip = "AM", validate = FALSE)
 
 # Bar chart using plotly
 fig <- plot_ly(paro, 
@@ -136,8 +136,8 @@ filter = list(ccaa = "", sexo = "ambos", edad = "total")
 
 # Table: Unemployment rates by different age groups, sex and Autonomous Community
 # Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=4247&L=0
-paro <- get_data_table(idTable = 4247, filter = filter, nlast = 1,
-                       unnest = TRUE, metacodes = TRUE, tip = "AM")
+paro <- get_data_table(idTable = 4247, filter = filter, nlast = 1, unnest = TRUE,
+                       metacodes = TRUE, tip = "AM", validate = FALSE)
 
 # Select a set on columns from data
 paro <- subset(paro, select = c("Comunidades.y.Ciudades.Autónomas.Id", "T3_Periodo",

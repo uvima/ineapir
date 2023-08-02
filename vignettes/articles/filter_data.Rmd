@@ -31,7 +31,7 @@ table that interest us to build the filter.
 library(ineapir)
 
 # Get metadata information of the table
-metadata <- get_metadata_table_varval(idTable = 50902)
+metadata <- get_metadata_table_varval(idTable = 50902, validate = FALSE)
 head(metadata,4)
 tail(metadata,4)
 ```
@@ -46,7 +46,7 @@ filter <- list("3" = "74" ,     # variable id = 3, value id = 74
 
 # Request data using the filter
 ipc <- get_data_table(idTable = 50902, filter = filter, unnest = TRUE,
-                    tip = "A", nlast = 5)
+                      tip = "A", nlast = 5, validate = FALSE)
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
@@ -73,7 +73,8 @@ filter <- list(sexo = "ambossexos",
 
 # Request data using the filter
 poblacion <- get_data_table(idTable = "t20/e245/p08/l0/01001.px", unnest = TRUE,
-                    tip = "A", nlast = 5, filter = filter)
+                            tip = "A", nlast = 5, filter = filter,
+                            validate = FALSE)
 poblacion
 ```
 
@@ -101,7 +102,7 @@ filter <- list(tipodematerial = c("1biomasa", "2mineralesmetalicosmineralenbruto
 
 # Request data using the filter
 materiales <- get_data_table(idTable = 33387, unnest = TRUE, tip = "A",
-                             nlast = 1, filter = filter)
+                             nlast = 1, filter = filter, validate = FALSE)
 materiales
 ```
 
@@ -115,7 +116,7 @@ the series belong.
 
 ```{r series_variables}
 # Variables used in the operation IPC
-variables <- get_metadata_variables(operation = "IPC")
+variables <- get_metadata_variables(operation = "IPC", validate = FALSE)
 variables
 ```
 
@@ -124,19 +125,19 @@ to build the filter.
 
 ```{r series_values_1}
 # Values of the variable with id = 115
-provincias <- get_metadata_values(operation = "IPC", variable = 115)
+provincias <- get_metadata_values(operation = "IPC", variable = 115, validate = FALSE)
 head(provincias)
 
 # Values of the variable with id = 3
-tipo <- get_metadata_values(operation = "IPC", variable = 3)
+tipo <- get_metadata_values(operation = "IPC", variable = 3, validate = FALSE)
 head(tipo)
 
 # Values of the variable with id = 762
-grupos <- get_metadata_values(operation = "IPC", variable = 762)
+grupos <- get_metadata_values(operation = "IPC", variable = 762, validate = FALSE)
 head(grupos, 4)
 
 # We can get all the values at once with the function get_metadata_series_varval
-varval <- get_metadata_series_varval(operation = "IPC")
+varval <- get_metadata_series_varval(operation = "IPC", validate = FALSE)
 head(subset(varval, Fk_Variable == 115))
 head(subset(varval, Fk_Variable == 3))
 head(subset(varval, Fk_Variable == 762), 4)
@@ -153,7 +154,7 @@ filter <- list("115" = "2",     # variable id = 115, value id = 2
 
 # Request data using the filter
 ipc <- get_data_series_filter(operation = "IPC", filter = filter, periodicity = 1,
-                       unnest = TRUE, tip = "A")
+                              unnest = TRUE, tip = "A", validate = FALSE)
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
@@ -169,7 +170,7 @@ filter <- list("115" = c("2" ,"3", "4"), # variable id = 115, values id 2, 3, 4
 
 # Request data using the filter
 ipc <- get_data_series_filter(operation = "IPC", filter = filter, periodicity = 1, 
-                        unnest = TRUE, tip = "A")
+                              unnest = TRUE, tip = "A", validate = FALSE)
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
@@ -186,6 +187,6 @@ filter <- list("115" = "",      # variable id = 115, all values
 
 # Request data using the filter
 ipc <- get_data_series_filter(operation = "IPC", filter = filter, periodicity = 1, 
-                        unnest = TRUE, tip = "A")
+                              unnest = TRUE, tip = "A", validate = FALSE)
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
