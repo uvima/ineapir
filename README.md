@@ -39,7 +39,8 @@ for the data to be well defined.
 ### Obtaining data from a table
 
 To get all the data of a table it is necessary to pass the `idTable`
-argument which is the identification code of the table.
+argument, which is the identification code of the table, to the function
+`get_data_table()`.
 
 ``` r
 library(ineapir)
@@ -63,7 +64,7 @@ To get the last n data from a table it is necessary to pass the `nlast`
 argument as well.
 
 ``` r
-# We use the function get_data_table with the argument idTable
+# We use the function get_data_table with arguments idTable and nlast
 table <- get_data_table(idTable = 50902, nlast = 2)
 table[1,c("COD", "Nombre")]
 #>         COD                                   Nombre
@@ -76,7 +77,8 @@ head(table$Data[[1]])
 ### Obtaining data from a series
 
 To get the last data of a series it is necessary to pass the `codSeries`
-argument which is the identification code of the series.
+argument, which is the identification code of the series, to the
+function `get_data_series()`.
 
 ``` r
 # We use the function get_data_series with the argument codSeries
@@ -128,7 +130,8 @@ use of the service.
 
 The database contains information about all short-term statistical
 operations, those with a periodicity for disseminating results of less
-than a year, as well as some structural statistical operations.
+than a year, as well as some structural statistical operations. We can
+get all the operations using the function `get_metadata_operations()`.
 
 ``` r
 # We use the function get_metadata_operations
@@ -159,7 +162,8 @@ as.data.frame(operation)
 
 ### Obtaining variables
 
-We can get all the variables of the system.
+We can get all the variables of the system using the function
+`get_metadata_variables()`.
 
 ``` r
 # We use the function get_metadata_variables
@@ -194,7 +198,8 @@ head(variables)
 ### Obtaining values
 
 To get all the values that a variable can take it is necessary to pass
-the `variable` argument which is the identifier of the variable.
+the `variable` argument, which is the identifier of the variable, to the
+function `get_metadata_values()`.
 
 ``` r
 # We use the function get_metadata_values with argument variable
@@ -235,7 +240,8 @@ head(values)
 
 ### Obtaining tables
 
-We can get the tables associated with an statistical operation.
+We can get the tables associated with an statistical operation using the
+function `get_metadata_tables_operation()`.
 
 ``` r
 # We use the function get_metadata_tables with argument operation
@@ -253,7 +259,8 @@ head(tables[,c("Id","Nombre")])
 A table is defined by different groups or selection combo boxes and each
 of them by the values that one or several variables take. To obtain the
 variables and values present in a table first we have to query the
-groups that define the table:
+groups that define the table using the function
+`get_metadata_table_groups()`.
 
 ``` r
 # We use the function get_metadata_table_groups with argument idTable
@@ -265,7 +272,8 @@ head(groups)
 ```
 
 Once we have the identification codes of the groups, we can query the
-values for an specific group.
+values for an specific group using the function
+`get_metadata_table_values()`.
 
 ``` r
 # We use the function get_metadata_table_values with arguments idTable and idGroup
@@ -287,7 +295,8 @@ head(values, 4)
 
 The data is only associated with the series object. To obtain
 information about a particular series it is necessary to pass the
-`codSeries` argument which is the identification code of the series.
+`codSeries` argument, which is the identification code of the series, to
+the function `get_metadata_series()`.
 
 ``` r
 # We use the function get_metadata_series with argument codSeries
@@ -315,7 +324,8 @@ head(values)
 ```
 
 To get all the series that define a table it is necessary to pass the
-`idTable` argument which is the identification code of the table.
+`idTable` argument, which is the identification code of the table, to
+the function `get_metadata_series_table()`.
 
 ``` r
 # We use the function get_metadata_series_table with argument idTable
