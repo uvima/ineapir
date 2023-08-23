@@ -187,6 +187,7 @@ get_metadata_operation_table <- function(idTable = NULL, lang = "ES", validate =
 #' Get metadata information of a table
 #'
 #' @param idTable (int): code of the table
+#' @param filter (list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
 #' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
 #' @param verbose (logical): print additional information
@@ -199,10 +200,10 @@ get_metadata_operation_table <- function(idTable = NULL, lang = "ES", validate =
 #' get_metadata_table_varval(idTable = 50902)
 #' }
 #'
-get_metadata_table_varval <- function(idTable = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
+get_metadata_table_varval <- function(idTable = NULL, filter = NULL, lang = "ES", validate = TRUE, verbose = FALSE){
 
   # Get the metadata information of the table
-  df <- get_metadata_variable_values_table(idTable, verbose, validate, lang)
+  df <- get_metadata_variable_values_table(idTable, filter, verbose, validate, lang)
 
   return(df$values)
 }

@@ -6,6 +6,7 @@
 \usage{
 get_metadata_series_table(
   idTable = NULL,
+  filter = NULL,
   det = 0,
   tip = NULL,
   lang = "ES",
@@ -17,6 +18,8 @@ get_metadata_series_table(
 }
 \arguments{
 \item{idTable}{(int): code of the table}
+
+\item{filter}{(list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)}
 
 \item{det}{(int): level of detail (0, 1 ,2)}
 

@@ -148,6 +148,7 @@ get_metadata_series_values <- function(codSeries = NULL, det = 0, tip = NULL, la
 #' Get all the series belonging to a table
 #'
 #' @param idTable (int): code of the table
+#' @param filter (list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)
 #' @param det (int): level of detail (0, 1 ,2)
 #' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
@@ -165,7 +166,7 @@ get_metadata_series_values <- function(codSeries = NULL, det = 0, tip = NULL, la
 #' get_metadata_series_table(idTable = 50902)
 #' }
 #'
-get_metadata_series_table <- function(idTable = NULL, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, metanames = FALSE, metacodes = FALSE){
+get_metadata_series_table <- function(idTable = NULL, filter = NULL, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, metanames = FALSE, metacodes = FALSE){
 
   # List of values to define the call to the API
   definition <- list()
@@ -176,6 +177,7 @@ get_metadata_series_table <- function(idTable = NULL, det = 0, tip = NULL, lang 
 
   # List of parameters to call the API
   parameters <- list()
+  parameters <- append(parameters, if(is.null(filter)) list(filter = filter) else list(filter = list(idTable = idTable, filter = filter)))
   parameters <- append(parameters, list(det = det))
   parameters <- append(parameters, list(tip = tip))
 

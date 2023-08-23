@@ -6,6 +6,7 @@
 \usage{
 get_metadata_table_varval(
   idTable = NULL,
+  filter = NULL,
   lang = "ES",
   validate = TRUE,
   verbose = FALSE
@@ -13,6 +14,8 @@ get_metadata_table_varval(
 }
 \arguments{
 \item{idTable}{(int): code of the table}
+
+\item{filter}{(list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)}
 
 \item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
 
