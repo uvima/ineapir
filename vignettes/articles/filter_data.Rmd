@@ -62,6 +62,13 @@ metadata <- get_metadata_table_varval(idTable = "t20/e245/p08/l0/01001.px")
 metadata
 ```
 
+```{r tabla_filter_2b}
+# NOTE: for px tables we can use a filter.
+metadata <- get_metadata_table_varval(idTable = "t20/e245/p08/l0/01001.px",
+                                      filter = list(sexo = "ambossexos"))
+metadata
+```
+
 2. With this information we build the filter as follows.
 
 ```{r tabla_filter_3}
@@ -90,6 +97,13 @@ metadata <- get_metadata_table_varval(idTable = 33387)
 metadata[grepl("^\\d{1}\\D+",metadata$Codigo),]
 ```
 
+```{r tabla_filter_4b}
+# NOTE: for tpx tables we can use a filter.
+metadata <- get_metadata_table_varval(idTable = 33387,
+                                      filter = list(tipodematerial = "1biomasa"))
+metadata[grepl("^\\d{1}\\D+",metadata$Codigo),]
+```
+
 2. With this information we build the filter as follows.
 
 ```{r tabla_filter_5}
@@ -104,6 +118,39 @@ filter <- list(tipodematerial = c("1biomasa", "2mineralesmetalicosmineralenbruto
 materiales <- get_data_table(idTable = 33387, unnest = TRUE, tip = "A",
                              nlast = 1, filter = filter, validate = FALSE)
 materiales
+```
+
+- **URL:** https://www.ine.es/jaxi/Tabla.htm?tpx=52056&L=0
+
+1. There are tpx tables that contain variable ids and value ids. We can see that
+when we obtain the metadata information from a table.
+
+```{r tabla_filter_6}
+# Get metadata information of the table using a filter.
+# The filter is useful when the table contains a large number of series
+# (for example, tables with a large territorial segmentation) which slows down
+# the information retrieval.
+metadata <- get_metadata_table_varval(idTable = 52056,
+                                      filter = list(NAC = "00"))
+head(metadata[order(metadata$Variable.Id),],4)
+```
+
+
+2. In this case, we can use the ids instead of the codes to build the filter.
+
+```{r tabla_filter_7}
+# Build the filter with the ids of variables and values
+filter = list("349" = 16473,  # variable id = 349, value id = 16473
+              "916" = 391871, # variable id = 909, value id = 391455
+              "942" = 274282, # variable id = 942, value id = 274282
+              "999" = 391770, # variable id = 975, value id = 391438
+              "3"   = 11406   # variable id = 3, value id = 11406
+              )
+
+# Request data using the filter
+explotaciones <- get_data_table(idTable = 52056, unnest = TRUE, tip = "A",
+                             nlast = 1, filter = filter, validate = FALSE)
+explotaciones
 ```
 
 ## Filtering data from series

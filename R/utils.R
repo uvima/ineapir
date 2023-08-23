@@ -59,7 +59,7 @@ get_api_data <- function(url, request){
                                body = url$filter,
                                encode = "form",
                                httr::content_type("application/x-www-form-urlencoded"),
-                               httr::user_agent("ineapir"),
+                               httr::user_agent("ineapir")
                               )
 
       # we use the GET method
@@ -304,8 +304,11 @@ build_filter <- function(parameter, definition, addons, checkfilter){
 
     # Dataframe with the values
     dfval <- get_filter_values(parameter, definition$lang, shortcut, verbose = FALSE, progress = addons$verbose)
-    origin <- dfval$origin
-    dfval <- dfval$values
+
+    if(!is.null(dfval)){
+      origin <- dfval$origin
+      dfval <- dfval$values
+    }
   }
 
   # We go through all the variables
@@ -327,6 +330,13 @@ build_filter <- function(parameter, definition, addons, checkfilter){
 
         # We select only the values of variables present in the filter
         dfvalfilter <- subset(dfval, dfval$Variable.Codigo %in% varid)
+
+      }else if(origin == "tablepxid"){
+        # Select codes
+        varid <- c(unique(dfval$Variable.Codigo), unique(dfval$Variable.Id))
+
+        # We select only the values of variables present in the filter
+        dfvalfilter <- subset(dfval, dfval$Variable.Codigo %in% varid | dfval$Variable.Id %in% varid)
 
       }else{
         if(tolower(n) %in% shortcut_wrapper){
@@ -369,16 +379,37 @@ build_filter <- function(parameter, definition, addons, checkfilter){
         dfvalgrep2 <- subset(dfvalfilter, ind2)
 
         # Intersect the values from these two different ways
-        if(origin == "tablepx"){
-          dfvalgreptmp <- merge(dfvalgrep1, dfvalgrep2, by = c("Codigo", "Variable.Codigo"))
+        if(nrow(dfvalgrep1) > 0 && nrow(dfvalgrep2) == 0){
+          dfvalgreptmp <- dfvalgrep1
+
+        }else if(nrow(dfvalgrep1) == 0 && nrow(dfvalgrep2) > 0){
+          dfvalgreptmp <- dfvalgrep2
+
+        }else if(nrow(dfvalgrep1) > 0 && nrow(dfvalgrep2) > 0){
+          if(origin == "tablepx"){
+            dfvalgrep2 <- subset(dfvalgrep2, select = c("Codigo", "Variable.Codigo"))
+            dfvalgreptmp <- merge(dfvalgrep1, dfvalgrep2, by = c("Codigo", "Variable.Codigo"))
+
+          }else if(origin == "tablepxid"){
+            dfvalgrep2 <- subset(dfvalgrep2, select = c("Id", "Variable.Id"))
+            dfvalgreptmp <- merge(dfvalgrep1, dfvalgrep2, by = c("Id", "Variable.Id"))
+
+          }else{
+            dfvalgrep2 <- subset(dfvalgrep2, select = c("Id", "Fk_Variable"))
+            dfvalgreptmp <- merge(dfvalgrep1, dfvalgrep2, by = c("Id", "Fk_Variable"))
+          }
         }else{
-          dfvalgreptmp <- merge(dfvalgrep1, dfvalgrep2, by = c("Id", "Fk_Variable"))
+          dfvalgreptmp <- dfvalgrep1
         }
 
         # If there is no match result look in the id
         if(nrow(dfvalgreptmp) == 0){
           if(origin == "tablepx"){
             dfvalgreptmp <- subset(dfvalfilter, grepl(paste0("^",f,"$"), dfvalfilter$Codigo))
+
+          }else if(origin == "tablepxid"){
+            dfvalgreptmp <- subset(dfvalfilter, grepl(paste0("^",f,"$"), c(dfvalfilter$Codigo, dfvalfilter$Id)))
+
           }else{
             dfvalgreptmp <- subset(dfvalfilter, grepl(paste0("^",f,"$"), dfvalfilter$Id))
           }
@@ -401,6 +432,13 @@ build_filter <- function(parameter, definition, addons, checkfilter){
 
                 # Value code
                 filterout[[var]] <- dfvalgreptmp$Codigo[r]
+
+              }else if(origin == "tablepxid"){
+                # Variable id
+                var <- dfvalgreptmp$Variable.Id[r]
+
+                # Value id
+                filterout[[var]] <- dfvalgreptmp$Id[r]
 
               }else{
                 # Variable id
@@ -1099,6 +1137,13 @@ check_filter <- function(parameter, verbose, definition){
       result <- check$result
       shortcut <- check$shortcut
 
+      # The filter comes from a px table with ids
+    }else if(df$origin == "tablepxid"){
+      check <- check_table_px_id_filter(id, filter, verbose, df$values)
+
+      result <- check$result
+      shortcut <- check$shortcut
+
     # The filter comes from a tempus table
     }else if(df$origin == "tablet3"){
       check <- check_table_tempus_filter(parameter, verbose, df$values)
@@ -1205,6 +1250,73 @@ check_table_px_filter <- function(idTable, pxfilter, verbose, df){
 
         # If the value in the filter is not in the metadata is not valid
         if(val != "" && !(is.element(val, metavar$Codigo) || validnames )){
+          result <- FALSE
+          stop(sprintf("%s is not a valid value for variable %s", val, v))
+        }
+      }
+    }
+  }else{
+    result <- FALSE
+    stop("filter must be a list")
+  }
+
+  if(verbose){
+    cat(sprintf("- Check filter: OK\n"))
+  }
+
+  return(list(result = result, shortcut = shortcut))
+}
+
+# Check if the filter argument is valid for a px table
+check_table_px_id_filter <- function(idTable, pxfilter, verbose, df){
+  result <- TRUE
+
+  # If there are shortcuts in the filter
+  shortcut <- FALSE
+
+  # The filter must be a list
+  if(is.list(pxfilter)){
+
+    # Variables of the filter
+    var <- names(pxfilter)
+
+    # Go through all the variables
+    for(v in var){
+
+      # If the variable in the filter is not in the metadata is not valid
+      if(!is.element(v, c(df$Variable.Codigo, df$Variable.Id, shortcut_wrapper))){
+        result <- FALSE
+        msg <- sprintf("%s is not a valid variable for %s idTable. Valid variable codes: %s. Valid variable ids: %s",
+                       v,
+                       idTable,
+                       paste0(unique(df$Variable.Codigo[nchar(df$Variable.Codigo) > 0]), collapse = ", "),
+                       paste0(unique(df$Variable.Id), collapse = ", "))
+        msg <- if(is.element(v, names(shortcuts_filter))) paste0(msg,"\nThe only shortcut valid for this table is the wrapper 'values'") else msg
+        stop(msg)
+      }
+
+      # Has been used a shortcut name for the variable or not
+      short <- is.element(tolower(v), shortcut_wrapper)
+
+      # Identify a filter with shortcuts
+      shortcut <- shortcut | short
+
+      # subset of the metadata for an specific variable
+      metavar <- if(v %in% shortcut_wrapper) df else df[df$Variable.Codigo == v | df$Variable.Id == v,]
+
+      # Go through all the values in the filter for the specific variable
+      for(val in pxfilter[[v]]){
+
+        # Split the value
+        valshort <- if(nchar(val) > 0 ) unlist(strsplit(as.character(val), "\\s+")) else val
+
+        validnames <- TRUE
+        for(vs in valshort){
+          validnames <- validnames & sum(grepl(vs, metavar$Nombre, ignore.case = TRUE)) > 0
+        }
+
+        # If the value in the filter is not in the metadata is not valid
+        if(val != "" && !(is.element(val, c(metavar$Codigo, metavar$Id)) || validnames )){
           result <- FALSE
           stop(sprintf("%s is not a valid value for variable %s", val, v))
         }
@@ -1629,7 +1741,7 @@ extract_metadata <- function(datain, request){
                                                      select = metacols)))
 
         # Rename column with variable code
-        newname <- gsub("\\s+",".", var[1])
+        newname <- paste0(gsub("\\s+",".", var), collapse = "_")
         names(dfcodes) <- paste0(newname, metacolsnames)
 
         # Adding column to dataframe
@@ -1718,7 +1830,7 @@ extract_metadata <- function(datain, request){
 }
 
 # Get metadata information about the variables and values present in a table
-get_metadata_variable_values_table <- function(idTable, verbose, validate, lang, progress = FALSE){
+get_metadata_variable_values_table <- function(idTable, filter = NULL, verbose, validate, lang, progress = FALSE){
 
   # Check the type of the table
   checktable <- check_type_table(idTable = idTable, validate = validate, verbose = verbose, lang = lang)
@@ -1737,11 +1849,23 @@ get_metadata_variable_values_table <- function(idTable, verbose, validate, lang,
       }
 
       # Obtain metadata information
-      df <- get_metadata_series_table(idTable = idTable, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
+      df <- get_metadata_series_table(idTable = idTable, filter = filter, tip = "M", validate = FALSE, verbose = verbose, lang = lang)
+
+      # Check if exits and id for variables
+      existsvarid <- exists_variables_id(df$MetaData)
+
+      # If exists variable's id and value's id add new origin and include ids in the selection
+      if(exists_values_id(df$MetaData) && existsvarid$result) {
+        selcol <- c("Nombre", "Codigo", "Id", "Variable.Nombre","Variable.Codigo", existsvarid$name)
+        origin <- "tablepxid"
+
+      }else{
+        selcol <- c("Nombre", "Codigo", "Variable.Nombre","Variable.Codigo")
+      }
 
       # Get the metadata with information of variables and values
       dfvalues <- lapply(df$MetaData,
-                         function(x) subset(x, select = c("Nombre", "Codigo", "Variable.Nombre","Variable.Codigo")))
+                         function(x) subset(x, select = selcol))
 
       dfvalues <- unique(do.call(rbind, dfvalues))
 
