@@ -137,14 +137,15 @@ head(metadata[order(metadata$Variable.Id),],4)
 
 
 2. In this case, we can use the ids instead of the codes to build the filter.
+To do this we add the alias *~id* at the end of each id.
 
 ```{r tabla_filter_7}
-# Build the filter with the ids of variables and values
-filter = list("349" = 16473,  # variable id = 349, value id = 16473
-              "916" = 391871, # variable id = 909, value id = 391455
-              "942" = 274282, # variable id = 942, value id = 274282
-              "999" = 391770, # variable id = 975, value id = 391438
-              "3"   = 11406   # variable id = 3, value id = 11406
+# In order to use the ids of variables and values we add the alias '~id'
+filter = list("349~id" = "16473~id",  # variable id = 349, value id = 16473
+              "916~id" = "391871~id", # variable id = 909, value id = 391455
+              "942~id" = "274282~id", # variable id = 942, value id = 274282
+              "999~id" = "391770~id", # variable id = 975, value id = 391438
+              "3~id"   = "11406~id"  # variable id = 3, value id = 11406
               )
 
 # Request data using the filter

@@ -564,7 +564,7 @@ get_filter_values <- function(parameter, lang, shortcut, verbose, progress = TRU
     if(is.element("idtable",parnames)){
 
       # Get the metadata information of the table
-      dfval <- get_metadata_variable_values_table(idTable = id, verbose = verbose, validate = FALSE, lang, progress)
+      dfval <- get_metadata_variable_values_table(idTable = id, verbose = verbose, validate = FALSE, lang = lang, progress = progress)
 
       # The filter comes from a series
     }else{
@@ -1219,7 +1219,6 @@ check_table_px_filter <- function(idTable, pxfilter, verbose, df){
 
     # Go through all the variables
     for(v in var){
-
       # If the variable in the filter is not in the metadata is not valid
       if(!is.element(v, c(df$Variable.Codigo, shortcut_wrapper))){
         result <- FALSE
@@ -1277,12 +1276,13 @@ check_table_px_id_filter <- function(idTable, pxfilter, verbose, df){
   # The filter must be a list
   if(is.list(pxfilter)){
 
+    pxfilter <- check_alias_filter(pxfilter)
+
     # Variables of the filter
     var <- names(pxfilter)
 
     # Go through all the variables
     for(v in var){
-
       # If the variable in the filter is not in the metadata is not valid
       if(!is.element(v, c(df$Variable.Codigo, df$Variable.Id, shortcut_wrapper))){
         result <- FALSE
@@ -1306,7 +1306,6 @@ check_table_px_id_filter <- function(idTable, pxfilter, verbose, df){
 
       # Go through all the values in the filter for the specific variable
       for(val in pxfilter[[v]]){
-
         # Split the value
         valshort <- if(nchar(val) > 0 ) unlist(strsplit(as.character(val), "\\s+")) else val
 
@@ -1676,6 +1675,60 @@ check_type_table <- function(idTable, verbose = FALSE, validate = FALSE, lang = 
   origin <- if(result) "tablepx" else "tablet3"
 
   return(list(groups = groups, ispxtable = result, origin = origin))
+}
+
+check_alias_filter <- function(f){
+
+  val <- f
+
+  # Get variables
+  n <- names(f)
+
+  # Check if there are variables with aliases
+  login <- grepl("~", n)
+
+  # Check if there are values with aliases
+  logif <- grepl("~", f)
+
+  if(sum(login) != sum(logif)){
+    stop("Filter aliases missing")
+
+  }else{
+    if(sum(login) > 0){
+      # Get variables without aliases
+      var <- unlist(lapply(n, function(x) gsub("~id|~cod","",tolower(x))))
+
+      # Check if the aliases are valid
+      if(length(grep("~", var)) > 0){
+        stop("The alias in the variables of the filter is not valid. Valid aliases are 'id' and 'cod'")
+      }
+
+      # Get values without aliases
+      val <- lapply(f, function(x) gsub("~id|~cod","",tolower(x)))
+
+      # Check if the aliases are valid
+      if(length(grep("~", unlist(val))) > 0){
+        stop("The alias in the values of the filter is not valid. Valid aliases are 'id' and 'cod'")
+      }
+
+      # Get aliases of  variables
+      varalias <- rep(unlist(lapply(strsplit(names(filter), "~"),
+                                    function(x) {if(length(x) > 1) x[2] else ""})),
+                      times = lengths(f))
+
+      # Get aliases of values
+      valalias <- unlist(lapply(strsplit(unlist(filter, use.names = FALSE), "~"),
+                                function(x) {if(length(x) > 1) x[2] else ""}))
+
+      if(sum(varalias == valalias) != length(valalias)){
+        stop("The alias of a variable and its values must be the same. Valid aliases are 'id' and 'cod'")
+      }
+
+      names(val) <- var
+    }
+  }
+
+  return(val)
 }
 
 # Extract metadata information from tables into columns
