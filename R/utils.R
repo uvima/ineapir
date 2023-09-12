@@ -1712,12 +1712,12 @@ check_alias_filter <- function(f){
       }
 
       # Get aliases of  variables
-      varalias <- rep(unlist(lapply(strsplit(names(filter), "~"),
+      varalias <- rep(unlist(lapply(strsplit(names(f), "~"),
                                     function(x) {if(length(x) > 1) x[2] else ""})),
                       times = lengths(f))
 
       # Get aliases of values
-      valalias <- unlist(lapply(strsplit(unlist(filter, use.names = FALSE), "~"),
+      valalias <- unlist(lapply(strsplit(unlist(f, use.names = FALSE), "~"),
                                 function(x) {if(length(x) > 1) x[2] else ""}))
 
       if(sum(varalias == valalias) != length(valalias)){
