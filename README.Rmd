@@ -165,7 +165,8 @@ A variable can be identify by a numerical code ('*Id*'). In addition, if we
 pass the `operation` argument we obtain the variables used in an operation.
 
 ```{r variables_opertation}
-# We use the function get_metadata_variables with argument operation
+# We use the function get_metadata_variables with argument operation,
+# e.g., operation code = 'IPC'
 variables <- get_metadata_variables(operation = "IPC")
 head(variables)
 ```
@@ -188,7 +189,8 @@ the `operation` argument as well we obtain the values that the variable takes
 in that particular operation.
 
 ```{r values_operation}
-# We use the function get_metadata_values with arguments operation and variable
+# We use the function get_metadata_values with arguments operation and variable,
+# e.g., operation code = 'IPC'
 values <- get_metadata_values(operation = "IPC", variable = 3)
 head(values)
 ```

@@ -13,7 +13,8 @@ RoxygenNote: 7.2.3
 Imports: 
     httr,
     jsonlite
-URL: https://github.com/uvima/ineapir
+URL: https://github.com/uvima/ineapir,
+    https://uvima.github.io/ineapir/
 BugReports: https://github.com/uvima/ineapir/issues
 Suggests: 
     rmarkdown

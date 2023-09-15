@@ -226,7 +226,8 @@ we pass the `operation` argument we obtain the variables used in an
 operation.
 
 ``` r
-# We use the function get_metadata_variables with argument operation
+# We use the function get_metadata_variables with argument operation,
+# e.g., operation code = 'IPC'
 variables <- get_metadata_variables(operation = "IPC")
 head(variables)
 #>    Id                           Nombre Codigo
@@ -270,7 +271,8 @@ pass the `operation` argument as well we obtain the values that the
 variable takes in that particular operation.
 
 ``` r
-# We use the function get_metadata_values with arguments operation and variable
+# We use the function get_metadata_values with arguments operation and variable,
+# e.g., operation code = 'IPC'
 values <- get_metadata_values(operation = "IPC", variable = 3)
 head(values)
 #>   Id Fk_Variable            Nombre Codigo
