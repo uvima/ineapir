@@ -8,7 +8,7 @@
 
 ## Overview
 
-inepair provides a set of functions to obtain open data and metadata
+ineapir provides a set of functions to obtain open data and metadata
 published by the National Statistics Institute of Spain
 ([INE](https://www.ine.es/en/index.htm)). The data is obtained thanks to
 calls to the INE API service which allows access via URL requests to the
