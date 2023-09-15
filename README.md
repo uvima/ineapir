@@ -23,7 +23,8 @@ source code as a zip file and then install it as follows.
 remotes::install_local(path = "path/to/file.zip")
 ```
 
-Alternatively, in case you have a personal access token.
+Alternatively, for public repositories or in case you have a personal
+access token (only for private repositories).
 
 ``` r
 remotes::install_github("uvima/ineapir")
@@ -46,18 +47,42 @@ argument, which is the identification code of the table, to the function
 library(ineapir)
 
 # We use the function get_data_table with the argument idTable
-table <- get_data_table(idTable = 50902)
+# and the argument tip = 'A' for a more friendly output
+table <- get_data_table(idTable = 50902, tip = "A")
+
+# Each row represents a series
 table[1,c("COD", "Nombre")]
 #>         COD                                   Nombre
 #> 1 IPC251852 Total Nacional. Índice general. Índice.
+
+# The Data column contains a data frame for each row with the values 
+# of the different periods of each series
 head(table$Data[[1]])
-#>          Fecha FK_TipoDato FK_Periodo Anyo   Valor Secreto
-#> 1 1.685570e+12           1          6 2023 112.354   FALSE
-#> 2 1.682892e+12           1          5 2023 111.719   FALSE
-#> 3 1.680300e+12           1          4 2023 111.773   FALSE
-#> 4 1.677625e+12           1          3 2023 111.111   FALSE
-#> 5 1.675206e+12           1          2 2023 110.703   FALSE
-#> 6 1.672528e+12           1          1 2023 109.668   FALSE
+#>                           Fecha T3_TipoDato T3_Periodo Anyo   Valor
+#> 1 2023-08-01T00:00:00.000+02:00  Definitivo        M08 2023 113.149
+#> 2 2023-07-01T00:00:00.000+02:00  Definitivo        M07 2023 112.544
+#> 3 2023-06-01T00:00:00.000+02:00  Definitivo        M06 2023 112.354
+#> 4 2023-05-01T00:00:00.000+02:00  Definitivo        M05 2023 111.719
+#> 5 2023-04-01T00:00:00.000+02:00  Definitivo        M04 2023 111.773
+#> 6 2023-03-01T00:00:00.000+01:00  Definitivo        M03 2023 111.111
+
+# We can concatenate all data frames into one using unnest = TRUE
+table <- get_data_table(idTable = 50902, tip = "A", unnest = TRUE)
+head(table[,c("COD", "Nombre", "Fecha", "Valor")])
+#>           COD                                   Nombre
+#> 1   IPC251852 Total Nacional. Índice general. Índice. 
+#> 1.1 IPC251852 Total Nacional. Índice general. Índice. 
+#> 1.2 IPC251852 Total Nacional. Índice general. Índice. 
+#> 1.3 IPC251852 Total Nacional. Índice general. Índice. 
+#> 1.4 IPC251852 Total Nacional. Índice general. Índice. 
+#> 1.5 IPC251852 Total Nacional. Índice general. Índice. 
+#>                             Fecha   Valor
+#> 1   2023-08-01T00:00:00.000+02:00 113.149
+#> 1.1 2023-07-01T00:00:00.000+02:00 112.544
+#> 1.2 2023-06-01T00:00:00.000+02:00 112.354
+#> 1.3 2023-05-01T00:00:00.000+02:00 111.719
+#> 1.4 2023-04-01T00:00:00.000+02:00 111.773
+#> 1.5 2023-03-01T00:00:00.000+01:00 111.111
 ```
 
 To get the last n data from a table it is necessary to pass the `nlast`
@@ -70,8 +95,9 @@ table[1,c("COD", "Nombre")]
 #>         COD                                   Nombre
 #> 1 IPC251852 Total Nacional. Índice general. Índice.
 head(table$Data[[1]])
-#>         Fecha FK_TipoDato FK_Periodo Anyo   Valor Secreto
-#> 1 1.68557e+12           1          6 2023 112.354   FALSE
+#>          Fecha FK_TipoDato FK_Periodo Anyo   Valor Secreto
+#> 1 1.690841e+12           1          8 2023 113.149   FALSE
+#> 2 1.688162e+12           1          7 2023 112.544   FALSE
 ```
 
 ### Obtaining data from a series
@@ -82,10 +108,10 @@ function `get_data_series()`.
 
 ``` r
 # We use the function get_data_series with the argument codSeries
-series <- get_data_series(codSeries = "IPC251856")
+series <- get_data_series(codSeries = "IPC251856", tip = "A")
 series$Data
-#>          Fecha FK_TipoDato FK_Periodo Anyo Valor Secreto
-#> 1 1.688162e+12           3          7 2023   2.3   FALSE
+#>                           Fecha T3_TipoDato T3_Periodo Anyo Valor
+#> 1 2023-08-01T00:00:00.000+02:00  Definitivo        M08 2023   2.6
 ```
 
 To get the last n data from a series it is necessary to pass the `nlast`
@@ -93,14 +119,31 @@ argument as well.
 
 ``` r
 # We use the function get_data_series with arguments codSeries and nlast
-series <- get_data_series(codSeries = "IPC251856", nlast = 5)
+series <- get_data_series(codSeries = "IPC251856", tip = "A", nlast = 5)
 series$Data
-#>          Fecha FK_TipoDato FK_Periodo Anyo Valor Secreto
-#> 1 1.677625e+12           1          3 2023   3.3   FALSE
-#> 2 1.680300e+12           1          4 2023   4.1   FALSE
-#> 3 1.682892e+12           1          5 2023   3.2   FALSE
-#> 4 1.685570e+12           1          6 2023   1.9   FALSE
-#> 5 1.688162e+12           3          7 2023   2.3   FALSE
+#>                           Fecha T3_TipoDato T3_Periodo Anyo Valor
+#> 1 2023-04-01T00:00:00.000+02:00  Definitivo        M04 2023   4.1
+#> 2 2023-05-01T00:00:00.000+02:00  Definitivo        M05 2023   3.2
+#> 3 2023-06-01T00:00:00.000+02:00  Definitivo        M06 2023   1.9
+#> 4 2023-07-01T00:00:00.000+02:00  Definitivo        M07 2023   2.3
+#> 5 2023-08-01T00:00:00.000+02:00  Definitivo        M08 2023   2.6
+
+# Using unnest = TRUE
+series <- get_data_series(codSeries = "IPC251856", tip = "A", nlast = 5,
+                          unnest = TRUE)
+head(series[,c("COD", "Nombre", "Fecha", "Valor")])
+#>           COD                                            Nombre
+#> 1   IPC251856 Total Nacional. Índice general. Variación anual. 
+#> 1.1 IPC251856 Total Nacional. Índice general. Variación anual. 
+#> 1.2 IPC251856 Total Nacional. Índice general. Variación anual. 
+#> 1.3 IPC251856 Total Nacional. Índice general. Variación anual. 
+#> 1.4 IPC251856 Total Nacional. Índice general. Variación anual. 
+#>                             Fecha Valor
+#> 1   2023-04-01T00:00:00.000+02:00   4.1
+#> 1.1 2023-05-01T00:00:00.000+02:00   3.2
+#> 1.2 2023-06-01T00:00:00.000+02:00   1.9
+#> 1.3 2023-07-01T00:00:00.000+02:00   2.3
+#> 1.4 2023-08-01T00:00:00.000+02:00   2.6
 ```
 
 Additionally, it is possible to obtain data from a series between two
@@ -202,7 +245,8 @@ the `variable` argument, which is the identifier of the variable, to the
 function `get_metadata_values()`.
 
 ``` r
-# We use the function get_metadata_values with argument variable
+# We use the function get_metadata_values with argument variable,
+# e.g., id = 3 (variable 'Tipo de dato')
 values <- get_metadata_values(variable = 3)
 head(values)
 #>   Id Fk_Variable                                                   Nombre
@@ -289,6 +333,20 @@ head(values, 4)
 #> 2             304092
 #> 3             304092
 #> 4             304092
+```
+
+Alternatively, we can use the `get_metadata_table_varval()` function to
+get the variables and values present in a table.
+
+``` r
+# Using the function get_metadata_table_varval
+values <- get_metadata_table_varval(idTable = 50902)
+head(values, 4)
+#>       Id Fk_Variable                             Nombre Codigo
+#> 1 304092         762                     Índice general     00
+#> 2 304093         762 Alimentos y bebidas no alcohólicas     01
+#> 3 304094         762       Bebidas alcohólicas y tabaco     02
+#> 4 304095         762                  Vestido y calzado     03
 ```
 
 ### Obtaining series

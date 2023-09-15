@@ -35,7 +35,8 @@ source code as a zip file and then install it as follows.
 remotes::install_local(path = "path/to/file.zip")
 ```
 
-Alternatively, in case you have a personal access token.
+Alternatively, for public repositories or in case you have a personal access
+token (only for private repositories).
 ```{r, eval = FALSE}
 remotes::install_github("uvima/ineapir")
 ```
@@ -57,9 +58,19 @@ argument, which is the identification code of the table, to the function
 library(ineapir)
 
 # We use the function get_data_table with the argument idTable
-table <- get_data_table(idTable = 50902)
+# and the argument tip = 'A' for a more friendly output
+table <- get_data_table(idTable = 50902, tip = "A")
+
+# Each row represents a series
 table[1,c("COD", "Nombre")]
+
+# The Data column contains a data frame for each row with the values 
+# of the different periods of each series
 head(table$Data[[1]])
+
+# We can concatenate all data frames into one using unnest = TRUE
+table <- get_data_table(idTable = 50902, tip = "A", unnest = TRUE)
+head(table[,c("COD", "Nombre", "Fecha", "Valor")])
 ```
 
 To get the last n data from a table it is necessary to pass the `nlast`
@@ -80,7 +91,7 @@ argument, which is the identification code of the series, to the function
 
 ```{r series_data}
 # We use the function get_data_series with the argument codSeries
-series <- get_data_series(codSeries = "IPC251856")
+series <- get_data_series(codSeries = "IPC251856", tip = "A")
 series$Data
 ```
 
@@ -89,8 +100,13 @@ argument as well.
 
 ```{r series_data_n}
 # We use the function get_data_series with arguments codSeries and nlast
-series <- get_data_series(codSeries = "IPC251856", nlast = 5)
+series <- get_data_series(codSeries = "IPC251856", tip = "A", nlast = 5)
 series$Data
+
+# Using unnest = TRUE
+series <- get_data_series(codSeries = "IPC251856", tip = "A", nlast = 5,
+                          unnest = TRUE)
+head(series[,c("COD", "Nombre", "Fecha", "Valor")])
 ```
 
 Additionally, it is possible to obtain data from a series between two dates.
@@ -161,7 +177,8 @@ To get all the values that a variable can take it is necessary to pass the
 `get_metadata_values()`.
 
 ```{r values}
-# We use the function get_metadata_values with argument variable
+# We use the function get_metadata_values with argument variable,
+# e.g., id = 3 (variable 'Tipo de dato')
 values <- get_metadata_values(variable = 3)
 head(values)
 ```
@@ -204,6 +221,15 @@ for an specific group using the function `get_metadata_table_values()`.
 ```{r group_values}
 # We use the function get_metadata_table_values with arguments idTable and idGroup
 values <- get_metadata_table_values(idTable = 50902, idGroup = 110889)
+head(values, 4)
+```
+
+Alternatively, we can use the `get_metadata_table_varval()` function to get
+the variables and values present in a table.
+
+```{r table_varval}
+# Using the function get_metadata_table_varval
+values <- get_metadata_table_varval(idTable = 50902)
 head(values, 4)
 ```
 
