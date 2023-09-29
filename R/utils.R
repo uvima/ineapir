@@ -93,7 +93,7 @@ get_api_data <- function(url, request){
   )
 
   # Check the result retrieved for the API
-  if(!check_result_status(result) && !is.null(result)){
+  if(check_result(result)){
 
     # extract metadata to columns
     if((!is.null(request$addons$metanames) && request$addons$metanames) ||
@@ -673,6 +673,24 @@ check_addons <- function(parameters, addons, definition){
   }
 
   return(result)
+}
+
+#Check the result retrieved for the API
+check_result <- function(result){
+  check <- FALSE
+
+  if(!is.null(result)){
+    if(!check_result_status(result)){
+      if(is.data.frame(result) && nrow(result) > 0){
+        check <- TRUE
+      }
+      if(is.list(result) && !is.data.frame(result) && length(result) > 0){
+        check <- TRUE
+      }
+    }
+  }
+
+  return(check)
 }
 
 #Check the result retrieved for the API
