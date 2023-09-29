@@ -2,7 +2,7 @@
 % Please edit documentation in R/metadata_tables.R
 \name{get_metadata_tables_operation}
 \alias{get_metadata_tables_operation}
-\title{Get all the tables present in a operation}
+\title{Get all tables for a given operation}
 \usage{
 get_metadata_tables_operation(
   operation = NULL,
@@ -16,28 +16,30 @@ get_metadata_tables_operation(
 )
 }
 \arguments{
-\item{operation}{(string): code of the operation}
+\item{operation}{(string): code of the operation. To obtain a list of
+available operations see \code{\link[=get_metadata_operations]{get_metadata_operations()}}.}
 
-\item{det}{(int): level of detail (0, 1 ,2)}
+\item{det}{(int): level of detail. Valid values: 0, 1 or 2.}
 
-\item{tip}{(string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both}
+\item{tip}{(string): set to 'A' for friendly output (e.g. readable dates),
+set to 'M' to include metadata or set to 'AM' for both.}
 
 \item{geo}{(int): set to 0 for national tables or set to 1 for tables with
-a greater level of disaggregation}
+a greater level of disaggregation.}
 
 \item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
 
-\item{page}{(int): page number. The retrieved result of the query is paginated}
+\item{page}{(int): page number. The retrieved result of the query is paginated. Default value is set to 1.}
 
-\item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
+\item{validate}{(logical): validate the input parameters. A FALSE value means fewer API calls.}
 
-\item{verbose}{(logical): print additional information}
+\item{verbose}{(logical): print additional information, including the URL to call the API service.}
 }
 \value{
-Data frame with information of the available tables of an operation
+Data frame with information of the available tables according to the operation specified in the function
 }
 \description{
-Get all the tables present in a operation
+Get all tables for a given operation
 }
 \examples{
 \dontrun{

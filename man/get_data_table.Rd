@@ -26,7 +26,7 @@ get_data_table(
 
 When we request data from tables there is the possibility of filtering data
 on the fly using metadata information about the variables and their values
-that define the series. See \link{get_metadata_table_varval} to get all the values at once.
+that define the series. See \code{\link[=get_metadata_table_varval]{get_metadata_table_varval()}} to get all the values at once.
 There are different approaches to build the filter depending on the table type.
 \subsection{Case one: tempus table}{
 

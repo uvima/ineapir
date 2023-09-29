@@ -2,7 +2,7 @@
 % Please edit documentation in R/metadata_tables.R
 \name{get_metadata_operation_table}
 \alias{get_metadata_operation_table}
-\title{Get the operation of the table}
+\title{Get the operation for a given table}
 \usage{
 get_metadata_operation_table(
   idTable = NULL,
@@ -12,19 +12,19 @@ get_metadata_operation_table(
 )
 }
 \arguments{
-\item{idTable}{(int): code of the table}
+\item{idTable}{(int): id of the table.}
 
-\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
+\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 
-\item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
+\item{validate}{(logical): validate the input parameters.}
 
-\item{verbose}{(logical): print additional information}
+\item{verbose}{(logical): print additional information, including the URL to call the API service.}
 }
 \value{
-Data frame with information of the operation of a table
+Data frame with information of the operation according to the table specified in the function
 }
 \description{
-Get the operation of the table
+Get the operation for a given table
 }
 \examples{
 \dontrun{

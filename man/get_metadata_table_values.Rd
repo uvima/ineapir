@@ -2,7 +2,7 @@
 % Please edit documentation in R/metadata_tables.R
 \name{get_metadata_table_values}
 \alias{get_metadata_table_values}
-\title{Get all the values of a group of a table}
+\title{Get all values for a specific table group}
 \usage{
 get_metadata_table_values(
   idTable = NULL,
@@ -13,21 +13,22 @@ get_metadata_table_values(
 )
 }
 \arguments{
-\item{idTable}{(int): code of the table}
+\item{idTable}{(int): id of the table.}
 
-\item{idGroup}{(int): code of the group of variables}
+\item{idGroup}{(int): id of the group of variables. To get all groups
+for a specific a table see \code{\link[=get_metadata_table_groups]{get_metadata_table_groups()}}.}
 
-\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
+\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 
-\item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
+\item{validate}{(logical): validate the input parameters. A FALSE value means fewer API calls.}
 
-\item{verbose}{(logical): print additional information}
+\item{verbose}{(logical): print additional information, including the URL to call the API service.}
 }
 \value{
-Data frame with information of the values of a group of a table
+Data frame with information of the values of a table group according to the table and group specified in the function
 }
 \description{
-Get all the values of a group of a table
+Get all values for a specific table group
 }
 \examples{
 \dontrun{

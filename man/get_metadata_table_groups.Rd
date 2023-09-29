@@ -2,7 +2,7 @@
 % Please edit documentation in R/metadata_tables.R
 \name{get_metadata_table_groups}
 \alias{get_metadata_table_groups}
-\title{Get all the groups of a table}
+\title{Get all groups for a specific a table}
 \usage{
 get_metadata_table_groups(
   idTable = NULL,
@@ -12,19 +12,19 @@ get_metadata_table_groups(
 )
 }
 \arguments{
-\item{idTable}{(int): code of the table}
+\item{idTable}{(int): id of the table.}
 
-\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
+\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 
-\item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
+\item{validate}{(logical): validate the input parameters.}
 
-\item{verbose}{(logical): print additional information}
+\item{verbose}{(logical): print additional information, including the URL to call the API service.}
 }
 \value{
-Data frame with information of the groups of a table
+Data frame with information of the groups according to the table specified in the function
 }
 \description{
-Get all the groups of a table
+Get all groups for a specific a table
 }
 \examples{
 \dontrun{

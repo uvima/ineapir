@@ -2,7 +2,7 @@
 % Please edit documentation in R/metadata_tables.R
 \name{get_metadata_table_varval}
 \alias{get_metadata_table_varval}
-\title{Get metadata information of a table}
+\title{Get metadata information about the variables and values for a given table}
 \usage{
 get_metadata_table_varval(
   idTable = NULL,
@@ -13,26 +13,69 @@ get_metadata_table_varval(
 )
 }
 \arguments{
-\item{idTable}{(int): code of the table}
+\item{idTable}{(int): id of the table.}
 
-\item{filter}{(list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)}
+\item{filter}{(list): list of variables and values.
+#' #### Filtering data from tables
+When we request data from tables there is the possibility of filtering data
+on the fly using metadata information about the variables and their values
+that define the series. See \code{\link[=get_metadata_table_varval]{get_metadata_table_varval()}} to get all the values at once.
+There are different approaches to build the filter depending on the table type.
+\subsection{Case one: tempus table}{
 
-\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
+\strong{URL}: \href{https://www.ine.es/jaxiT3/Tabla.htm?t=50902}{example}.
+For a tempus table the filter is based on ids. The format is \code{list(id_variable1 = id_value1, id_variable2 = id_value2)}.
+Besides:
+\itemize{
+\item A variable can take more than one value:  \code{list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)}.
+\item A variable can take a empty character "" to get all its possible values: \code{list(id_variable1 = id_value1, id_variable2 = "")}.
+}
+}
 
-\item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
+\subsection{Case two: px tables}{
 
-\item{verbose}{(logical): print additional information}
+\strong{URL}: \href{https://www.ine.es/jaxi/Tabla.htm?path=/t20/e245/p08/l0/&file=01001.px}{example}.
+For a px table the filter is based on codes. The format is \code{list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)}.
+Besides:
+\itemize{
+\item A variable can take more than one value:  \code{list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)}.
+\item A variable can take a empty character "" to get all its possible values: \code{list(cod_variable1 = cod_value1, cod_variable2 = "")}.
+}
+}
+
+\subsection{Case three: tpx table}{
+
+\strong{URL}: \href{https://www.ine.es/jaxi/Tabla.htm?tpx=33387&L=0}{example}.
+For a tpx table the filter is based on codes. The format is \code{list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)}.
+Besides:
+\itemize{
+\item A variable can take more than one value:  \code{list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)}.
+\item A variable can take a empty character "" to get all its possible values: \code{list(cod_variable1 = cod_value1, cod_variable2 = "")}.
+}
+
+\strong{URL:} \href{https://www.ine.es/jaxi/Tabla.htm?tpx=52056&L=0}{example}.
+There are tpx tables that contain variable ids and value ids. In this case,
+we can use the ids instead of the codes to build the filter. To do this we add
+the alias \emph{~id} at the end of each id: \verb{list(id_variable1~id = id_value1~id, id_variable2~id = id_value2~id)}.
+}}
+
+\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
+
+\item{validate}{(logical): validate the input parameters.A FALSE value means fewer API calls.
+Therefore, it is recommended to set it to FALSE when there is no doubt about the validity of the input parameters, including the filter.}
+
+\item{verbose}{(logical): print additional information, including the URL to call the API service.}
 }
 \value{
-Data frame with information about the variables and values that
-define the table
+Data frame with information about the variables and values that define a table according to the table specified in the function
 }
 \description{
-Get metadata information of a table
+Get metadata information about the variables and values for a given table
 }
 \examples{
 \dontrun{
 get_metadata_table_varval(idTable = 50902)
+get_metadata_table_varval(idTable = 52056, filter = list(NAC = "00"))
 }
 
 }
