@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_series.R
 \name{get_data_series}
 \alias{get_data_series}
-\title{Get data from series}
+\title{Get data from a specific series}
 \usage{
 get_data_series(
   codSeries = NULL,
@@ -18,30 +18,31 @@ get_data_series(
 )
 }
 \arguments{
-\item{codSeries}{(string): Code of the series}
+\item{codSeries}{(string): Code of the series.}
 
-\item{nlast}{(int): number of periods to retrieve}
+\item{nlast}{(int): number of periods to retrieve. By default is set to 1 period.}
 
 \item{dateStart}{(string): the initial date of the requested data. The required
-format is yyyy/mm/dd}
+format is yyyy/mm/dd.}
 
 \item{dateEnd}{(string): the end date of the requested data. The required
-format is yyyy/mm/dd}
+format is yyyy/mm/dd.}
 
-\item{det}{(int): level of detail (0, 1 ,2)}
+\item{det}{(int): level of detail. Valid values: 0, 1 or 2.}
 
-\item{tip}{(string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both}
+\item{tip}{(string): set to 'A' for friendly output (e.g. readable dates),
+set to 'M' to include metadata or set to 'AM' for both.}
 
-\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
+\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 
-\item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
+\item{validate}{(logical): validate the input parameters.}
 
-\item{verbose}{(logical): print additional information}
+\item{verbose}{(logical): print additional information, including the URL to call the API service.}
 
 \item{unnest}{(logical): set to TRUE to obtain a single data frame of data}
 }
 \value{
-Data frame with data of a series
+Data frame with data of a series according to the code specified in the function
 }
 \description{
 Retrieve data from series published by INE calling the API

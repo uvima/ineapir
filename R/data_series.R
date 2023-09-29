@@ -1,21 +1,22 @@
-#' Get data from series
+#' Get data from a specific series
 #'
 #' @description Retrieve data from series published by INE calling the API
 #'
-#' @param codSeries (string): Code of the series
-#' @param nlast (int): number of periods to retrieve
+#' @param codSeries (string): Code of the series.
+#' @param nlast (int): number of periods to retrieve. By default is set to 1 period.
 #' @param dateStart (string): the initial date of the requested data. The required
-#' format is yyyy/mm/dd
+#' format is yyyy/mm/dd.
 #' @param dateEnd (string): the end date of the requested data. The required
-#' format is yyyy/mm/dd
-#' @param det (int): level of detail (0, 1 ,2)
-#' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
-#' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
-#' @param verbose (logical): print additional information
+#' format is yyyy/mm/dd.
+#' @param det (int): level of detail. Valid values: 0, 1 or 2.
+#' @param tip (string): set to 'A' for friendly output (e.g. readable dates),
+#' set to 'M' to include metadata or set to 'AM' for both.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param validate (logical): validate the input parameters.
+#' @param verbose (logical): print additional information, including the URL to call the API service.
 #' @param unnest (logical): set to TRUE to obtain a single data frame of data
 #'
-#' @return Data frame with data of a series
+#' @return Data frame with data of a series according to the code specified in the function
 #'
 #' @examples \dontrun{
 #' get_data_series(codSeries = "IPC251856")
@@ -59,26 +60,42 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
   return(data)
 }
 
-#' Get data from series that fulfill the conditions of a filter
+#' Get data from series for a specific operation given a filter
 #'
-#' @param operation (string): Code of the operation
-#' @param filter (list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)
+#' @param operation (string): Code of the operation. To obtain a list of
+#' available operations see [get_metadata_operations()].
+#' @param filter (list): list of variables and values.
+#' #### Filtering data from series
+#' When we request data from series there is the possibility of filtering data
+#' on the fly using metadata information about the variables and their values
+#' that define the series. To get variables for a given operation see
+#' [get_metadata_variables()] and to get values for a specific variable see
+#' [get_metadata_values()]. See also [get_metadata_series_varval()] to get all the values at once.
+#'
+#' ##### Filter format
+#' The format is `list(id_variable1 = id_value1, id_variable2 = id_value2)`.
+#' Besides:
+#' - A variable can take more than one value:  `list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)`.
+#' - A variable can take a empty character "" to get all its possible values: `list(id_variable1 = id_value1, id_variable2 = "")`.
 #' @param periodicity (int): id of the periodicity of the series. Common periodicities:
-#' 1 (monthly), 3 (quarterly), 6 (bi-annual), 12 (annual).
-#' @param nlast (int): number of periods to retrieve
-#' @param det (int): level of detail (0, 1 ,2)
-#' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
-#' @param page (int): page number. The retrieved result of the query is paginated
-#' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
-#' @param verbose (logical): print additional information
+#' 1 (monthly), 3 (quarterly), 6 (bi-annual), 12 (annual). To obtain a list
+#' of periodicities see [get_metadata_periodicity()].
+#' @param nlast (int): number of periods to retrieve. By default is set to 1 period.
+#' @param det (int): level of detail. Valid values: 0, 1 or 2.
+#' @param tip (string): set to 'A' for friendly output (e.g. readable dates),
+#' set to 'M' to include metadata or set to 'AM' for both.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param page (int): page number. The retrieved result of the query is paginated. Default value is set to 1.
+#' @param validate (logical): validate the input parameters. A FALSE value means fewer API calls.
+#' Therefore, it is recommended to set it to FALSE when there is no doubt about the validity of the input parameters, including the filter.
+#' @param verbose (logical): print additional information, including the URL to call the API service.
 #' @param unnest (logical): obtain a single data frame of data
 #'
-#' @return Data frame with data of series
+#' @return Data frame with data of series according to the operation and filter specified in the function
 #' @export
 #'
 #' @examples \dontrun{
-#' get_data_series_filter(operation = "IPC", filter = list("115"= "29", "3" = "84", "762" = ""),
+#' get_data_series_filter(operation = "IPC", filter = list("115"= c("29","28"), "3" = "84", "762" = ""),
 #'  periodicity = 1)
 #' }
 #'

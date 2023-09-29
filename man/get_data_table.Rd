@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_tables.R
 \name{get_data_table}
 \alias{get_data_table}
-\title{Get data from a table}
+\title{Get data from a specific table}
 \usage{
 get_data_table(
   idTable = NULL,
@@ -19,35 +19,84 @@ get_data_table(
 )
 }
 \arguments{
-\item{idTable}{(int): id of the table}
+\item{idTable}{(int): id of the table.}
 
-\item{filter}{(list): list of variables and values, list(idvariable1 = idvalue1, idvariable2 = idvalue2)}
+\item{filter}{(list): list of variables and values.
+\subsection{Filtering data from tables}{
 
-\item{nlast}{(int): number of periods to retrieve}
+When we request data from tables there is the possibility of filtering data
+on the fly using metadata information about the variables and their values
+that define the series. See \link{get_metadata_table_varval} to get all the values at once.
+There are different approaches to build the filter depending on the table type.
+\subsection{Case one: tempus table}{
 
-\item{det}{(int): level of detail (0, 1 ,2)}
+\strong{URL}: \href{https://www.ine.es/jaxiT3/Tabla.htm?t=50902}{example}.
+For a tempus table the filter is based on ids. The format is \code{list(id_variable1 = id_value1, id_variable2 = id_value2)}.
+Besides:
+\itemize{
+\item A variable can take more than one value:  \code{list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)}.
+\item A variable can take a empty character "" to get all its possible values: \code{list(id_variable1 = id_value1, id_variable2 = "")}.
+}
+}
 
-\item{tip}{(string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both}
+\subsection{Case two: px tables}{
+
+\strong{URL}: \href{https://www.ine.es/jaxi/Tabla.htm?path=/t20/e245/p08/l0/&file=01001.px}{example}.
+For a px table the filter is based on codes. The format is \code{list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)}.
+Besides:
+\itemize{
+\item A variable can take more than one value:  \code{list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)}.
+\item A variable can take a empty character "" to get all its possible values: \code{list(cod_variable1 = cod_value1, cod_variable2 = "")}.
+}
+}
+
+\subsection{Case three: tpx table}{
+
+\strong{URL}: \href{https://www.ine.es/jaxi/Tabla.htm?tpx=33387&L=0}{example}.
+For a tpx table the filter is based on codes. The format is \code{list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)}.
+Besides:
+\itemize{
+\item A variable can take more than one value:  \code{list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)}.
+\item A variable can take a empty character "" to get all its possible values: \code{list(cod_variable1 = cod_value1, cod_variable2 = "")}.
+}
+
+\strong{URL:} \href{https://www.ine.es/jaxi/Tabla.htm?tpx=52056&L=0}{example}.
+There are tpx tables that contain variable ids and value ids. In this case,
+we can use the ids instead of the codes to build the filter. To do this we add
+the alias \emph{~id} at the end of each id: \verb{list(id_variable1~id = id_value1~id, id_variable2~id = id_value2~id)}.
+}
+
+}}
+
+\item{nlast}{(int): number of periods to retrieve. By default it retrieves all available periods.}
+
+\item{det}{(int): level of detail (0, 1 ,2). Valid values: 0, 1 or 2.}
+
+\item{tip}{(string): set to 'A' for friendly output (e.g. readable dates),
+set to 'M' to include metadata or set to 'AM' for both.}
 
 \item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 
-\item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
+\item{validate}{(logical): validate the input parameters. A FALSE value means fewer API calls.
+Therefore, it is recommended to set it to FALSE when there is no doubt about the validity of the input parameters, including the filter.}
 
-\item{verbose}{(logical): print additional information}
+\item{verbose}{(logical): print additional information, including the URL to call the API service.}
 
 \item{unnest}{(logical): set to TRUE to obtain a single data frame of data}
 
-\item{metanames}{(logical): set to TRUE to extract the name of the values to individual data frame columns
-from metadata information}
+\item{metanames}{(logical): set to TRUE to extract the name of the values that defined the table.
+The names are extracted from the metadata information (it is mandatory to include 'M' in the tip parameter).
+Several columns are created corresponding to the values of the different variables.}
 
-\item{metacodes}{(logical): set to TRUE to extract the codes and ids of the values to individual data frame columns
-from metadata information}
+\item{metacodes}{(logical): set to TRUE to extract the codes and ids of the values that defined the table.
+The codes and ids are extracted from the metadata information (it is mandatory to include 'M' in the tip parameter).
+Several columns are created corresponding to the values of the different variables.}
 }
 \value{
-Data frame with data of a table
+Data frame with data of a table according to the id specified in the function
 }
 \description{
-Get data from a table
+Get data from a specific table
 }
 \examples{
 \dontrun{
