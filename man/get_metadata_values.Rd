@@ -2,7 +2,7 @@
 % Please edit documentation in R/metadata.R
 \name{get_metadata_values}
 \alias{get_metadata_values}
-\title{Get all possible values from a variable}
+\title{Get all values for a specific variable}
 \usage{
 get_metadata_values(
   operation = NULL,
@@ -15,25 +15,28 @@ get_metadata_values(
 )
 }
 \arguments{
-\item{operation}{(string): code of the operation}
+\item{operation}{(string): code of the operation. Provide code to get all
+the values for the given operation. To obtain a list of
+available operations see \code{\link[=get_metadata_operations]{get_metadata_operations()}}.}
 
-\item{variable}{(int): id of a variable}
+\item{variable}{(int): id of a variable. To obtain a list of
+available variables see \code{\link[=get_metadata_variables]{get_metadata_variables()}}.}
 
-\item{det}{(int): level of detail (0, 1 ,2)}
+\item{det}{(int): level of detail. Valid values: 0, 1 or 2.}
 
-\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
+\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 
-\item{page}{(int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages)}
+\item{page}{(int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages).}
 
-\item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
+\item{validate}{(logical): validate input parameters. A FALSE value means fewer API calls.}
 
-\item{verbose}{(logical): print additional information}
+\item{verbose}{(logical): print additional information, including the URL to call the API service.}
 }
 \value{
-Data frame with information of the available values of a variable
+Data frame with information of the available values for the variable specified in the function
 }
 \description{
-Get all possible values from a variable
+Get all values for a specific variable
 }
 \examples{
 \dontrun{

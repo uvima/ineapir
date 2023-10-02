@@ -101,7 +101,7 @@ get_metadata_series_operation <- function(operation = NULL, det = 0, tip = NULL,
   return(data)
 }
 
-#' Get all the values used in a series
+#' Get all the values for a given series
 #'
 #' @param codSeries (string): code of the series. For further information about
 #' codes click this [link](https://uvima.github.io/ineapir/articles/identify_codes.html).
@@ -163,27 +163,27 @@ get_metadata_series_values <- function(codSeries = NULL, det = 0, tip = NULL, la
 #' There are different approaches to build the filter depending on the table type.
 #'
 #' ##### Case one: tempus table
-#' **URL**: [example](https://www.ine.es/jaxiT3/Tabla.htm?t=50902).
+#' [URL example](https://www.ine.es/jaxiT3/Tabla.htm?t=50902).
 #' For a tempus table the filter is based on ids. The format is `list(id_variable1 = id_value1, id_variable2 = id_value2)`.
 #' Besides:
 #' - A variable can take more than one value: `list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)`.
 #' - A variable can take a empty character "" to get all its possible values: `list(id_variable1 = id_value1, id_variable2 = "")`.
 #'
 #' ##### Case two: px tables
-#' **URL**: [example](https://www.ine.es/jaxi/Tabla.htm?path=/t20/e245/p08/l0/&file=01001.px).
+#' [URL example](https://www.ine.es/jaxi/Tabla.htm?path=/t20/e245/p08/l0/&file=01001.px).
 #' For a px table the filter is based on codes. The format is `list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)`.
 #' Besides:
 #' - A variable can take more than one value: `list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)`.
 #' - A variable can take a empty character "" to get all its possible values: `list(cod_variable1 = cod_value1, cod_variable2 = "")`.
 
 #' ##### Case three: tpx table
-#' **URL**: [example](https://www.ine.es/jaxi/Tabla.htm?tpx=33387&L=0).
+#' [URL example](https://www.ine.es/jaxi/Tabla.htm?tpx=33387&L=0).
 #' For a tpx table the filter is based on codes. The format is `list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)`.
 #' Besides:
 #' - A variable can take more than one value: `list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)`.
 #' - A variable can take a empty character "" to get all its possible values: `list(cod_variable1 = cod_value1, cod_variable2 = "")`.
 #'
-#' **URL:** [example](https://www.ine.es/jaxi/Tabla.htm?tpx=52056&L=0).
+#' [URL example](https://www.ine.es/jaxi/Tabla.htm?tpx=52056&L=0).
 #' There are tpx tables that contain variable ids and value ids. In this case,
 #' we can use the ids instead of the codes to build the filter. To do this we add
 #' the alias *~id* at the end of each id: `list(id_variable1~id = id_value1~id, id_variable2~id = id_value2~id)`.
@@ -206,6 +206,8 @@ get_metadata_series_values <- function(codSeries = NULL, det = 0, tip = NULL, la
 #'
 #' @examples \dontrun{
 #' get_metadata_series_table(idTable = 50902)
+#' get_metadata_series_table(idTable = 50902, filter = list("3" = "83"))
+#' get_metadata_series_table(idTable = 50902, metanames = TRUE, metacodes = TRUE, tip = "M")
 #' }
 #'
 get_metadata_series_table <- function(idTable = NULL, filter = NULL, det = 0, tip = NULL, lang = "ES", validate = TRUE, verbose = FALSE, metanames = FALSE, metacodes = FALSE){
@@ -274,8 +276,8 @@ get_metadata_series_table <- function(idTable = NULL, filter = NULL, det = 0, ti
 #' @export
 #'
 #' @examples \dontrun{
-#' get_metadata_series_filter(operation = "IPC", filter = list("115"= "29", "3" = "84", "762" = ""),
-#'  periodicity = 1)
+#' get_metadata_series_filter(operation = "IPC", periodicity = 1,
+#'                            filter = list("115"= "29", "3" = "84", "762" = ""))
 #'  }
 #'
 get_metadata_series_filter <- function(operation = NULL, filter = NULL, periodicity = NULL, det = 0, tip = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){

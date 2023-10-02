@@ -2,7 +2,7 @@
 % Please edit documentation in R/metadata.R
 \name{get_metadata_variables}
 \alias{get_metadata_variables}
-\title{Get all possible variables or variables used in a operation}
+\title{Get all available variables}
 \usage{
 get_metadata_variables(
   operation = NULL,
@@ -13,21 +13,23 @@ get_metadata_variables(
 )
 }
 \arguments{
-\item{operation}{(string): Code of the operation}
+\item{operation}{(string): Code of the operation. Provide code to get all
+the variables for the given operation. To obtain a list of
+available operations see \code{\link[=get_metadata_operations]{get_metadata_operations()}}.}
 
-\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
+\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 
-\item{page}{(int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages)}
+\item{page}{(int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages).}
 
-\item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
+\item{validate}{(logical): validate input parameters. A FALSE value means fewer API calls.}
 
-\item{verbose}{(logical): print additional information}
+\item{verbose}{(logical): print additional information, including the URL to call the API service.}
 }
 \value{
 Data frame with information of the available variables
 }
 \description{
-Get all possible variables or variables used in a operation
+Get all available variables
 }
 \examples{
 \dontrun{

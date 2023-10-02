@@ -2,7 +2,7 @@
 % Please edit documentation in R/metadata_series.R
 \name{get_metadata_series_values}
 \alias{get_metadata_series_values}
-\title{Get all the values used in a series}
+\title{Get all the values for a given series}
 \usage{
 get_metadata_series_values(
   codSeries = NULL,
@@ -32,7 +32,7 @@ set to 'M' to include metadata or set to 'AM' for both.}
 Data frame with information of the values of a series according to the code specified in the function
 }
 \description{
-Get all the values used in a series
+Get all the values for a given series
 }
 \examples{
 \dontrun{

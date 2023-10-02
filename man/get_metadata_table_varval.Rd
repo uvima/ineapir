@@ -23,7 +23,7 @@ on the fly using metadata information about the variables and their values
 that define the series. There are different approaches to build the filter depending on the table type.
 \subsection{Case one: tempus table}{
 
-\strong{URL}: \href{https://www.ine.es/jaxiT3/Tabla.htm?t=50902}{example}.
+\href{https://www.ine.es/jaxiT3/Tabla.htm?t=50902}{URL example}.
 For a tempus table the filter is based on ids. The format is \code{list(id_variable1 = id_value1, id_variable2 = id_value2)}.
 Besides:
 \itemize{
@@ -34,7 +34,7 @@ Besides:
 
 \subsection{Case two: px tables}{
 
-\strong{URL}: \href{https://www.ine.es/jaxi/Tabla.htm?path=/t20/e245/p08/l0/&file=01001.px}{example}.
+\href{https://www.ine.es/jaxi/Tabla.htm?path=/t20/e245/p08/l0/&file=01001.px}{URL example}.
 For a px table the filter is based on codes. The format is \code{list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)}.
 Besides:
 \itemize{
@@ -45,7 +45,7 @@ Besides:
 
 \subsection{Case three: tpx table}{
 
-\strong{URL}: \href{https://www.ine.es/jaxi/Tabla.htm?tpx=33387&L=0}{example}.
+\href{https://www.ine.es/jaxi/Tabla.htm?tpx=33387&L=0}{URL example}.
 For a tpx table the filter is based on codes. The format is \code{list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)}.
 Besides:
 \itemize{
@@ -53,7 +53,7 @@ Besides:
 \item A variable can take a empty character "" to get all its possible values: \code{list(cod_variable1 = cod_value1, cod_variable2 = "")}.
 }
 
-\strong{URL:} \href{https://www.ine.es/jaxi/Tabla.htm?tpx=52056&L=0}{example}.
+\href{https://www.ine.es/jaxi/Tabla.htm?tpx=52056&L=0}{URL example}.
 There are tpx tables that contain variable ids and value ids. In this case,
 we can use the ids instead of the codes to build the filter. To do this we add
 the alias \emph{~id} at the end of each id: \verb{list(id_variable1~id = id_value1~id, id_variable2~id = id_value2~id)}.

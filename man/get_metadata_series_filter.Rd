@@ -66,8 +66,8 @@ Get all the series for a specific operation given a filter
 }
 \examples{
 \dontrun{
-get_metadata_series_filter(operation = "IPC", filter = list("115"= "29", "3" = "84", "762" = ""),
- periodicity = 1)
+get_metadata_series_filter(operation = "IPC", periodicity = 1,
+                           filter = list("115"= "29", "3" = "84", "762" = ""))
  }
 
 }

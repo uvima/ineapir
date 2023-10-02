@@ -96,8 +96,8 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #' @export
 #'
 #' @examples \dontrun{
-#' get_data_series_filter(operation = "IPC", filter = list("115"= c("29","28"), "3" = "84", "762" = ""),
-#'  periodicity = 1)
+#' get_data_series_filter(operation = "IPC", periodicity = 1,
+#'                        filter = list("115"= c("29","28"), "3" = "84", "762" = ""))
 #' }
 #'
 get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity = NULL, nlast = 1, det = 0, tip = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE, unnest = FALSE){

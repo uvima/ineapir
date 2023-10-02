@@ -72,8 +72,8 @@ Get data from series for a specific operation given a filter
 }
 \examples{
 \dontrun{
-get_data_series_filter(operation = "IPC", filter = list("115"= c("29","28"), "3" = "84", "762" = ""),
- periodicity = 1)
+get_data_series_filter(operation = "IPC", periodicity = 1,
+                       filter = list("115"= c("29","28"), "3" = "84", "762" = ""))
 }
 
 }

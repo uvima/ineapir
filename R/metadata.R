@@ -1,10 +1,11 @@
-#' Get available operations
+#' Get all available operations
 #'
-#' @param operation (string): code of the operation
-#' @param lang  (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
-#' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages)
-#' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
-#' @param verbose (logical): print additional information
+#' @param operation (string): code of the operation. To obtain a list of
+#' available operations see [get_metadata_operations()].
+#' @param lang  (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages).
+#' @param validate (logical): validate input parameters. A FALSE value means fewer API calls.
+#' @param verbose (logical): print additional information, including the URL to call the API service.
 #'
 #' @return Data frame with information of the available operations
 #' @export
@@ -44,13 +45,15 @@ get_metadata_operations <- function(operation = NULL, lang = "ES", page = 0, val
   return(data)
 }
 
-#' Get all possible variables or variables used in a operation
+#' Get all available variables
 #'
-#' @param operation (string): Code of the operation
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
-#' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages)
-#' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
-#' @param verbose (logical): print additional information
+#' @param operation (string): Code of the operation. Provide code to get all
+#' the variables for the given operation. To obtain a list of
+#' available operations see [get_metadata_operations()].
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages).
+#' @param validate (logical): validate input parameters. A FALSE value means fewer API calls.
+#' @param verbose (logical): print additional information, including the URL to call the API service.
 #'
 #' @return Data frame with information of the available variables
 #' @export
@@ -90,17 +93,20 @@ get_metadata_variables <- function(operation = NULL, lang = "ES", page = 0, vali
   return(data)
 }
 
-#' Get all possible values from a variable
+#' Get all values for a specific variable
 #'
-#' @param operation (string): code of the operation
-#' @param variable (int): id of a variable
-#' @param det (int): level of detail (0, 1 ,2)
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
-#' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages)
-#' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
-#' @param verbose (logical): print additional information
+#' @param operation (string): code of the operation. Provide code to get all
+#' the values for the given operation. To obtain a list of
+#' available operations see [get_metadata_operations()].
+#' @param variable (int): id of a variable. To obtain a list of
+#' available variables see [get_metadata_variables()].
+#' @param det (int): level of detail. Valid values: 0, 1 or 2.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages).
+#' @param validate (logical): validate input parameters. A FALSE value means fewer API calls.
+#' @param verbose (logical): print additional information, including the URL to call the API service.
 #'
-#' @return Data frame with information of the available values of a variable
+#' @return Data frame with information of the available values for the variable specified in the function
 #' @export
 #'
 #' @examples \dontrun{
@@ -139,16 +145,18 @@ get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lan
   return(data)
 }
 
-#' Get all the publications or the publications from an operation
+#' Get all publications
 #'
-#' @param operation (string): code of the operation
-#' @param det (int): level of detail (0, 1 ,2)
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
-#' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages)
-#' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
-#' @param verbose (logical): print additional information
+#' @param operation (string): code of the operation. Provide code to get all
+#' the publications for the given operation. To obtain a list of
+#' available operations see [get_metadata_operations()].
+#' @param det (int): level of detail. Valid values: 0, 1 or 2.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages).
+#' @param validate (logical): validate input parameters. A FALSE value means fewer API calls.
+#' @param verbose (logical): print additional information, including the URL to call the API service.
 #'
-#' @return Data frame with information of the publications
+#' @return Data frame with information about publications
 #' @export
 #'
 #' @examples \dontrun{
@@ -189,15 +197,17 @@ get_metadata_publications <- function(operation = NULL, det = 0, lang = "ES", pa
 
 #' Get the dates of a publication
 #'
-#' @param publication (int): id of the publication
-#' @param det (int): level of detail (0, 1 ,2)
-#' @param tip (string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
-#' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages)
-#' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
-#' @param verbose (logical): print additional information
+#' @param publication (int): id of the publication. To obtain a list of
+#' available publications see [get_metadata_publications()].
+#' @param det (int): level of detail. Valid values: 0, 1 or 2.
+#' @param tip (string): set to 'A' for friendly output (e.g. readable dates),
+#' set to 'M' to include metadata or set to 'AM' for both.
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages).
+#' @param validate (logical): validate input parameters. A FALSE value means fewer API calls.
+#' @param verbose (logical): print additional information, including the URL to call the API service.
 #'
-#' @return Data frame with information of the dates of a publication
+#' @return Data frame with information of the dates of the publication specified in the function
 #' @export
 #'
 #' @examples \dontrun{
@@ -236,12 +246,14 @@ get_metadata_publication_dates <- function(publication = NULL, det = 0, tip = NU
   return(data)
 }
 
-#' Get all possible periodicities or periodicities used in a operation
+#' Get all available periodicities
 #'
-#' @param operation (string): Code of the operation
-#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
-#' @param validate (logical): validate the input parameters. A TRUE value implies less API calls
-#' @param verbose (logical): print additional information
+#' @param operation (string): Code of the operation. Provide code to get all
+#' the periodicities for the given operation. To obtain a list of
+#' available operations see [get_metadata_operations()].
+#' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
+#' @param validate (logical): validate input parameters. A FALSE value means fewer API calls.
+#' @param verbose (logical): print additional information, including the URL to call the API service.
 #'
 #' @return Data frame with information of the available periodicities
 #' @export
