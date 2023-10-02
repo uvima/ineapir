@@ -18,7 +18,8 @@ get_data_series(
 )
 }
 \arguments{
-\item{codSeries}{(string): Code of the series.}
+\item{codSeries}{(string): Code of the series. For further information about
+codes click this \href{https://uvima.github.io/ineapir/articles/identify_codes.html}{link}.}
 
 \item{nlast}{(int): number of periods to retrieve. By default is set to 1 period.}
 
@@ -35,7 +36,7 @@ set to 'M' to include metadata or set to 'AM' for both.}
 
 \item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 
-\item{validate}{(logical): validate the input parameters.}
+\item{validate}{(logical): validate input parameters.}
 
 \item{verbose}{(logical): print additional information, including the URL to call the API service.}
 

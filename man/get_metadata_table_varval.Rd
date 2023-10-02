@@ -13,21 +13,21 @@ get_metadata_table_varval(
 )
 }
 \arguments{
-\item{idTable}{(int): id of the table.}
+\item{idTable}{(int): id of the table. For further information about
+ids click this \href{https://uvima.github.io/ineapir/articles/identify_codes.html}{link}.}
 
 \item{filter}{(list): list of variables and values.
 #' #### Filtering data from tables
 When we request data from tables there is the possibility of filtering data
 on the fly using metadata information about the variables and their values
-that define the series. See \code{\link[=get_metadata_table_varval]{get_metadata_table_varval()}} to get all the values at once.
-There are different approaches to build the filter depending on the table type.
+that define the series. There are different approaches to build the filter depending on the table type.
 \subsection{Case one: tempus table}{
 
 \strong{URL}: \href{https://www.ine.es/jaxiT3/Tabla.htm?t=50902}{example}.
 For a tempus table the filter is based on ids. The format is \code{list(id_variable1 = id_value1, id_variable2 = id_value2)}.
 Besides:
 \itemize{
-\item A variable can take more than one value:  \code{list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)}.
+\item A variable can take more than one value: \code{list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)}.
 \item A variable can take a empty character "" to get all its possible values: \code{list(id_variable1 = id_value1, id_variable2 = "")}.
 }
 }
@@ -38,7 +38,7 @@ Besides:
 For a px table the filter is based on codes. The format is \code{list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)}.
 Besides:
 \itemize{
-\item A variable can take more than one value:  \code{list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)}.
+\item A variable can take more than one value: \code{list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)}.
 \item A variable can take a empty character "" to get all its possible values: \code{list(cod_variable1 = cod_value1, cod_variable2 = "")}.
 }
 }
@@ -49,7 +49,7 @@ Besides:
 For a tpx table the filter is based on codes. The format is \code{list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)}.
 Besides:
 \itemize{
-\item A variable can take more than one value:  \code{list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)}.
+\item A variable can take more than one value: \code{list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)}.
 \item A variable can take a empty character "" to get all its possible values: \code{list(cod_variable1 = cod_value1, cod_variable2 = "")}.
 }
 
@@ -61,7 +61,7 @@ the alias \emph{~id} at the end of each id: \verb{list(id_variable1~id = id_valu
 
 \item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 
-\item{validate}{(logical): validate the input parameters.A FALSE value means fewer API calls.
+\item{validate}{(logical): validate input parameters.A FALSE value means fewer API calls.
 Therefore, it is recommended to set it to FALSE when there is no doubt about the validity of the input parameters, including the filter.}
 
 \item{verbose}{(logical): print additional information, including the URL to call the API service.}

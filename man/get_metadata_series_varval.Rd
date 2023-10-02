@@ -2,7 +2,7 @@
 % Please edit documentation in R/metadata_series.R
 \name{get_metadata_series_varval}
 \alias{get_metadata_series_varval}
-\title{Get metadata information of series belonging to an operation}
+\title{Get metadata information about the variables and values of series for a given operation}
 \usage{
 get_metadata_series_varval(
   operation = NULL,
@@ -12,20 +12,21 @@ get_metadata_series_varval(
 )
 }
 \arguments{
-\item{operation}{(string): code of the operation}
+\item{operation}{(string): code of the operation. To obtain a list of
+available operations see \code{\link[=get_metadata_operations]{get_metadata_operations()}}.}
 
-\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
+\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 
-\item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
+\item{validate}{(logical): validate input parameters. A FALSE value means fewer API calls.}
 
-\item{verbose}{(logical): print additional information}
+\item{verbose}{(logical): print additional information, including the URL to call the API service.}
 }
 \value{
 Data frame with information about the variables and values that
-define the series belonging to an operation
+define the series according to the operation specified in the function
 }
 \description{
-Get metadata information of series belonging to an operation
+Get metadata information about the variables and values of series for a given operation
 }
 \examples{
 \dontrun{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/metadata_series.R
 \name{get_metadata_series_operation}
 \alias{get_metadata_series_operation}
-\title{Get all the series present in a operation}
+\title{Get all the series for a specific operation}
 \usage{
 get_metadata_series_operation(
   operation = NULL,
@@ -15,29 +15,32 @@ get_metadata_series_operation(
 )
 }
 \arguments{
-\item{operation}{(string): code of the operation}
+\item{operation}{(string): code of the operation. To obtain a list of
+available operations see \code{\link[=get_metadata_operations]{get_metadata_operations()}}.}
 
-\item{det}{(int): level of detail (0, 1 ,2)}
+\item{det}{(int): level of detail. Valid values: 0, 1 or 2.}
 
-\item{tip}{(string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both}
+\item{tip}{(string): set to 'A' for friendly output (e.g. readable dates),
+set to 'M' to include metadata or set to 'AM' for both.}
 
-\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
+\item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 
-\item{page}{(int): page number. The retrieved result of the query is paginated}
+\item{page}{(int): page number. The retrieved result of the query is paginated. Default value is set to 1.}
 
-\item{validate}{(logical): validate the input parameters. A TRUE value implies less API calls}
+\item{validate}{(logical): validate input parameters. A FALSE value means fewer API calls.}
 
-\item{verbose}{(logical): print additional information}
+\item{verbose}{(logical): print additional information, including the URL to call the API service.}
 }
 \value{
-Data frame with information of the series belonging to an operation
+Data frame with information of the series belonging to an operation.
 }
 \description{
-Get all the series present in a operation
+Get all the series for a specific operation
 }
 \examples{
 \dontrun{
 get_metadata_series_operation(operation = "IPC")
+get_metadata_series_operation(operation = "IPC", page = 2)
 }
 
 }

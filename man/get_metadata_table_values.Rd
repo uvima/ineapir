@@ -13,14 +13,15 @@ get_metadata_table_values(
 )
 }
 \arguments{
-\item{idTable}{(int): id of the table.}
+\item{idTable}{(int): id of the table. For further information about
+ids click this \href{https://uvima.github.io/ineapir/articles/identify_codes.html}{link}.}
 
 \item{idGroup}{(int): id of the group of variables. To get all groups
-for a specific a table see \code{\link[=get_metadata_table_groups]{get_metadata_table_groups()}}.}
+for a specific table see \code{\link[=get_metadata_table_groups]{get_metadata_table_groups()}}.}
 
 \item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 
-\item{validate}{(logical): validate the input parameters. A FALSE value means fewer API calls.}
+\item{validate}{(logical): validate input parameters. A FALSE value means fewer API calls.}
 
 \item{verbose}{(logical): print additional information, including the URL to call the API service.}
 }

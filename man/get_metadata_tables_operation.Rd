@@ -31,7 +31,7 @@ a greater level of disaggregation.}
 
 \item{page}{(int): page number. The retrieved result of the query is paginated. Default value is set to 1.}
 
-\item{validate}{(logical): validate the input parameters. A FALSE value means fewer API calls.}
+\item{validate}{(logical): validate input parameters. A FALSE value means fewer API calls.}
 
 \item{verbose}{(logical): print additional information, including the URL to call the API service.}
 }

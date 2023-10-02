@@ -2,7 +2,8 @@
 #'
 #' @description Retrieve data from series published by INE calling the API
 #'
-#' @param codSeries (string): Code of the series.
+#' @param codSeries (string): Code of the series. For further information about
+#' codes click this [link](https://uvima.github.io/ineapir/articles/identify_codes.html).
 #' @param nlast (int): number of periods to retrieve. By default is set to 1 period.
 #' @param dateStart (string): the initial date of the requested data. The required
 #' format is yyyy/mm/dd.
@@ -12,7 +13,7 @@
 #' @param tip (string): set to 'A' for friendly output (e.g. readable dates),
 #' set to 'M' to include metadata or set to 'AM' for both.
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
-#' @param validate (logical): validate the input parameters.
+#' @param validate (logical): validate input parameters.
 #' @param verbose (logical): print additional information, including the URL to call the API service.
 #' @param unnest (logical): set to TRUE to obtain a single data frame of data
 #'
@@ -75,7 +76,7 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #' ##### Filter format
 #' The format is `list(id_variable1 = id_value1, id_variable2 = id_value2)`.
 #' Besides:
-#' - A variable can take more than one value:  `list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)`.
+#' - A variable can take more than one value: `list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)`.
 #' - A variable can take a empty character "" to get all its possible values: `list(id_variable1 = id_value1, id_variable2 = "")`.
 #' @param periodicity (int): id of the periodicity of the series. Common periodicities:
 #' 1 (monthly), 3 (quarterly), 6 (bi-annual), 12 (annual). To obtain a list

@@ -1,6 +1,7 @@
 #' Get data from a specific table
 #'
-#' @param idTable (int): id of the table.
+#' @param idTable (int): id of the table. For further information about
+#' ids click this [link](https://uvima.github.io/ineapir/articles/identify_codes.html).
 #' @param filter (list): list of variables and values.
 #' #### Filtering data from tables
 #' When we request data from tables there is the possibility of filtering data
@@ -12,21 +13,21 @@
 #' **URL**: [example](https://www.ine.es/jaxiT3/Tabla.htm?t=50902).
 #' For a tempus table the filter is based on ids. The format is `list(id_variable1 = id_value1, id_variable2 = id_value2)`.
 #' Besides:
-#' - A variable can take more than one value:  `list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)`.
+#' - A variable can take more than one value: `list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)`.
 #' - A variable can take a empty character "" to get all its possible values: `list(id_variable1 = id_value1, id_variable2 = "")`.
 #'
 #' ##### Case two: px tables
 #' **URL**: [example](https://www.ine.es/jaxi/Tabla.htm?path=/t20/e245/p08/l0/&file=01001.px).
 #' For a px table the filter is based on codes. The format is `list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)`.
 #' Besides:
-#' - A variable can take more than one value:  `list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)`.
+#' - A variable can take more than one value: `list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)`.
 #' - A variable can take a empty character "" to get all its possible values: `list(cod_variable1 = cod_value1, cod_variable2 = "")`.
 
 #' ##### Case three: tpx table
 #' **URL**: [example](https://www.ine.es/jaxi/Tabla.htm?tpx=33387&L=0).
 #' For a tpx table the filter is based on codes. The format is `list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)`.
 #' Besides:
-#' - A variable can take more than one value:  `list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)`.
+#' - A variable can take more than one value: `list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)`.
 #' - A variable can take a empty character "" to get all its possible values: `list(cod_variable1 = cod_value1, cod_variable2 = "")`.
 #'
 #' **URL:** [example](https://www.ine.es/jaxi/Tabla.htm?tpx=52056&L=0).
@@ -34,14 +35,14 @@
 #' we can use the ids instead of the codes to build the filter. To do this we add
 #' the alias *~id* at the end of each id: `list(id_variable1~id = id_value1~id, id_variable2~id = id_value2~id)`.
 #' @param nlast (int): number of periods to retrieve. By default it retrieves all available periods.
-#' @param det (int): level of detail (0, 1 ,2). Valid values: 0, 1 or 2.
+#' @param det (int): level of detail. Valid values: 0, 1 or 2.
 #' @param tip (string): set to 'A' for friendly output (e.g. readable dates),
 #'  set to 'M' to include metadata or set to 'AM' for both.
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
 #' @param validate (logical): validate the input parameters. A FALSE value means fewer API calls.
 #' Therefore, it is recommended to set it to FALSE when there is no doubt about the validity of the input parameters, including the filter.
 #' @param verbose (logical): print additional information, including the URL to call the API service.
-#' @param unnest (logical): set to TRUE to obtain a single data frame of data
+#' @param unnest (logical): set to TRUE to obtain a single data frame of data.
 #' @param metanames (logical): set to TRUE to extract the name of the values that defined the table.
 #' The names are extracted from the metadata information (it is mandatory to include 'M' in the tip parameter).
 #' Several columns are created corresponding to the values of the different variables.
@@ -54,6 +55,7 @@
 #'
 #' @examples \dontrun{
 #' get_data_table(idTable = 50902)
+#' get_data_table(idTable = 50902, nlast = 2, unnest = TRUE, metanames = TRUE, metacodes = TRUE, tip = "M")
 #' get_data_table(idTable = 8105, filter = list("18"="454"), verbose = TRUE)
 #' get_data_table(idTable = 33387,
 #' filter = list(tipodematerial = c("extraccionnacional", "2mineralesmetalicosmineralenbruto")))

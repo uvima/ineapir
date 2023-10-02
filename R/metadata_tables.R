@@ -9,7 +9,7 @@
 #' a greater level of disaggregation.
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
 #' @param page (int): page number. The retrieved result of the query is paginated. Default value is set to 1.
-#' @param validate (logical): validate the input parameters. A FALSE value means fewer API calls.
+#' @param validate (logical): validate input parameters. A FALSE value means fewer API calls.
 #' @param verbose (logical): print additional information, including the URL to call the API service.
 #'
 #' @return Data frame with information of the available tables according to the operation specified in the function
@@ -55,9 +55,10 @@ get_metadata_tables_operation <- function(operation = NULL, det = 0, tip = NULL,
 
 #' Get all groups for a specific a table
 #'
-#' @param idTable (int): id of the table.
+#' @param idTable (int): id of the table. For further information about
+#' ids click this [link](https://uvima.github.io/ineapir/articles/identify_codes.html).
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
-#' @param validate (logical): validate the input parameters.
+#' @param validate (logical): validate input parameters.
 #' @param verbose (logical): print additional information, including the URL to call the API service.
 #'
 #' @return Data frame with information of the groups according to the table specified in the function
@@ -99,11 +100,12 @@ get_metadata_table_groups <- function(idTable = NULL, lang = "ES", validate = TR
 
 #' Get all values for a specific table group
 #'
-#' @param idTable (int): id of the table.
+#' @param idTable (int): id of the table. For further information about
+#' ids click this [link](https://uvima.github.io/ineapir/articles/identify_codes.html).
 #' @param idGroup (int): id of the group of variables. To get all groups
-#' for a specific a table see [get_metadata_table_groups()].
+#' for a specific table see [get_metadata_table_groups()].
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
-#' @param validate (logical): validate the input parameters. A FALSE value means fewer API calls.
+#' @param validate (logical): validate input parameters. A FALSE value means fewer API calls.
 #' @param verbose (logical): print additional information, including the URL to call the API service.
 #'
 #' @return Data frame with information of the values of a table group according to the table and group specified in the function
@@ -145,9 +147,10 @@ get_metadata_table_values <- function(idTable = NULL, idGroup = NULL, lang = "ES
 
 #' Get the operation for a given table
 #'
-#' @param idTable (int): id of the table.
+#' @param idTable (int): id of the table. For further information about
+#' ids click this [link](https://uvima.github.io/ineapir/articles/identify_codes.html).
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
-#' @param validate (logical): validate the input parameters.
+#' @param validate (logical): validate input parameters.
 #' @param verbose (logical): print additional information, including the URL to call the API service.
 #'
 #' @return Data frame with information of the operation according to the table specified in the function
@@ -189,33 +192,33 @@ get_metadata_operation_table <- function(idTable = NULL, lang = "ES", validate =
 
 #' Get metadata information about the variables and values for a given table
 #'
-#' @param idTable (int): id of the table.
+#' @param idTable (int): id of the table. For further information about
+#' ids click this [link](https://uvima.github.io/ineapir/articles/identify_codes.html).
 #' @param filter (list): list of variables and values.
 #' #' #### Filtering data from tables
 #' When we request data from tables there is the possibility of filtering data
 #' on the fly using metadata information about the variables and their values
-#' that define the series. See [get_metadata_table_varval()] to get all the values at once.
-#' There are different approaches to build the filter depending on the table type.
+#' that define the series. There are different approaches to build the filter depending on the table type.
 #'
 #' ##### Case one: tempus table
 #' **URL**: [example](https://www.ine.es/jaxiT3/Tabla.htm?t=50902).
 #' For a tempus table the filter is based on ids. The format is `list(id_variable1 = id_value1, id_variable2 = id_value2)`.
 #' Besides:
-#' - A variable can take more than one value:  `list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)`.
+#' - A variable can take more than one value: `list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)`.
 #' - A variable can take a empty character "" to get all its possible values: `list(id_variable1 = id_value1, id_variable2 = "")`.
 #'
 #' ##### Case two: px tables
 #' **URL**: [example](https://www.ine.es/jaxi/Tabla.htm?path=/t20/e245/p08/l0/&file=01001.px).
 #' For a px table the filter is based on codes. The format is `list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)`.
 #' Besides:
-#' - A variable can take more than one value:  `list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)`.
+#' - A variable can take more than one value: `list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)`.
 #' - A variable can take a empty character "" to get all its possible values: `list(cod_variable1 = cod_value1, cod_variable2 = "")`.
 
 #' ##### Case three: tpx table
 #' **URL**: [example](https://www.ine.es/jaxi/Tabla.htm?tpx=33387&L=0).
 #' For a tpx table the filter is based on codes. The format is `list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)`.
 #' Besides:
-#' - A variable can take more than one value:  `list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)`.
+#' - A variable can take more than one value: `list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)`.
 #' - A variable can take a empty character "" to get all its possible values: `list(cod_variable1 = cod_value1, cod_variable2 = "")`.
 #'
 #' **URL:** [example](https://www.ine.es/jaxi/Tabla.htm?tpx=52056&L=0).
@@ -223,7 +226,7 @@ get_metadata_operation_table <- function(idTable = NULL, lang = "ES", validate =
 #' we can use the ids instead of the codes to build the filter. To do this we add
 #' the alias *~id* at the end of each id: `list(id_variable1~id = id_value1~id, id_variable2~id = id_value2~id)`.
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
-#' @param validate (logical): validate the input parameters.A FALSE value means fewer API calls.
+#' @param validate (logical): validate input parameters.A FALSE value means fewer API calls.
 #' Therefore, it is recommended to set it to FALSE when there is no doubt about the validity of the input parameters, including the filter.
 #' @param verbose (logical): print additional information, including the URL to call the API service.
 #'

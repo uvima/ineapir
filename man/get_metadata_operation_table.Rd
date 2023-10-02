@@ -12,11 +12,12 @@ get_metadata_operation_table(
 )
 }
 \arguments{
-\item{idTable}{(int): id of the table.}
+\item{idTable}{(int): id of the table. For further information about
+ids click this \href{https://uvima.github.io/ineapir/articles/identify_codes.html}{link}.}
 
 \item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 
-\item{validate}{(logical): validate the input parameters.}
+\item{validate}{(logical): validate input parameters.}
 
 \item{verbose}{(logical): print additional information, including the URL to call the API service.}
 }

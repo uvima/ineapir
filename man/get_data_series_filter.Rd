@@ -35,7 +35,7 @@ that define the series. To get variables for a given operation see
 The format is \code{list(id_variable1 = id_value1, id_variable2 = id_value2)}.
 Besides:
 \itemize{
-\item A variable can take more than one value:  \code{list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)}.
+\item A variable can take more than one value: \code{list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)}.
 \item A variable can take a empty character "" to get all its possible values: \code{list(id_variable1 = id_value1, id_variable2 = "")}.
 }
 }
