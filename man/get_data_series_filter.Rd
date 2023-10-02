@@ -74,6 +74,8 @@ Get data from series for a specific operation given a filter
 \dontrun{
 get_data_series_filter(operation = "IPC", periodicity = 1,
                        filter = list("115"= c("29","28"), "3" = "84", "762" = ""))
+get_data_series_filter(operation = "IPC", periodicity = 1, nlast = 5, unnest = TRUE,
+                       filter = list("115"= "28", "3" = "84", "762" = "304092"))
 }
 
 }

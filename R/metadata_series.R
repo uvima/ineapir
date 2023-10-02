@@ -156,27 +156,27 @@ get_metadata_series_values <- function(codSeries = NULL, det = 0, tip = NULL, la
 #' @param idTable (int): id of the table. For further information about
 #' ids click this [link](https://uvima.github.io/ineapir/articles/identify_codes.html).
 #' @param filter (list): list of variables and values.
-#' #### Filtering data from tables
+#' ### Filtering data from tables
 #' When we request data from tables there is the possibility of filtering data
 #' on the fly using metadata information about the variables and their values
 #' that define the series. See [get_metadata_table_varval()] to get all the values at once.
 #' There are different approaches to build the filter depending on the table type.
 #'
-#' ##### Case one: tempus table
+#' #### Case one: tempus table
 #' [URL example](https://www.ine.es/jaxiT3/Tabla.htm?t=50902).
 #' For a tempus table the filter is based on ids. The format is `list(id_variable1 = id_value1, id_variable2 = id_value2)`.
 #' Besides:
 #' - A variable can take more than one value: `list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)`.
 #' - A variable can take a empty character "" to get all its possible values: `list(id_variable1 = id_value1, id_variable2 = "")`.
 #'
-#' ##### Case two: px tables
+#' #### Case two: px tables
 #' [URL example](https://www.ine.es/jaxi/Tabla.htm?path=/t20/e245/p08/l0/&file=01001.px).
 #' For a px table the filter is based on codes. The format is `list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)`.
 #' Besides:
 #' - A variable can take more than one value: `list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)`.
 #' - A variable can take a empty character "" to get all its possible values: `list(cod_variable1 = cod_value1, cod_variable2 = "")`.
 
-#' ##### Case three: tpx table
+#' #### Case three: tpx table
 #' [URL example](https://www.ine.es/jaxi/Tabla.htm?tpx=33387&L=0).
 #' For a tpx table the filter is based on codes. The format is `list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)`.
 #' Besides:
@@ -248,14 +248,14 @@ get_metadata_series_table <- function(idTable = NULL, filter = NULL, det = 0, ti
 #' @param operation (string): code of the operation. To obtain a list of
 #' available operations see [get_metadata_operations()].
 #' @param filter (list): list of variables and values.
-#' #### Filtering data from series
+#' ### Filtering data from series
 #' When we request data from series there is the possibility of filtering data
 #' on the fly using metadata information about the variables and their values
 #' that define the series. To get variables for a given operation see
 #' [get_metadata_variables()] and to get values for a specific variable see
 #' [get_metadata_values()]. See also [get_metadata_series_varval()] to get all the values at once.
 #'
-#' ##### Filter format
+#' #### Filter format
 #' The format is `list(id_variable1 = id_value1, id_variable2 = id_value2)`.
 #' Besides:
 #' - A variable can take more than one value: `list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)`.

@@ -17,7 +17,8 @@ get_metadata_table_varval(
 ids click this \href{https://uvima.github.io/ineapir/articles/identify_codes.html}{link}.}
 
 \item{filter}{(list): list of variables and values.
-#' #### Filtering data from tables
+\subsection{Filtering data from tables}{
+
 When we request data from tables there is the possibility of filtering data
 on the fly using metadata information about the variables and their values
 that define the series. There are different approaches to build the filter depending on the table type.
@@ -57,6 +58,8 @@ Besides:
 There are tpx tables that contain variable ids and value ids. In this case,
 we can use the ids instead of the codes to build the filter. To do this we add
 the alias \emph{~id} at the end of each id: \verb{list(id_variable1~id = id_value1~id, id_variable2~id = id_value2~id)}.
+}
+
 }}
 
 \item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}

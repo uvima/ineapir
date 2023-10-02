@@ -66,14 +66,14 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #' @param operation (string): Code of the operation. To obtain a list of
 #' available operations see [get_metadata_operations()].
 #' @param filter (list): list of variables and values.
-#' #### Filtering data from series
+#' ### Filtering data from series
 #' When we request data from series there is the possibility of filtering data
 #' on the fly using metadata information about the variables and their values
 #' that define the series. To get variables for a given operation see
 #' [get_metadata_variables()] and to get values for a specific variable see
 #' [get_metadata_values()]. See also [get_metadata_series_varval()] to get all the values at once.
 #'
-#' ##### Filter format
+#' #### Filter format
 #' The format is `list(id_variable1 = id_value1, id_variable2 = id_value2)`.
 #' Besides:
 #' - A variable can take more than one value: `list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)`.
@@ -98,6 +98,8 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #' @examples \dontrun{
 #' get_data_series_filter(operation = "IPC", periodicity = 1,
 #'                        filter = list("115"= c("29","28"), "3" = "84", "762" = ""))
+#' get_data_series_filter(operation = "IPC", periodicity = 1, nlast = 5, unnest = TRUE,
+#'                        filter = list("115"= "28", "3" = "84", "762" = "304092"))
 #' }
 #'
 get_data_series_filter <- function(operation = NULL, filter = NULL, periodicity = NULL, nlast = 1, det = 0, tip = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE, unnest = FALSE){
