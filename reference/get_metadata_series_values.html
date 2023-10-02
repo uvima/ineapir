@@ -74,34 +74,36 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>codSeries</dt>
-<dd><p>(string): code of the series</p></dd>
+<dd><p>(string): code of the series. For further information about
+codes click this <a href="https://uvima.github.io/ineapir/articles/identify_codes.html">link</a>.</p></dd>
 
 
 <dt>det</dt>
-<dd><p>(int): level of detail (0, 1 ,2)</p></dd>
+<dd><p>(int): level of detail. Valid values: 0, 1 or 2.</p></dd>
 
 
 <dt>tip</dt>
-<dd><p>(string): set to 'A' for friendly output, set to 'M' to include metadata or set to 'AM' for both</p></dd>
+<dd><p>(string): set to 'A' for friendly output (e.g. readable dates),
+set to 'M' to include metadata or set to 'AM' for both.</p></dd>
 
 
 <dt>lang</dt>
-<dd><p>(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English</p></dd>
+<dd><p>(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.</p></dd>
 
 
 <dt>validate</dt>
-<dd><p>(logical): validate the input parameters. A TRUE value implies less API calls</p></dd>
+<dd><p>(logical): validate input parameters.</p></dd>
 
 
 <dt>verbose</dt>
-<dd><p>(logical): print additional information</p></dd>
+<dd><p>(logical): print additional information, including the URL to call the API service.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>Data frame with information of the values of a series</p>
+<p>Data frame with information of the values of a series according to the code specified in the function</p>
     </div>
 
     <div class="section level2">

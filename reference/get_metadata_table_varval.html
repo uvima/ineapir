@@ -73,7 +73,8 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>idTable</dt>
-<dd><p>(int): id of the table.</p></dd>
+<dd><p>(int): id of the table. For further information about
+ids click this <a href="https://uvima.github.io/ineapir/articles/identify_codes.html">link</a>.</p></dd>
 
 
 <dt>filter</dt>
@@ -81,14 +82,13 @@
 #' #### Filtering data from tables
 When we request data from tables there is the possibility of filtering data
 on the fly using metadata information about the variables and their values
-that define the series. See <code>get_metadata_table_varval()</code> to get all the values at once.
-There are different approaches to build the filter depending on the table type.</p><div class="section">
+that define the series. There are different approaches to build the filter depending on the table type.</p><div class="section">
 <h3 id="case-one-tempus-table">Case one: tempus table<a class="anchor" aria-label="anchor" href="#case-one-tempus-table"></a></h3>
 
 
 <p><strong>URL</strong>: <a href="https://www.ine.es/jaxiT3/Tabla.htm?t=50902" class="external-link">example</a>.
 For a tempus table the filter is based on ids. The format is <code>list(id_variable1 = id_value1, id_variable2 = id_value2)</code>.
-Besides:</p><ul><li><p>A variable can take more than one value:  <code>list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)</code>.</p></li>
+Besides:</p><ul><li><p>A variable can take more than one value: <code>list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)</code>.</p></li>
 <li><p>A variable can take a empty character "" to get all its possible values: <code>list(id_variable1 = id_value1, id_variable2 = "")</code>.</p></li>
 </ul></div>
 
@@ -98,7 +98,7 @@ Besides:</p><ul><li><p>A variable can take more than one value:  <code>list(id_v
 
 <p><strong>URL</strong>: <a href="https://www.ine.es/jaxi/Tabla.htm?path=/t20/e245/p08/l0/&amp;file=01001.px" class="external-link">example</a>.
 For a px table the filter is based on codes. The format is <code>list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)</code>.
-Besides:</p><ul><li><p>A variable can take more than one value:  <code>list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)</code>.</p></li>
+Besides:</p><ul><li><p>A variable can take more than one value: <code>list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)</code>.</p></li>
 <li><p>A variable can take a empty character "" to get all its possible values: <code>list(cod_variable1 = cod_value1, cod_variable2 = "")</code>.</p></li>
 </ul></div>
 
@@ -108,7 +108,7 @@ Besides:</p><ul><li><p>A variable can take more than one value:  <code>list(cod_
 
 <p><strong>URL</strong>: <a href="https://www.ine.es/jaxi/Tabla.htm?tpx=33387&amp;L=0" class="external-link">example</a>.
 For a tpx table the filter is based on codes. The format is <code>list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)</code>.
-Besides:</p><ul><li><p>A variable can take more than one value:  <code>list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)</code>.</p></li>
+Besides:</p><ul><li><p>A variable can take more than one value: <code>list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)</code>.</p></li>
 <li><p>A variable can take a empty character "" to get all its possible values: <code>list(cod_variable1 = cod_value1, cod_variable2 = "")</code>.</p></li>
 </ul><p><strong>URL:</strong> <a href="https://www.ine.es/jaxi/Tabla.htm?tpx=52056&amp;L=0" class="external-link">example</a>.
 There are tpx tables that contain variable ids and value ids. In this case,
@@ -122,7 +122,7 @@ the alias <em>~id</em> at the end of each id: <code>list(id_variable1~id = id_va
 
 
 <dt>validate</dt>
-<dd><p>(logical): validate the input parameters.A FALSE value means fewer API calls.
+<dd><p>(logical): validate input parameters.A FALSE value means fewer API calls.
 Therefore, it is recommended to set it to FALSE when there is no doubt about the validity of the input parameters, including the filter.</p></dd>
 
 
