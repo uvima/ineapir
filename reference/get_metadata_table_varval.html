@@ -86,7 +86,7 @@ that define the series. There are different approaches to build the filter depen
 <h3 id="case-one-tempus-table">Case one: tempus table<a class="anchor" aria-label="anchor" href="#case-one-tempus-table"></a></h3>
 
 
-<p><strong>URL</strong>: <a href="https://www.ine.es/jaxiT3/Tabla.htm?t=50902" class="external-link">example</a>.
+<p><a href="https://www.ine.es/jaxiT3/Tabla.htm?t=50902" class="external-link">URL example</a>.
 For a tempus table the filter is based on ids. The format is <code>list(id_variable1 = id_value1, id_variable2 = id_value2)</code>.
 Besides:</p><ul><li><p>A variable can take more than one value: <code>list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)</code>.</p></li>
 <li><p>A variable can take a empty character "" to get all its possible values: <code>list(id_variable1 = id_value1, id_variable2 = "")</code>.</p></li>
@@ -96,7 +96,7 @@ Besides:</p><ul><li><p>A variable can take more than one value: <code>list(id_va
 <h3 id="case-two-px-tables">Case two: px tables<a class="anchor" aria-label="anchor" href="#case-two-px-tables"></a></h3>
 
 
-<p><strong>URL</strong>: <a href="https://www.ine.es/jaxi/Tabla.htm?path=/t20/e245/p08/l0/&amp;file=01001.px" class="external-link">example</a>.
+<p><a href="https://www.ine.es/jaxi/Tabla.htm?path=/t20/e245/p08/l0/&amp;file=01001.px" class="external-link">URL example</a>.
 For a px table the filter is based on codes. The format is <code>list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)</code>.
 Besides:</p><ul><li><p>A variable can take more than one value: <code>list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)</code>.</p></li>
 <li><p>A variable can take a empty character "" to get all its possible values: <code>list(cod_variable1 = cod_value1, cod_variable2 = "")</code>.</p></li>
@@ -106,11 +106,11 @@ Besides:</p><ul><li><p>A variable can take more than one value: <code>list(cod_v
 <h3 id="case-three-tpx-table">Case three: tpx table<a class="anchor" aria-label="anchor" href="#case-three-tpx-table"></a></h3>
 
 
-<p><strong>URL</strong>: <a href="https://www.ine.es/jaxi/Tabla.htm?tpx=33387&amp;L=0" class="external-link">example</a>.
+<p><a href="https://www.ine.es/jaxi/Tabla.htm?tpx=33387&amp;L=0" class="external-link">URL example</a>.
 For a tpx table the filter is based on codes. The format is <code>list(cod_variable1 = cod_value1, cod_variable2 = cod_value2)</code>.
 Besides:</p><ul><li><p>A variable can take more than one value: <code>list(cod_variable1 = c(cod_value11, cod_value12), id_variable2 = cod_value2)</code>.</p></li>
 <li><p>A variable can take a empty character "" to get all its possible values: <code>list(cod_variable1 = cod_value1, cod_variable2 = "")</code>.</p></li>
-</ul><p><strong>URL:</strong> <a href="https://www.ine.es/jaxi/Tabla.htm?tpx=52056&amp;L=0" class="external-link">example</a>.
+</ul><p><a href="https://www.ine.es/jaxi/Tabla.htm?tpx=52056&amp;L=0" class="external-link">URL example</a>.
 There are tpx tables that contain variable ids and value ids. In this case,
 we can use the ids instead of the codes to build the filter. To do this we add
 the alias <em>~id</em> at the end of each id: <code>list(id_variable1~id = id_value1~id, id_variable2~id = id_value2~id)</code>.</p>
