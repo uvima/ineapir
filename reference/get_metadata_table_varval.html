@@ -78,12 +78,14 @@ ids click this <a href="https://uvima.github.io/ineapir/articles/identify_codes.
 
 
 <dt>filter</dt>
-<dd><p>(list): list of variables and values.
-#' #### Filtering data from tables
-When we request data from tables there is the possibility of filtering data
+<dd><p>(list): list of variables and values.</p><div class="section">
+<h3 id="filtering-data-from-tables">Filtering data from tables<a class="anchor" aria-label="anchor" href="#filtering-data-from-tables"></a></h3>
+
+
+<p>When we request data from tables there is the possibility of filtering data
 on the fly using metadata information about the variables and their values
 that define the series. There are different approaches to build the filter depending on the table type.</p><div class="section">
-<h3 id="case-one-tempus-table">Case one: tempus table<a class="anchor" aria-label="anchor" href="#case-one-tempus-table"></a></h3>
+<h4 id="case-one-tempus-table">Case one: tempus table<a class="anchor" aria-label="anchor" href="#case-one-tempus-table"></a></h4>
 
 
 <p><a href="https://www.ine.es/jaxiT3/Tabla.htm?t=50902" class="external-link">URL example</a>.
@@ -93,7 +95,7 @@ Besides:</p><ul><li><p>A variable can take more than one value: <code>list(id_va
 </ul></div>
 
 <div class="section">
-<h3 id="case-two-px-tables">Case two: px tables<a class="anchor" aria-label="anchor" href="#case-two-px-tables"></a></h3>
+<h4 id="case-two-px-tables">Case two: px tables<a class="anchor" aria-label="anchor" href="#case-two-px-tables"></a></h4>
 
 
 <p><a href="https://www.ine.es/jaxi/Tabla.htm?path=/t20/e245/p08/l0/&amp;file=01001.px" class="external-link">URL example</a>.
@@ -103,7 +105,7 @@ Besides:</p><ul><li><p>A variable can take more than one value: <code>list(cod_v
 </ul></div>
 
 <div class="section">
-<h3 id="case-three-tpx-table">Case three: tpx table<a class="anchor" aria-label="anchor" href="#case-three-tpx-table"></a></h3>
+<h4 id="case-three-tpx-table">Case three: tpx table<a class="anchor" aria-label="anchor" href="#case-three-tpx-table"></a></h4>
 
 
 <p><a href="https://www.ine.es/jaxi/Tabla.htm?tpx=33387&amp;L=0" class="external-link">URL example</a>.
@@ -114,6 +116,9 @@ Besides:</p><ul><li><p>A variable can take more than one value: <code>list(cod_v
 There are tpx tables that contain variable ids and value ids. In this case,
 we can use the ids instead of the codes to build the filter. To do this we add
 the alias <em>~id</em> at the end of each id: <code>list(id_variable1~id = id_value1~id, id_variable2~id = id_value2~id)</code>.</p>
+</div>
+
+
 </div></dd>
 
 
