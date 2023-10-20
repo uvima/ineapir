@@ -417,7 +417,7 @@ interest us to build the filter.</li>
 <span>                              unnest <span class="op">=</span> <span class="cn">TRUE</span>, tip <span class="op">=</span> <span class="st">"A"</span>, validate <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">ipc</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Nombre"</span>, <span class="st">"T3_Periodo"</span>, <span class="st">"Anyo"</span>, <span class="st">"Valor"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;                                           Nombre T3_Periodo Anyo Valor</span></span>
-<span><span class="co">#&gt; 1 Araba/Álava. Índice general. Variación anual.      Agosto 2023   2.2</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 Araba/Álava. Índice general. Variación anual.  Septiembre 2023   2.9</span></span></code></pre></div>
 <ul>
 <li>A variable can take more than one value (valid to filter data from
 tables as well).</li>
@@ -434,9 +434,9 @@ tables as well).</li>
 <span>                              unnest <span class="op">=</span> <span class="cn">TRUE</span>, tip <span class="op">=</span> <span class="st">"A"</span>, validate <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">ipc</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Nombre"</span>, <span class="st">"T3_Periodo"</span>, <span class="st">"Anyo"</span>, <span class="st">"Valor"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;                                                Nombre T3_Periodo Anyo Valor</span></span>
-<span><span class="co">#&gt; 1 Alicante/Alacant. Índice general. Variación anual.      Agosto 2023   2.7</span></span>
-<span><span class="co">#&gt; 2         Albacete. Índice general. Variación anual.      Agosto 2023   2.7</span></span>
-<span><span class="co">#&gt; 3      Araba/Álava. Índice general. Variación anual.      Agosto 2023   2.2</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 Alicante/Alacant. Índice general. Variación anual.  Septiembre 2023   3.7</span></span>
+<span><span class="co">#&gt; 2         Albacete. Índice general. Variación anual.  Septiembre 2023   4.2</span></span>
+<span><span class="co">#&gt; 3      Araba/Álava. Índice general. Variación anual.  Septiembre 2023   2.9</span></span></code></pre></div>
 <ul>
 <li>A variable can take a empty character <code>""</code> to get all its
 possible values (valid to filter data from tables as well).</li>
@@ -453,58 +453,58 @@ possible values (valid to filter data from tables as well).</li>
 <span>                              unnest <span class="op">=</span> <span class="cn">TRUE</span>, tip <span class="op">=</span> <span class="st">"A"</span>, validate <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">ipc</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Nombre"</span>, <span class="st">"T3_Periodo"</span>, <span class="st">"Anyo"</span>, <span class="st">"Valor"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;                                              Nombre T3_Periodo Anyo   Valor</span></span>
-<span><span class="co">#&gt; 1               Salamanca. Índice general. Índice.      Agosto 2023 113.629</span></span>
-<span><span class="co">#&gt; 2                  Huelva. Índice general. Índice.      Agosto 2023 114.445</span></span>
-<span><span class="co">#&gt; 3             Ciudad Real. Índice general. Índice.      Agosto 2023 114.420</span></span>
-<span><span class="co">#&gt; 4        Alicante/Alacant. Índice general. Índice.      Agosto 2023 113.814</span></span>
-<span><span class="co">#&gt; 5                 Ourense. Índice general. Índice.      Agosto 2023 114.564</span></span>
-<span><span class="co">#&gt; 6  Santa Cruz de Tenerife. Índice general. Índice.      Agosto 2023 113.455</span></span>
-<span><span class="co">#&gt; 7               Coruña, A. Índice general. Índice.      Agosto 2023 113.423</span></span>
-<span><span class="co">#&gt; 8              Valladolid. Índice general. Índice.      Agosto 2023 113.328</span></span>
-<span><span class="co">#&gt; 9                  Huesca. Índice general. Índice.      Agosto 2023 114.042</span></span>
-<span><span class="co">#&gt; 10                  Cádiz. Índice general. Índice.      Agosto 2023 114.164</span></span>
-<span><span class="co">#&gt; 11                 Málaga. Índice general. Índice.      Agosto 2023 114.077</span></span>
-<span><span class="co">#&gt; 12                 Teruel. Índice general. Índice.      Agosto 2023 113.780</span></span>
-<span><span class="co">#&gt; 13               Albacete. Índice general. Índice.      Agosto 2023 114.442</span></span>
-<span><span class="co">#&gt; 14              Rioja, La. Índice general. Índice.      Agosto 2023 113.663</span></span>
-<span><span class="co">#&gt; 15             Pontevedra. Índice general. Índice.      Agosto 2023 114.357</span></span>
-<span><span class="co">#&gt; 16                Melilla. Índice general. Índice.      Agosto 2023 114.871</span></span>
-<span><span class="co">#&gt; 17                 Cuenca. Índice general. Índice.      Agosto 2023 114.453</span></span>
-<span><span class="co">#&gt; 18                 Toledo. Índice general. Índice.      Agosto 2023 115.470</span></span>
-<span><span class="co">#&gt; 19                Córdoba. Índice general. Índice.      Agosto 2023 113.624</span></span>
-<span><span class="co">#&gt; 20                  Ceuta. Índice general. Índice.      Agosto 2023 113.356</span></span>
-<span><span class="co">#&gt; 21                Granada. Índice general. Índice.      Agosto 2023 113.409</span></span>
-<span><span class="co">#&gt; 22                  Ávila. Índice general. Índice.      Agosto 2023 115.259</span></span>
-<span><span class="co">#&gt; 23              Tarragona. Índice general. Índice.      Agosto 2023 113.267</span></span>
-<span><span class="co">#&gt; 24                  Soria. Índice general. Índice.      Agosto 2023 114.164</span></span>
-<span><span class="co">#&gt; 25      Valencia/València. Índice general. Índice.      Agosto 2023 112.728</span></span>
-<span><span class="co">#&gt; 26            Guadalajara. Índice general. Índice.      Agosto 2023 115.073</span></span>
-<span><span class="co">#&gt; 27                 Burgos. Índice general. Índice.      Agosto 2023 113.266</span></span>
-<span><span class="co">#&gt; 28                   Lugo. Índice general. Índice.      Agosto 2023 114.252</span></span>
-<span><span class="co">#&gt; 29               Gipuzkoa. Índice general. Índice.      Agosto 2023 113.155</span></span>
-<span><span class="co">#&gt; 30                Almería. Índice general. Índice.      Agosto 2023 113.025</span></span>
-<span><span class="co">#&gt; 31                 Girona. Índice general. Índice.      Agosto 2023 113.626</span></span>
-<span><span class="co">#&gt; 32                 Lleida. Índice general. Índice.      Agosto 2023 114.545</span></span>
-<span><span class="co">#&gt; 33               Zaragoza. Índice general. Índice.      Agosto 2023 112.893</span></span>
-<span><span class="co">#&gt; 34                 Zamora. Índice general. Índice.      Agosto 2023 115.011</span></span>
-<span><span class="co">#&gt; 35     Castellón/Castelló. Índice general. Índice.      Agosto 2023 114.782</span></span>
-<span><span class="co">#&gt; 36                   Jaén. Índice general. Índice.      Agosto 2023 113.532</span></span>
-<span><span class="co">#&gt; 37               Asturias. Índice general. Índice.      Agosto 2023 113.340</span></span>
-<span><span class="co">#&gt; 38            Araba/Álava. Índice general. Índice.      Agosto 2023 112.517</span></span>
-<span><span class="co">#&gt; 39                Badajoz. Índice general. Índice.      Agosto 2023 113.719</span></span>
-<span><span class="co">#&gt; 40                 Madrid. Índice general. Índice.      Agosto 2023 111.479</span></span>
-<span><span class="co">#&gt; 41                Bizkaia. Índice general. Índice.      Agosto 2023 113.205</span></span>
-<span><span class="co">#&gt; 42              Cantabria. Índice general. Índice.      Agosto 2023 113.675</span></span>
-<span><span class="co">#&gt; 43            Palmas, Las. Índice general. Índice.      Agosto 2023 112.850</span></span>
-<span><span class="co">#&gt; 44                Segovia. Índice general. Índice.      Agosto 2023 114.124</span></span>
-<span><span class="co">#&gt; 45               Palencia. Índice general. Índice.      Agosto 2023 113.697</span></span>
-<span><span class="co">#&gt; 46                Sevilla. Índice general. Índice.      Agosto 2023 113.364</span></span>
-<span><span class="co">#&gt; 47                   León. Índice general. Índice.      Agosto 2023 115.417</span></span>
-<span><span class="co">#&gt; 48         Balears, Illes. Índice general. Índice.      Agosto 2023 113.977</span></span>
-<span><span class="co">#&gt; 49              Barcelona. Índice general. Índice.      Agosto 2023 112.381</span></span>
-<span><span class="co">#&gt; 50                Navarra. Índice general. Índice.      Agosto 2023 113.859</span></span>
-<span><span class="co">#&gt; 51                Cáceres. Índice general. Índice.      Agosto 2023 111.881</span></span>
-<span><span class="co">#&gt; 52                 Murcia. Índice general. Índice.      Agosto 2023 113.794</span></span></code></pre></div>
+<span><span class="co">#&gt; 1               Salamanca. Índice general. Índice.  Septiembre 2023 113.530</span></span>
+<span><span class="co">#&gt; 2                  Huelva. Índice general. Índice.  Septiembre 2023 114.678</span></span>
+<span><span class="co">#&gt; 3             Ciudad Real. Índice general. Índice.  Septiembre 2023 114.798</span></span>
+<span><span class="co">#&gt; 4        Alicante/Alacant. Índice general. Índice.  Septiembre 2023 113.988</span></span>
+<span><span class="co">#&gt; 5                 Ourense. Índice general. Índice.  Septiembre 2023 114.470</span></span>
+<span><span class="co">#&gt; 6  Santa Cruz de Tenerife. Índice general. Índice.  Septiembre 2023 113.918</span></span>
+<span><span class="co">#&gt; 7               Coruña, A. Índice general. Índice.  Septiembre 2023 113.561</span></span>
+<span><span class="co">#&gt; 8              Valladolid. Índice general. Índice.  Septiembre 2023 113.457</span></span>
+<span><span class="co">#&gt; 9                  Huesca. Índice general. Índice.  Septiembre 2023 114.197</span></span>
+<span><span class="co">#&gt; 10                  Cádiz. Índice general. Índice.  Septiembre 2023 114.179</span></span>
+<span><span class="co">#&gt; 11                 Málaga. Índice general. Índice.  Septiembre 2023 114.485</span></span>
+<span><span class="co">#&gt; 12                 Teruel. Índice general. Índice.  Septiembre 2023 114.042</span></span>
+<span><span class="co">#&gt; 13               Albacete. Índice general. Índice.  Septiembre 2023 114.847</span></span>
+<span><span class="co">#&gt; 14              Rioja, La. Índice general. Índice.  Septiembre 2023 113.641</span></span>
+<span><span class="co">#&gt; 15             Pontevedra. Índice general. Índice.  Septiembre 2023 114.676</span></span>
+<span><span class="co">#&gt; 16                Melilla. Índice general. Índice.  Septiembre 2023 115.116</span></span>
+<span><span class="co">#&gt; 17                 Cuenca. Índice general. Índice.  Septiembre 2023 114.995</span></span>
+<span><span class="co">#&gt; 18                 Toledo. Índice general. Índice.  Septiembre 2023 115.823</span></span>
+<span><span class="co">#&gt; 19                Córdoba. Índice general. Índice.  Septiembre 2023 113.925</span></span>
+<span><span class="co">#&gt; 20                  Ceuta. Índice general. Índice.  Septiembre 2023 113.627</span></span>
+<span><span class="co">#&gt; 21                Granada. Índice general. Índice.  Septiembre 2023 113.761</span></span>
+<span><span class="co">#&gt; 22                  Ávila. Índice general. Índice.  Septiembre 2023 115.527</span></span>
+<span><span class="co">#&gt; 23              Tarragona. Índice general. Índice.  Septiembre 2023 113.346</span></span>
+<span><span class="co">#&gt; 24                  Soria. Índice general. Índice.  Septiembre 2023 114.355</span></span>
+<span><span class="co">#&gt; 25      Valencia/València. Índice general. Índice.  Septiembre 2023 112.791</span></span>
+<span><span class="co">#&gt; 26            Guadalajara. Índice general. Índice.  Septiembre 2023 115.133</span></span>
+<span><span class="co">#&gt; 27                 Burgos. Índice general. Índice.  Septiembre 2023 113.394</span></span>
+<span><span class="co">#&gt; 28                   Lugo. Índice general. Índice.  Septiembre 2023 114.306</span></span>
+<span><span class="co">#&gt; 29               Gipuzkoa. Índice general. Índice.  Septiembre 2023 113.081</span></span>
+<span><span class="co">#&gt; 30                Almería. Índice general. Índice.  Septiembre 2023 113.454</span></span>
+<span><span class="co">#&gt; 31                 Girona. Índice general. Índice.  Septiembre 2023 113.769</span></span>
+<span><span class="co">#&gt; 32                 Lleida. Índice general. Índice.  Septiembre 2023 114.624</span></span>
+<span><span class="co">#&gt; 33               Zaragoza. Índice general. Índice.  Septiembre 2023 112.907</span></span>
+<span><span class="co">#&gt; 34                 Zamora. Índice general. Índice.  Septiembre 2023 115.115</span></span>
+<span><span class="co">#&gt; 35     Castellón/Castelló. Índice general. Índice.  Septiembre 2023 114.997</span></span>
+<span><span class="co">#&gt; 36                   Jaén. Índice general. Índice.  Septiembre 2023 113.914</span></span>
+<span><span class="co">#&gt; 37               Asturias. Índice general. Índice.  Septiembre 2023 113.045</span></span>
+<span><span class="co">#&gt; 38            Araba/Álava. Índice general. Índice.  Septiembre 2023 112.378</span></span>
+<span><span class="co">#&gt; 39                Badajoz. Índice general. Índice.  Septiembre 2023 114.235</span></span>
+<span><span class="co">#&gt; 40                 Madrid. Índice general. Índice.  Septiembre 2023 111.999</span></span>
+<span><span class="co">#&gt; 41                Bizkaia. Índice general. Índice.  Septiembre 2023 113.485</span></span>
+<span><span class="co">#&gt; 42              Cantabria. Índice general. Índice.  Septiembre 2023 113.648</span></span>
+<span><span class="co">#&gt; 43            Palmas, Las. Índice general. Índice.  Septiembre 2023 113.077</span></span>
+<span><span class="co">#&gt; 44                Segovia. Índice general. Índice.  Septiembre 2023 114.204</span></span>
+<span><span class="co">#&gt; 45               Palencia. Índice general. Índice.  Septiembre 2023 113.790</span></span>
+<span><span class="co">#&gt; 46                Sevilla. Índice general. Índice.  Septiembre 2023 113.759</span></span>
+<span><span class="co">#&gt; 47                   León. Índice general. Índice.  Septiembre 2023 115.808</span></span>
+<span><span class="co">#&gt; 48         Balears, Illes. Índice general. Índice.  Septiembre 2023 113.923</span></span>
+<span><span class="co">#&gt; 49              Barcelona. Índice general. Índice.  Septiembre 2023 112.305</span></span>
+<span><span class="co">#&gt; 50                Navarra. Índice general. Índice.  Septiembre 2023 113.981</span></span>
+<span><span class="co">#&gt; 51                Cáceres. Índice general. Índice.  Septiembre 2023 112.129</span></span>
+<span><span class="co">#&gt; 52                 Murcia. Índice general. Índice.  Septiembre 2023 114.009</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
