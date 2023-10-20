@@ -16,7 +16,8 @@ get_metadata_publications(
 \arguments{
 \item{operation}{(string): code of the operation. Provide code to get all
 the publications for the given operation. To obtain a list of
-available operations see \code{\link[=get_metadata_operations]{get_metadata_operations()}}.}
+available operations see \code{\link[=get_metadata_operations]{get_metadata_operations()}}.
+If no operation is specified then all the publications will be shown.}
 
 \item{det}{(int): level of detail. Valid values: 0, 1 or 2.}
 

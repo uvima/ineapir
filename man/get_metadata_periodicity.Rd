@@ -14,7 +14,8 @@ get_metadata_periodicity(
 \arguments{
 \item{operation}{(string): Code of the operation. Provide code to get all
 the periodicities for the given operation. To obtain a list of
-available operations see \code{\link[=get_metadata_operations]{get_metadata_operations()}}.}
+available operations see \code{\link[=get_metadata_operations]{get_metadata_operations()}}.
+If no operation is specified then all the periodicities will be shown.}
 
 \item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 

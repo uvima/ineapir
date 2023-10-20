@@ -14,7 +14,8 @@ get_metadata_operations(
 }
 \arguments{
 \item{operation}{(string): code of the operation. To obtain a list of
-available operations see \code{\link[=get_metadata_operations]{get_metadata_operations()}}.}
+available operations see \code{\link[=get_metadata_operations]{get_metadata_operations()}}.
+If no operation is specified then all the operations will be shown}
 
 \item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 
