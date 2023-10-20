@@ -2,6 +2,7 @@
 #'
 #' @param operation (string): code of the operation. To obtain a list of
 #' available operations see [get_metadata_operations()].
+#' If no operation is specified then all the operations will be shown
 #' @param lang  (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
 #' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages).
 #' @param validate (logical): validate input parameters. A FALSE value means fewer API calls.
@@ -50,6 +51,7 @@ get_metadata_operations <- function(operation = NULL, lang = "ES", page = 0, val
 #' @param operation (string): Code of the operation. Provide code to get all
 #' the variables for the given operation. To obtain a list of
 #' available operations see [get_metadata_operations()].
+#' If no operation is specified then all the variables will be shown.
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
 #' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages).
 #' @param validate (logical): validate input parameters. A FALSE value means fewer API calls.
@@ -150,6 +152,7 @@ get_metadata_values <- function(operation = NULL, variable =  NULL, det = 0, lan
 #' @param operation (string): code of the operation. Provide code to get all
 #' the publications for the given operation. To obtain a list of
 #' available operations see [get_metadata_operations()].
+#' If no operation is specified then all the publications will be shown.
 #' @param det (int): level of detail. Valid values: 0, 1 or 2.
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
 #' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages).
@@ -251,6 +254,7 @@ get_metadata_publication_dates <- function(publication = NULL, det = 0, tip = NU
 #' @param operation (string): Code of the operation. Provide code to get all
 #' the periodicities for the given operation. To obtain a list of
 #' available operations see [get_metadata_operations()].
+#' If no operation is specified then all the periodicities will be shown.
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
 #' @param validate (logical): validate input parameters. A FALSE value means fewer API calls.
 #' @param verbose (logical): print additional information, including the URL to call the API service.
@@ -290,7 +294,57 @@ get_metadata_periodicity <- function(operation = NULL, lang = "ES", validate = T
     data <- get_api_data(url, request)
 
     return(data)
+}
+
+#' Get all available filter shortcuts
+#'
+#' @param lang (string): language. Set to 'ES' for Spanish shortcuts or set to 'EN' for English shortcuts.
+#' @param validate (logical): validate input parameters.
+#' @param verbose (logical): print additional information.
+#'
+#' @return Data frame with information of the available filter shortcuts
+#' @export
+#'
+#' @examples \dontrun{
+#' get_filter_shortcuts()
+#' get_filter_shortcuts(lang = "EN")
+#' }
+#'
+get_filter_shortcuts <- function(lang = "ES", validate = TRUE, verbose = FALSE){
+
+  # List of values to define the call to the API
+  definition <- list()
+  definition <- append(definition, list(lang = lang))
+
+  # List of parameters to call the API
+  parameters <- list()
+
+  # List of addons
+  addons <- list(validate = validate, verbose = verbose)
+
+  # List of definitions and parameters
+  request <- list(definition = definition, parameters = parameters, addons = addons)
+
+  # Check request
+  request <- check_request(request)
+
+  short <- names(shortcuts_filter)
+  varid <- character()
+  comment <- character()
+  language <- character()
+
+  for (s in short){
+    varid <- append(varid, paste0(shortcuts_filter[[s]], collapse = ", "))
+    comment <- append(comment, shortcuts_filter_comments[[s]]$comment)
+    language <- append(language, shortcuts_filter_comments[[s]]$lang)
   }
+
+  df <- data.frame(Shortcut = short, "Variable.ID" = varid, Comment = comment, language = language)
+
+  df <- subset(df, language %in% c(lang, "ALL"), select = c("Shortcut", "Variable.ID", "Comment"))
+
+  return(df)
+}
 
 
 
