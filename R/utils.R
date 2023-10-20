@@ -36,6 +36,50 @@ shortcuts_filter <- list(nac = "349",                 # national
                   effectscorr = "544"                 # correction of effects
                   )
 
+shortcuts_filter_comments <- list(nac = list(comment ="National", lang = "ALL"),
+                         prov = list(comment ="Provinces", lang = "ALL") ,
+                         ccaa = list(comment ="Autonomous Communities", lang = "ALL"),
+                         mun = list(comment ="Municipalities", lang = "ALL"),
+                         isla = list(comment ="Islands", lang = "ES"),
+                         island = list(comment ="Islands", lang = "EN"),
+                         grupo = list(comment ="CPI groups", lang = "ES"),
+                         group = list(comment ="CPI groups", lang = "EN"),
+                         subgrupo = list(comment ="CPI subgroups", lang = "ES"),
+                         subgroup = list(comment ="CPI subgroups", lang = "EN"),
+                         clase = list(comment ="764", lang = "ES"),
+                         class = list(comment ="764", lang = "EN"),
+                         subclase = list(comment ="CPI class", lang = "ES"),
+                         subclass = list(comment ="CPI class", lang = "EN"),
+                         rubrica = list(comment ="CPI headings", lang = "ES"),
+                         heading = list(comment ="CPI headings", lang = "EN"),
+                         grupoespecial = list(comment ="CPI special groups", lang = "ES"),
+                         specialgroup = list(comment ="CPI special groups", lang = "EN"),
+                         tipodato = list(comment ="Type of data", lang = "ES"),
+                         datatype = list(comment ="Type of data", lang = "EN"),
+                         sexo = list(comment ="Sex", lang = "ES"),
+                         sex = list(comment ="Sex", lang = "EN"),
+                         edad1 = list(comment ="Simple age", lang = "ES"),
+                         age1 = list(comment ="Simple age", lang = "EN"),
+                         edadt = list(comment ="Age totals", lang = "ES"),
+                         aget = list(comment ="Age totals", lang = "EN"),
+                         edadg = list(comment ="Age groups", lang = "ES"),
+                         ageg = list(comment ="Age groups", lang = "EN"),
+                         edads = list(comment ="Age semi-intervals", lang = "ES"),
+                         ages = list(comment ="Age semi-intervals", lang = "EN"),
+                         edad = list(comment ="Age wrapper", lang = "ES"),
+                         age = list(comment ="Age wrapper", lang = "EN"),
+                         nacionalidad = list(comment ="Nationality", lang = "ES"),
+                         nationality = list(comment ="Nationality", lang = "EN"),
+                         generacion = list(comment ="Generation/ages", lang = "ES"),
+                         generation = list(comment ="Generation/ages", lang = "EN"),
+                         paisnacimiento = list(comment ="Country of birth", lang = "ES"),
+                         birthcountry = list(comment ="Country of birth", lang = "EN"),
+                         lugarnacimiento = list(comment ="Place of birth", lang = "ES"),
+                         birthplace = list(comment ="Place of birth", lang = "EN"),
+                         efectoscorr = list(comment ="Correction of effects", lang = "ES"),
+                         effectscorr = list(comment ="Correction of effects", lang = "EN")
+)
+
 shortcut_wrapper <- c("values")
 
 # Function to retrieve data from the aPI
@@ -607,13 +651,19 @@ check_definition <- function(definition, addons){
   check <- addons$validate
 
   if(check){
-    # Check lang argument
-    rl <- check_lang(definition$lang, addons$verbose)
+    for(x in names(definition)){
+      val <- definition[[x]]
 
-    # Check input
-    ri <- check_input(definition$tag, definition$input, addons$verbose)
-
-    result <- list(lang = rl, input = ri)
+      if(!is.null(val)){
+        r <- switch (x,
+                     "lang" = check_lang(val, addons$verbose),
+                     "input" = check_input(definition$tag, val, addons$verbose)
+        )
+        # Check results to return
+        result <- append(result, r)
+        names(result)[length(result)] <- x
+      }
+    }
   }
 
   return(result)
