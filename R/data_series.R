@@ -78,6 +78,15 @@ get_data_series <- function(codSeries = NULL, nlast = 1, dateStart = NULL, dateE
 #' Besides:
 #' - A variable can take more than one value: `list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)`.
 #' - A variable can take a empty character "" to get all its possible values: `list(id_variable1 = id_value1, id_variable2 = "")`.
+#'
+#' #### Using shortcuts
+#' Additionally, shortcuts can be used to filter. They simplify the filtering
+#' approach by using standardized names for variable IDs and therefore simplify
+#' their use. The format is:
+#' `list(shortcut_variable1 = name1, shortcut_variable2 = name2)`. Besides,
+#' the *values* wrapper can also be used: `list(values = c(name1, name2)`.
+#' To see a list of all available shortcuts, see [get_filter_shortcuts()] function.
+#' Let’s also remark that for better performance is recommended to use numeric codes.
 #' @param periodicity (int): id of the periodicity of the series. Common periodicities:
 #' 1 (monthly), 3 (quarterly), 6 (bi-annual), 12 (annual). To obtain a list
 #' of periodicities see [get_metadata_periodicity()].

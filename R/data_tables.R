@@ -34,6 +34,16 @@
 #' There are tpx tables that contain variable ids and value ids. In this case,
 #' we can use the ids instead of the codes to build the filter. To do this we add
 #' the alias *~id* at the end of each id: `list(id_variable1~id = id_value1~id, id_variable2~id = id_value2~id)`.
+#'
+#' #### Using shortcuts
+#' Additionally, shortcuts can be used to filter. They simplify the filtering
+#' approach by using standardized names for variable IDs and therefore simplify
+#' their use. The format for a tempus table is:
+#' `list(shortcut_variable1 = name1, shortcut_variable2 = name2)`. However,
+#' for px and tpx tables the format is: `list(values = c(name1, name2)`. The
+#' *values* wrapper can also be used with tempus tables.
+#' To see a list of all available shortcuts, see [get_filter_shortcuts()] function.
+#' Let’s also remark that for better performance is recommended to use numeric codes.
 #' @param nlast (int): number of periods to retrieve. By default it retrieves all available periods.
 #' @param det (int): level of detail. Valid values: 0, 1 or 2.
 #' @param tip (string): set to 'A' for friendly output (e.g. readable dates),

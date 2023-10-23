@@ -67,6 +67,18 @@ we can use the ids instead of the codes to build the filter. To do this we add
 the alias \emph{~id} at the end of each id: \verb{list(id_variable1~id = id_value1~id, id_variable2~id = id_value2~id)}.
 }
 
+\subsection{Using shortcuts}{
+
+Additionally, shortcuts can be used to filter. They simplify the filtering
+approach by using standardized names for variable IDs and therefore simplify
+their use. The format for a tempus table is:
+\code{list(shortcut_variable1 = name1, shortcut_variable2 = name2)}. However,
+for px and tpx tables the format is: \verb{list(values = c(name1, name2)}. The
+\emph{values} wrapper can also be used with tempus tables.
+To see a list of all available shortcuts, see \code{\link[=get_filter_shortcuts]{get_filter_shortcuts()}} function.
+Let’s also remark that for better performance is recommended to use numeric codes.
+}
+
 }}
 
 \item{nlast}{(int): number of periods to retrieve. By default it retrieves all available periods.}

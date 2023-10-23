@@ -187,6 +187,16 @@ get_metadata_series_values <- function(codSeries = NULL, det = 0, tip = NULL, la
 #' There are tpx tables that contain variable ids and value ids. In this case,
 #' we can use the ids instead of the codes to build the filter. To do this we add
 #' the alias *~id* at the end of each id: `list(id_variable1~id = id_value1~id, id_variable2~id = id_value2~id)`.
+#'
+#' #### Using shortcuts
+#' Additionally, shortcuts can be used to filter. They simplify the filtering
+#' approach by using standardized names for variable IDs and therefore simplify
+#' their use. The format for a tempus table is:
+#' `list(shortcut_variable1 = name1, shortcut_variable2 = name2)`. However,
+#' for px and tpx tables the format is: `list(values = c(name1, name2)`. The
+#' *values* wrapper can also be used with tempus tables.
+#' To see a list of all available shortcuts, see [get_filter_shortcuts()] function.
+#' Let’s also remark that for better performance is recommended to use numeric codes.
 #' @param det (int): level of detail. Valid values: 0, 1 or 2.
 #' @param tip (string): set to 'A' for friendly output (e.g. readable dates),
 #' set to 'M' to include metadata or set to 'AM' for both.
@@ -260,6 +270,15 @@ get_metadata_series_table <- function(idTable = NULL, filter = NULL, det = 0, ti
 #' Besides:
 #' - A variable can take more than one value: `list(id_variable1 = c(id_value11, id_value12), id_variable2 = id_value2)`.
 #' - A variable can take a empty character "" to get all its possible values: `list(id_variable1 = id_value1, id_variable2 = "")`.
+#'
+#' #### Using shortcuts
+#' Additionally, shortcuts can be used to filter. They simplify the filtering
+#' approach by using standardized names for variable IDs and therefore simplify
+#' their use. The format is:
+#' `list(shortcut_variable1 = name1, shortcut_variable2 = name2)`. Besides,
+#' the *values* wrapper can also be used: `list(values = c(name1, name2)`.
+#' To see a list of all available shortcuts, see [get_filter_shortcuts()] function.
+#' Let’s also remark that for better performance is recommended to use numeric codes.
 #' @param periodicity (int): id of the periodicity of the series. Common periodicities:
 #' 1 (monthly), 3 (quarterly), 6 (bi-annual), 12 (annual). To obtain a list
 #' of periodicities see [get_metadata_periodicity()].

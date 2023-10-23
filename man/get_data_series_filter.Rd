@@ -40,6 +40,17 @@ Besides:
 }
 }
 
+\subsection{Using shortcuts}{
+
+Additionally, shortcuts can be used to filter. They simplify the filtering
+approach by using standardized names for variable IDs and therefore simplify
+their use. The format is:
+\code{list(shortcut_variable1 = name1, shortcut_variable2 = name2)}. Besides,
+the \emph{values} wrapper can also be used: \verb{list(values = c(name1, name2)}.
+To see a list of all available shortcuts, see \code{\link[=get_filter_shortcuts]{get_filter_shortcuts()}} function.
+Let’s also remark that for better performance is recommended to use numeric codes.
+}
+
 }}
 
 \item{periodicity}{(int): id of the periodicity of the series. Common periodicities:
