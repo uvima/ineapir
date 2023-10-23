@@ -101,6 +101,19 @@ Besides:</p><ul><li><p>A variable can take more than one value: <code>list(id_va
 <li><p>A variable can take a empty character "" to get all its possible values: <code>list(id_variable1 = id_value1, id_variable2 = "")</code>.</p></li>
 </ul></div>
 
+<div class="section">
+<h4 id="using-shortcuts">Using shortcuts<a class="anchor" aria-label="anchor" href="#using-shortcuts"></a></h4>
+
+
+<p>Additionally, shortcuts can be used to filter. They simplify the filtering
+approach by using standardized names for variable IDs and therefore simplify
+their use. The format is:
+<code>list(shortcut_variable1 = name1, shortcut_variable2 = name2)</code>. Besides,
+the <em>values</em> wrapper can also be used: <code>list(values = c(name1, name2)</code>.
+To see a list of all available shortcuts, see <code><a href="get_filter_shortcuts.html">get_filter_shortcuts()</a></code> function.
+Let’s also remark that for better performance is recommended to use numeric codes.</p>
+</div>
+
 
 </div></dd>
 

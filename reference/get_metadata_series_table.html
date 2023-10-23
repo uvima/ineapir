@@ -123,6 +123,21 @@ we can use the ids instead of the codes to build the filter. To do this we add
 the alias <em>~id</em> at the end of each id: <code>list(id_variable1~id = id_value1~id, id_variable2~id = id_value2~id)</code>.</p>
 </div>
 
+<div class="section">
+<h4 id="using-shortcuts">Using shortcuts<a class="anchor" aria-label="anchor" href="#using-shortcuts"></a></h4>
+
+
+<p>Additionally, shortcuts can be used to filter. They simplify the filtering
+approach by using standardized names for variable IDs and therefore simplify
+their use. The format for a tempus table is:
+<code>list(shortcut_variable1 = name1, shortcut_variable2 = name2)</code>. However,
+for px and tpx tables the format is: <code>list(values = c(name1, name2)</code>. The
+<em>values</em> wrapper can also be used with tempus tables.
+To see a list of all available shortcuts, see <code><a href="get_filter_shortcuts.html">get_filter_shortcuts()</a></code> function.
+Let’s also remark that for better performance is recommended to use numeric ids
+for tempus tables and alphanumeric codes for px and tpx tables.</p>
+</div>
+
 
 </div></dd>
 
