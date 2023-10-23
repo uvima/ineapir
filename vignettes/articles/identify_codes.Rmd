@@ -18,6 +18,9 @@ website that are necessary to perform data queries.
 When browsing to a table, there are three possible cases when it comes to
 identifying its ID.
 
+**REMARK:** The id of a table is unique and immutable, no matter what variables/values
+ have been selected in the table.
+ 
 ### Case one
 
 - **URL:** https://www.ine.es/jaxiT3/Tabla.htm?t=50902
