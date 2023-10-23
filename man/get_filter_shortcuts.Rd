@@ -7,7 +7,8 @@
 get_filter_shortcuts(lang = "ES", validate = TRUE, verbose = FALSE)
 }
 \arguments{
-\item{lang}{(string): language. Set to 'ES' for Spanish shortcuts or set to 'EN' for English shortcuts.}
+\item{lang}{(string): language. Set to 'ES' for the Spanish version of the
+shortcuts or set to 'EN' for the English version of the shortcuts.}
 
 \item{validate}{(logical): validate input parameters.}
 

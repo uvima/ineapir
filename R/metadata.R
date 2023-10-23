@@ -298,7 +298,8 @@ get_metadata_periodicity <- function(operation = NULL, lang = "ES", validate = T
 
 #' Get all available filter shortcuts
 #'
-#' @param lang (string): language. Set to 'ES' for Spanish shortcuts or set to 'EN' for English shortcuts.
+#' @param lang (string): language. Set to 'ES' for the Spanish version of the
+#' shortcuts or set to 'EN' for the English version of the shortcuts.
 #' @param validate (logical): validate input parameters.
 #' @param verbose (logical): print additional information.
 #'
@@ -339,8 +340,16 @@ get_filter_shortcuts <- function(lang = "ES", validate = TRUE, verbose = FALSE){
     language <- append(language, shortcuts_filter_comments[[s]]$lang)
   }
 
+  # Add values wrapper
+  short <- append(short, "values")
+  varid <- append(varid, "-")
+  comment <- append(comment, "Values wrapper")
+  language <- append(language, "ALL")
+
+  # Select language
   df <- data.frame(Shortcut = short, "Variable.ID" = varid, Comment = comment, language = language)
 
+  # Select columns
   df <- subset(df, language %in% c(lang, "ALL"), select = c("Shortcut", "Variable.ID", "Comment"))
 
   return(df)
