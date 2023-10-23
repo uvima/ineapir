@@ -43,7 +43,8 @@
 #' for px and tpx tables the format is: `list(values = c(name1, name2)`. The
 #' *values* wrapper can also be used with tempus tables.
 #' To see a list of all available shortcuts, see [get_filter_shortcuts()] function.
-#' Let’s also remark that for better performance is recommended to use numeric codes.
+#' Let’s also remark that for better performance is recommended to use numeric ids
+#' for tempus tables and alphanumeric codes for px and tpx tables.
 #' @param nlast (int): number of periods to retrieve. By default it retrieves all available periods.
 #' @param det (int): level of detail. Valid values: 0, 1 or 2.
 #' @param tip (string): set to 'A' for friendly output (e.g. readable dates),

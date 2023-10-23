@@ -74,7 +74,8 @@ their use. The format for a tempus table is:
 for px and tpx tables the format is: \verb{list(values = c(name1, name2)}. The
 \emph{values} wrapper can also be used with tempus tables.
 To see a list of all available shortcuts, see \code{\link[=get_filter_shortcuts]{get_filter_shortcuts()}} function.
-Let’s also remark that for better performance is recommended to use numeric codes.
+Let’s also remark that for better performance is recommended to use numeric ids
+for tempus tables and alphanumeric codes for px and tpx tables.
 }
 
 }}
