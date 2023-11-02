@@ -32,7 +32,7 @@ remotes::install_github("uvima/ineapir")
 
 ## Cheatsheet
 
-<a href="man/figures/ineapir.pdf"><img src="man/figures/ineapir_thumbnail.png" width="315"/></a>
+<a href="https://raw.githubusercontent.com/uvima/ineapir/main/man/figures/ineapir.pdf"><img src="man/figures/ineapir_thumbnail.png" width="315"/></a>
 
 ## Data request examples
 
