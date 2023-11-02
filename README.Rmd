@@ -41,6 +41,10 @@ token (only for private repositories).
 remotes::install_github("uvima/ineapir")
 ```
 
+## Cheatsheet
+
+<a href="man/figures/ineapir.pdf"><img src="man/figures/ineapir_thumbnail.png" width="315"/></a>
+
 ## Data request examples
 
 The data is only associated with the series object and these can be grouped
