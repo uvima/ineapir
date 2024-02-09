@@ -7,6 +7,7 @@
 get_metadata_operations(
   operation = NULL,
   lang = "ES",
+  geo = NULL,
   page = 0,
   validate = TRUE,
   verbose = FALSE
@@ -18,6 +19,9 @@ available operations see \code{\link[=get_metadata_operations]{get_metadata_oper
 If no operation is specified then all the operations will be shown}
 
 \item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
+
+\item{geo}{(int): set to 0 for national tables or set to 1 for tables with
+a greater level of disaggregation.}
 
 \item{page}{(int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages).}
 
