@@ -20,7 +20,7 @@ If no operation is specified then all the operations will be shown}
 
 \item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.}
 
-\item{geo}{(int): set to 0 for national tables or set to 1 for tables with
+\item{geo}{(int): set to 0 for operations with national data or set to 1 for operations with data with
 a greater level of disaggregation.}
 
 \item{page}{(int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages).}
@@ -39,6 +39,7 @@ Get all available operations
 \dontrun{
 get_metadata_operations()
 get_metadata_operations(operation = "IPC")
+get_metadata_operations(geo = 1)
 }
 
 }

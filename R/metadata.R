@@ -4,7 +4,7 @@
 #' available operations see [get_metadata_operations()].
 #' If no operation is specified then all the operations will be shown
 #' @param lang  (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English.
-#' @param geo (int): set to 0 for national tables or set to 1 for tables with
+#' @param geo (int): set to 0 for operations with national data or set to 1 for operations with data with
 #' a greater level of disaggregation.
 #' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages).
 #' @param validate (logical): validate input parameters. A FALSE value means fewer API calls.
@@ -16,6 +16,7 @@
 #' @examples \dontrun{
 #' get_metadata_operations()
 #' get_metadata_operations(operation = "IPC")
+#' get_metadata_operations(geo = 1)
 #' }
 #'
 get_metadata_operations <- function(operation = NULL, lang = "ES", geo = NULL, page = 0, validate = TRUE, verbose = FALSE){
