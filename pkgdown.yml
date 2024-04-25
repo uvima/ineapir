@@ -1,13 +1,13 @@
-pandoc: 2.19.2
-pkgdown: 2.0.7
+pandoc: 3.1.11
+pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
-  filter_data: filter_data.html
   filter_data_shortcuts: filter_data_shortcuts.html
+  filter_data: filter_data.html
   identify_codes: identify_codes.html
   tips: tips.html
   usage: usage.html
-last_built: 2024-02-09T08:16Z
+last_built: 2024-04-25T08:30Z
 urls:
   reference: https://uvima.github.io/ineapir/reference
   article: https://uvima.github.io/ineapir/articles
