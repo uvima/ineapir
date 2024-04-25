@@ -8,7 +8,7 @@
 #' @param geo (int): set to 0 for national tables or set to 1 for tables with
 #' a greater level of disaggregation.
 #' @param lang (string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English
-#' @param page (int): page number. The retrieved result of the query is paginated. Default value is set to 1.
+#' @param page (int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages).
 #' @param validate (logical): validate input parameters. A FALSE value means fewer API calls.
 #' @param verbose (logical): print additional information, including the URL to call the API service.
 #'
@@ -19,7 +19,7 @@
 #' get_metadata_tables_operation(operation = "IPC")
 #' }
 #'
-get_metadata_tables_operation <- function(operation = NULL, det = 0, tip = NULL, geo = NULL, lang = "ES", page = 1, validate = TRUE, verbose = FALSE){
+get_metadata_tables_operation <- function(operation = NULL, det = 0, tip = NULL, geo = NULL, lang = "ES", page = 0, validate = TRUE, verbose = FALSE){
 
   # List of values to define the call to the API
   definition <- list()
@@ -48,7 +48,7 @@ get_metadata_tables_operation <- function(operation = NULL, det = 0, tip = NULL,
   url <- get_url(request)
 
   # Obtain the retrieved data calling the API
-  data <- get_api_data(url, request)
+  data <- get_api_data_all_pages(url, request)
 
   return(data)
 }

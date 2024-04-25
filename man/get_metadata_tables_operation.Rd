@@ -10,7 +10,7 @@ get_metadata_tables_operation(
   tip = NULL,
   geo = NULL,
   lang = "ES",
-  page = 1,
+  page = 0,
   validate = TRUE,
   verbose = FALSE
 )
@@ -29,7 +29,7 @@ a greater level of disaggregation.}
 
 \item{lang}{(string): language of the retrieved data. Set to 'ES' for Spanish or set to 'EN' for English}
 
-\item{page}{(int): page number. The retrieved result of the query is paginated. Default value is set to 1.}
+\item{page}{(int): page number. The retrieved result of the query is paginated (page=0 retrieves all pages).}
 
 \item{validate}{(logical): validate input parameters. A FALSE value means fewer API calls.}
 

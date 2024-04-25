@@ -66,35 +66,36 @@ To use a filter with shortcuts it is necessary to pass the argument
 `filter` using a shortcut as variable and a name as value.
 
 ### Example one
+We are going to filter the table [Índices nacionales: general y de grupos ECOICOP](https://www.ine.es/jaxiT3/Tabla.htm?t=50902) (Id 50902):
 
 ```{r tabla_filter_1}
 library(ineapir)
 
-# Filter using shortcuts
+# Filter using shortcuts (CPI)
 filter <- list(tipodato = "variación anual" , # variable id = 3
                grupo = "índice general"       # variable id = 762
                )
 
-# Request data using the filter and shortcut = TRUE
+# Request data using the filter
 ipc <- get_data_table(idTable = 50902, filter = filter, unnest = TRUE,
                       tip = "A", nlast = 5, validate = FALSE)
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
-Since the table with the id code 50902 belongs to the IPC operation, we can
-also use the *values* wrapper.
+Besides, we can also use the *values* wrapper.
 
 ```{r tabla_filter_2}
-# Filter with the values wrapper (CPI)
+# Filter with the values wrapper
 filter <- list(values = c("variación anual" , "índice general"))
 
-# Request data using the filter and shortcut = TRUE
+# Request data using the filter
 ipc <- get_data_table(idTable = 50902, filter = filter, unnest = TRUE,
                       tip = "A", nlast = 5, validate = FALSE)
 ipc[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
 ### Example two
+We are going to filter the table [PIB pm Oferta (Indices de volumen encadenado)](https://www.ine.es/jaxiT3/Tabla.htm?t=30679) (Id 30679):
 
 ```{r tabla_filter_3}
 # Filter with the values wrapper (GDP)
@@ -107,12 +108,13 @@ pib[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]
 ```
 
 ### Example three
+We are going to filter the table [Población residente por fecha, sexo y edad (desde 1971)](https://www.ine.es/jaxiT3/Tabla.htm?t=56934) (Id 56934)
 
 ```{r tabla_filter_4}
 # Filter with the values wrapper (population)
 filter <- list(values = c("todas las edades", "total"))
 
-# Request data using the filter and shortcut = TRUE
+# Request data using the filter
 pob <- get_data_table(idTable = 56934, filter = filter, unnest = TRUE, 
                       tip = "A", nlast = 5, validate = FALSE)
 pob[,c("Nombre", "T3_Periodo", "Anyo", "Valor")]

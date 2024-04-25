@@ -99,28 +99,29 @@ fig
 
 ## Example 3. Interactive bar chart.
 ```{r example_3}
-# Filter for unemployment rates
-filter = list(ccaa = "", sexo = "ambos", edad = "total")
+# Filter for life expectancy
+filter = list(ccaa = "", sexo = "total", values = c("0 años", "esperanza de vida"))
 
-# Table: Unemployment rates by different age groups, sex and Autonomous Community
-# Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=4247&L=0
-paro <- get_data_table(idTable = 4247, filter = filter, nlast = 1, unnest = TRUE,
+# Table: Mortality tables by year, autonomous communities and cities, sex, age and functions.
+# Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=27154&L=0
+esp <- get_data_table(idTable = 27154, filter = filter, nlast = 1, unnest = TRUE,
                        metanames = TRUE, tip = "AM", validate = FALSE)
 
 # Bar chart using plotly
-fig <- plot_ly(paro, 
-               x = ~paro$Comunidades.y.Ciudades.Autónomas,
+fig <- plot_ly(esp, 
+               x = ~esp$Comunidades.y.Ciudades.Autónomas,
                y = ~Valor, type = "bar") %>%
        config(displayModeBar = FALSE) %>%
        layout(xaxis = list(title="", tickangle = -45),
-              yaxis = list(title = "Tasa de paro (%)"),
-              title = sprintf("Tasa de paro por Comunidad Autónoma (%s %s)",
-                              paro$Anyo[1], paro$T3_Periodo[1])
+              yaxis = list(title = "Años", hoverformat = '.2f'),
+              title = sprintf("Esperanza de vida al nacimiento por Comunidad Autónoma (%s)",
+                              esp$Anyo[1])
               )
 
 fig
   
 ```
+
 
 ## Example 4. Interactive map.
 ```{r example_4}
@@ -131,20 +132,20 @@ library(htmltools)
 # Get the boundaries of the autonomous communities
 ccaa <- read_sf("https://www.ine.es/wstempus/geojs/ES/CONTORNOS/70")
 
-# Filter for unemployment rates
-filter = list(ccaa = "", sexo = "ambos", edad = "total")
+# Filter for life expectancy
+filter = list(ccaa = "", sexo = "total", values = c("0 años", "esperanza de vida"))
 
-# Table: Unemployment rates by different age groups, sex and Autonomous Community
-# Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=4247&L=0
-paro <- get_data_table(idTable = 4247, filter = filter, nlast = 1, unnest = TRUE,
+# Table: Mortality tables by year, autonomous communities and cities, sex, age and functions.
+# Table url: https://www.ine.es/jaxiT3/Tabla.htm?t=27154&L=0
+esp <- get_data_table(idTable = 27154, filter = filter, nlast = 1, unnest = TRUE,
                        metacodes = TRUE, tip = "AM", validate = FALSE)
 
 # Select a set on columns from data
-paro <- subset(paro, select = c("Comunidades.y.Ciudades.Autónomas.Id", "T3_Periodo",
+esp <- subset(esp, select = c("Comunidades.y.Ciudades.Autónomas.Id", "T3_Periodo",
                                 "Anyo","Valor"))
 
 # Join boundaries information with data information
-ccaa <- merge(ccaa, paro, by.x = "id_region", 
+ccaa <- merge(ccaa, esp, by.x = "id_region", 
               by.y = "Comunidades.y.Ciudades.Autónomas.Id" )
 
 # Create the palette of the legend
@@ -152,7 +153,7 @@ pal <- colorBin("plasma", domain = NULL, bins = c(quantile(ccaa$Valor)))
 
 # Labels of the map
 labels <- sprintf(
-  "<strong>%s</strong><br/> Tasa de paro: %s%% ",
+  "<strong>%s</strong><br/> Esperanza de vida al nacimiento: %.2f años ",
   ccaa$nom_region, ccaa$Valor
 ) %>% lapply(htmltools::HTML)
 
@@ -175,9 +176,9 @@ m <- leaflet(ccaa) %>%
                                                   weight = 2, color = "white")
   ) %>%
   addLegend(pal = pal, values = ~Valor, opacity = 1.0, position = "bottomright",
-            labFormat = labelFormat(suffix = "%", digits = 2),
-            title = sprintf("Tasa de paro (%s %s)",
-                            paro$Anyo[1], paro$T3_Periodo[1]))
+            labFormat = labelFormat(suffix = " años", digits = 2),
+            title = sprintf("Esperanza de vida al nacimiento (%s)",
+                            esp$Anyo[1]))
 
 m
 
