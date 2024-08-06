@@ -1,83 +1,86 @@
 # URL root to call the API
 API_URL = "https://servicios.ine.es/wstempus/js"
 
+# API version
+API_version <- 3
+
 # Number of rows per page
 page_lenght = 500
 
 # Shortcuts used in filters
 shortcuts_filter <- list(nac = "349",                 # national
-                  prov = "115" ,                      # provinces
-                  ccaa = "70",                        # ccaa
-                  mun = "19",                         # municipalities
-                  isla = "20", island = "20",         # islas
-                  grupo = "762", group = "762",       # cpi groups
-                  subgrupo = "763", subgroup = "763", # cpi subgroups
-                  clase = "764", class = "764",       # cpi class
-                  subclase = "765", subclass = "765", # cpi subclass
-                  rubrica = "270",                    # cpi headings
-                  heading = "270",                    # cpi headings
-                  grupoespecial = "269",              # cpi special groups
-                  specialgroup = "269",               # cpi special groups
-                  tipodato = "3", datatype = "3",     # type of data
-                  sexo = "18", sex = "18",            # sex
-                  edad1 = "355", age1 = "355",        # simple age
-                  edadt = "356", aget = "356",        # total age
-                  edadg = "360", ageg = "360",        # age groups
-                  edads = "357", ages = "357",        # semi-age intervals
-                  edad = c("355", "356", "360", "357"),
-                  age = c("355", "356", "360", "357"),
-                  nacionalidad = "141", nationality = "141",
-                  generacion = "612", generation = "612",  # generation ages
-                  paisnacimiento = c("431", "432"),   # country of birth
-                  birthcountry = c("431", "432"),     # country of birth
-                  lugarnacimiento = c("97"),          # place of birth
-                  birthplace = c("97"),               # place of birth
-                  efectoscorr = "544",                # correction of effects
-                  effectscorr = "544"                 # correction of effects
-                  )
+                         prov = "115" ,                      # provinces
+                         ccaa = "70",                        # ccaa
+                         mun = "19",                         # municipalities
+                         isla = "20", island = "20",         # islas
+                         grupo = "762", group = "762",       # cpi groups
+                         subgrupo = "763", subgroup = "763", # cpi subgroups
+                         clase = "764", class = "764",       # cpi class
+                         subclase = "765", subclass = "765", # cpi subclass
+                         rubrica = "270",                    # cpi headings
+                         heading = "270",                    # cpi headings
+                         grupoespecial = "269",              # cpi special groups
+                         specialgroup = "269",               # cpi special groups
+                         tipodato = "3", datatype = "3",     # type of data
+                         sexo = "18", sex = "18",            # sex
+                         edad1 = "355", age1 = "355",        # simple age
+                         edadt = "356", aget = "356",        # total age
+                         edadg = "360", ageg = "360",        # age groups
+                         edads = "357", ages = "357",        # semi-age intervals
+                         edad = c("355", "356", "360", "357"),
+                         age = c("355", "356", "360", "357"),
+                         nacionalidad = "141", nationality = "141",
+                         generacion = "612", generation = "612",  # generation ages
+                         paisnacimiento = c("431", "432"),   # country of birth
+                         birthcountry = c("431", "432"),     # country of birth
+                         lugarnacimiento = c("97"),          # place of birth
+                         birthplace = c("97"),               # place of birth
+                         efectoscorr = "544",                # correction of effects
+                         effectscorr = "544"                 # correction of effects
+)
 
 shortcuts_filter_comments <- list(nac = list(comment ="National", lang = "ALL"),
-                         prov = list(comment ="Provinces", lang = "ALL") ,
-                         ccaa = list(comment ="Autonomous Communities", lang = "ALL"),
-                         mun = list(comment ="Municipalities", lang = "ALL"),
-                         isla = list(comment ="Islands", lang = "ES"),
-                         island = list(comment ="Islands", lang = "EN"),
-                         grupo = list(comment ="CPI groups", lang = "ES"),
-                         group = list(comment ="CPI groups", lang = "EN"),
-                         subgrupo = list(comment ="CPI subgroups", lang = "ES"),
-                         subgroup = list(comment ="CPI subgroups", lang = "EN"),
-                         clase = list(comment ="764", lang = "ES"),
-                         class = list(comment ="764", lang = "EN"),
-                         subclase = list(comment ="CPI class", lang = "ES"),
-                         subclass = list(comment ="CPI class", lang = "EN"),
-                         rubrica = list(comment ="CPI headings", lang = "ES"),
-                         heading = list(comment ="CPI headings", lang = "EN"),
-                         grupoespecial = list(comment ="CPI special groups", lang = "ES"),
-                         specialgroup = list(comment ="CPI special groups", lang = "EN"),
-                         tipodato = list(comment ="Type of data", lang = "ES"),
-                         datatype = list(comment ="Type of data", lang = "EN"),
-                         sexo = list(comment ="Sex", lang = "ES"),
-                         sex = list(comment ="Sex", lang = "EN"),
-                         edad1 = list(comment ="Simple age", lang = "ES"),
-                         age1 = list(comment ="Simple age", lang = "EN"),
-                         edadt = list(comment ="Age totals", lang = "ES"),
-                         aget = list(comment ="Age totals", lang = "EN"),
-                         edadg = list(comment ="Age groups", lang = "ES"),
-                         ageg = list(comment ="Age groups", lang = "EN"),
-                         edads = list(comment ="Age semi-intervals", lang = "ES"),
-                         ages = list(comment ="Age semi-intervals", lang = "EN"),
-                         edad = list(comment ="Age wrapper", lang = "ES"),
-                         age = list(comment ="Age wrapper", lang = "EN"),
-                         nacionalidad = list(comment ="Nationality", lang = "ES"),
-                         nationality = list(comment ="Nationality", lang = "EN"),
-                         generacion = list(comment ="Generation/ages", lang = "ES"),
-                         generation = list(comment ="Generation/ages", lang = "EN"),
-                         paisnacimiento = list(comment ="Country of birth", lang = "ES"),
-                         birthcountry = list(comment ="Country of birth", lang = "EN"),
-                         lugarnacimiento = list(comment ="Place of birth", lang = "ES"),
-                         birthplace = list(comment ="Place of birth", lang = "EN"),
-                         efectoscorr = list(comment ="Correction of effects", lang = "ES"),
-                         effectscorr = list(comment ="Correction of effects", lang = "EN")
+                                  prov = list(comment ="Provinces", lang = "ALL") ,
+                                  ccaa = list(comment ="Autonomous Communities", lang = "ALL"),
+                                  mun = list(comment ="Municipalities", lang = "ALL"),
+                                  isla = list(comment ="Islands", lang = "ES"),
+                                  island = list(comment ="Islands", lang = "EN"),
+                                  grupo = list(comment ="CPI groups", lang = "ES"),
+                                  group = list(comment ="CPI groups", lang = "EN"),
+                                  subgrupo = list(comment ="CPI subgroups", lang = "ES"),
+                                  subgroup = list(comment ="CPI subgroups", lang = "EN"),
+                                  clase = list(comment ="764", lang = "ES"),
+                                  class = list(comment ="764", lang = "EN"),
+                                  subclase = list(comment ="CPI class", lang = "ES"),
+                                  subclass = list(comment ="CPI class", lang = "EN"),
+                                  rubrica = list(comment ="CPI headings", lang = "ES"),
+                                  heading = list(comment ="CPI headings", lang = "EN"),
+                                  grupoespecial = list(comment ="CPI special groups", lang = "ES"),
+                                  specialgroup = list(comment ="CPI special groups", lang = "EN"),
+                                  tipodato = list(comment ="Type of data", lang = "ES"),
+                                  datatype = list(comment ="Type of data", lang = "EN"),
+                                  sexo = list(comment ="Sex", lang = "ES"),
+                                  sex = list(comment ="Sex", lang = "EN"),
+                                  edad1 = list(comment ="Simple age", lang = "ES"),
+                                  age1 = list(comment ="Simple age", lang = "EN"),
+                                  edadt = list(comment ="Age totals", lang = "ES"),
+                                  aget = list(comment ="Age totals", lang = "EN"),
+                                  edadg = list(comment ="Age groups", lang = "ES"),
+                                  ageg = list(comment ="Age groups", lang = "EN"),
+                                  edads = list(comment ="Age semi-intervals", lang = "ES"),
+                                  ages = list(comment ="Age semi-intervals", lang = "EN"),
+                                  edad = list(comment ="Age wrapper", lang = "ES"),
+                                  age = list(comment ="Age wrapper", lang = "EN"),
+                                  nacionalidad = list(comment ="Nationality", lang = "ES"),
+                                  nationality = list(comment ="Nationality", lang = "EN"),
+                                  generacion = list(comment ="Generation/ages", lang = "ES"),
+                                  generation = list(comment ="Generation/ages", lang = "EN"),
+                                  paisnacimiento = list(comment ="Country of birth", lang = "ES"),
+                                  birthcountry = list(comment ="Country of birth", lang = "EN"),
+                                  lugarnacimiento = list(comment ="Place of birth", lang = "ES"),
+                                  birthplace = list(comment ="Place of birth", lang = "EN"),
+                                  efectoscorr = list(comment ="Correction of effects", lang = "ES"),
+                                  effectscorr = list(comment ="Correction of effects", lang = "EN")
 )
 
 shortcut_wrapper <- c("values")
@@ -104,9 +107,9 @@ get_api_data <- function(url, request){
                                encode = "form",
                                httr::content_type("application/x-www-form-urlencoded"),
                                httr::user_agent("ineapir")
-                              )
+        )
 
-      # we use the GET method
+        # we use the GET method
       }else{
         if(request$addons$verbose){
           cat(sprintf("- API URL: %s\n", url$complete))
@@ -116,7 +119,7 @@ get_api_data <- function(url, request){
                                url = url$endpoint,
                                query = url$totalpar,
                                httr::user_agent("ineapir")
-                              )
+        )
 
       }
       # Get the content of the response
@@ -195,7 +198,7 @@ get_api_data_all_pages <- function(url, request){
       # Accumulated result
       result <- rbind(result, resultpage)
     }
-  # Request a specific page
+    # Request a specific page
   }else{
     result <- get_api_data(url, request)
   }
@@ -235,7 +238,7 @@ get_parameters_query <- function(request){
       if(x == "date"){
         val <- build_date(val)
 
-      # Since the list also contains the operation
+        # Since the list also contains the operation
       }else if(x == "p"){
         val <- val[[x]]
       }
@@ -243,6 +246,9 @@ get_parameters_query <- function(request){
       parameters[[x]] <- val
     }
   }
+
+  # include version API
+  parameters[["ver"]] <- API_version
 
   return(parameters)
 
@@ -298,7 +304,7 @@ get_url <- function(request){
                  parameters = parameters,
                  filter = parfilter,
                  totalpar = append(parameters, parfilter)
-                 )
+  )
 
   return(result)
 }
@@ -341,7 +347,7 @@ build_filter <- function(parameter, definition, addons, checkfilter){
     # Type of object: pxtable, tempus table or series
     origin <- checkfilter$origin
 
-  # If validate = FALSE we get the values
+    # If validate = FALSE we get the values
   }else{
     # If there are shortcuts present in the filter
     shortcut <- check_shortcut(filter, definition)
@@ -365,195 +371,197 @@ build_filter <- function(parameter, definition, addons, checkfilter){
 
     # It is necessary to include shortcut in the case of a px table with a code equal to a shortcut (eg sexo)
     if(shortcut && short){
-      # filter with ids
-      filterout <- list()
+      if(!is.null(dfval)){
+        # filter with ids
+        filterout <- list()
 
-      if(origin == "tablepx"){
-        # Select codes
-        varid <- unique(dfval$Variable.Codigo)
+        if(origin == "tablepx"){
+          # Select codes
+          varid <- unique(dfval$Variable.Codigo)
 
-        # We select only the values of variables present in the filter
-        dfvalfilter <- subset(dfval, dfval$Variable.Codigo %in% varid)
+          # We select only the values of variables present in the filter
+          dfvalfilter <- subset(dfval, dfval$Variable.Codigo %in% varid)
 
-      }else if(origin == "tablepxid"){
-        # Select codes
-        varid <- c(unique(dfval$Variable.Codigo), unique(dfval$Variable.Id))
+        }else if(origin == "tablepxid"){
+          # Select codes
+          varid <- c(unique(dfval$Variable.Codigo), unique(dfval$Variable.Id))
 
-        # We select only the values of variables present in the filter
-        dfvalfilter <- subset(dfval, dfval$Variable.Codigo %in% varid | dfval$Variable.Id %in% varid)
-
-      }else{
-        if(tolower(n) %in% shortcut_wrapper){
-          # Select ids
-          varid <- unique(dfval$Fk_Variable)
+          # We select only the values of variables present in the filter
+          dfvalfilter <- subset(dfval, dfval$Variable.Codigo %in% varid | dfval$Variable.Id %in% varid)
 
         }else{
-          # id of variables
-          varid <- shortcuts_filter[[tolower(n)]]
-        }
-
-        # We select only the values of variables present in the filter
-        dfvalfilter <- subset(dfval, dfval$Fk_Variable %in% varid)
-      }
-
-      # Reset the values found
-      dfvalgrep <- NULL
-
-      # Find a match between the filter inputs and the possible values
-      for(f in filter[[n]]){
-
-        ### Way one:  find a value for the largest word
-        # Split the phrase
-        valshort1 <- if(nchar(f) > 0 ) unlist(strsplit(as.character(f), "\\s+")) else f
-
-        # Find the largest word
-        valshort1 <- valshort1[which.max(nchar(valshort1))]
-
-        # Find a match for the largest word and the possible values
-        ind1 <- grepl(valshort1, dfvalfilter$Nombre, ignore.case = TRUE)
-
-        # Dataframe with the matches
-        dfvalgrep1 <- subset(dfvalfilter, ind1)
-
-        ### Way two: find a value for the entire string
-        # Find a match for the entire phrase and the possible values
-        ind2 <- grepl(f, dfvalfilter$Nombre, ignore.case = TRUE)
-
-        # Dataframe with the matches
-        dfvalgrep2 <- subset(dfvalfilter, ind2)
-
-        # Intersect the values from these two different ways
-        if(nrow(dfvalgrep1) > 0 && nrow(dfvalgrep2) == 0){
-          dfvalgreptmp <- dfvalgrep1
-
-        }else if(nrow(dfvalgrep1) == 0 && nrow(dfvalgrep2) > 0){
-          dfvalgreptmp <- dfvalgrep2
-
-        }else if(nrow(dfvalgrep1) > 0 && nrow(dfvalgrep2) > 0){
-          if(origin == "tablepx"){
-            dfvalgrep2 <- subset(dfvalgrep2, select = c("Codigo", "Variable.Codigo"))
-            dfvalgreptmp <- merge(dfvalgrep1, dfvalgrep2, by = c("Codigo", "Variable.Codigo"))
-
-          }else if(origin == "tablepxid"){
-            dfvalgrep2 <- subset(dfvalgrep2, select = c("Id", "Variable.Id"))
-            dfvalgreptmp <- merge(dfvalgrep1, dfvalgrep2, by = c("Id", "Variable.Id"))
+          if(tolower(n) %in% shortcut_wrapper){
+            # Select ids
+            varid <- unique(dfval$Fk_Variable)
 
           }else{
-            dfvalgrep2 <- subset(dfvalgrep2, select = c("Id", "Fk_Variable"))
-            dfvalgreptmp <- merge(dfvalgrep1, dfvalgrep2, by = c("Id", "Fk_Variable"))
+            # id of variables
+            varid <- shortcuts_filter[[tolower(n)]]
           }
-        }else{
-          dfvalgreptmp <- dfvalgrep1
+
+          # We select only the values of variables present in the filter
+          dfvalfilter <- subset(dfval, dfval$Fk_Variable %in% varid)
         }
 
-        # If there is no match result look in the id
-        if(nrow(dfvalgreptmp) == 0){
-          if(origin == "tablepx"){
-            dfvalgreptmp <- subset(dfvalfilter, grepl(paste0("^",f,"$"), dfvalfilter$Codigo))
+        # Reset the values found
+        dfvalgrep <- NULL
 
-          }else if(origin == "tablepxid"){
-            dfvalgreptmp <- subset(dfvalfilter, grepl(paste0("^",f,"$"), c(dfvalfilter$Codigo, dfvalfilter$Id)))
+        # Find a match between the filter inputs and the possible values
+        for(f in filter[[n]]){
 
+          ### Way one:  find a value for the largest word
+          # Split the phrase
+          valshort1 <- if(nchar(f) > 0 ) unlist(strsplit(as.character(f), "\\s+")) else f
+
+          # Find the largest word
+          valshort1 <- valshort1[which.max(nchar(valshort1))]
+
+          # Find a match for the largest word and the possible values
+          ind1 <- grepl(valshort1, dfvalfilter$Nombre, ignore.case = TRUE)
+
+          # Dataframe with the matches
+          dfvalgrep1 <- subset(dfvalfilter, ind1)
+
+          ### Way two: find a value for the entire string
+          # Find a match for the entire phrase and the possible values
+          ind2 <- grepl(f, dfvalfilter$Nombre, ignore.case = TRUE)
+
+          # Dataframe with the matches
+          dfvalgrep2 <- subset(dfvalfilter, ind2)
+
+          # Intersect the values from these two different ways
+          if(nrow(dfvalgrep1) > 0 && nrow(dfvalgrep2) == 0){
+            dfvalgreptmp <- dfvalgrep1
+
+          }else if(nrow(dfvalgrep1) == 0 && nrow(dfvalgrep2) > 0){
+            dfvalgreptmp <- dfvalgrep2
+
+          }else if(nrow(dfvalgrep1) > 0 && nrow(dfvalgrep2) > 0){
+            if(origin == "tablepx"){
+              dfvalgrep2 <- subset(dfvalgrep2, select = c("Codigo", "Variable.Codigo"))
+              dfvalgreptmp <- merge(dfvalgrep1, dfvalgrep2, by = c("Codigo", "Variable.Codigo"))
+
+            }else if(origin == "tablepxid"){
+              dfvalgrep2 <- subset(dfvalgrep2, select = c("Id", "Variable.Id"))
+              dfvalgreptmp <- merge(dfvalgrep1, dfvalgrep2, by = c("Id", "Variable.Id"))
+
+            }else{
+              dfvalgrep2 <- subset(dfvalgrep2, select = c("Id", "Fk_Variable"))
+              dfvalgreptmp <- merge(dfvalgrep1, dfvalgrep2, by = c("Id", "Fk_Variable"))
+            }
           }else{
-            dfvalgreptmp <- subset(dfvalfilter, grepl(paste0("^",f,"$"), dfvalfilter$Id))
+            dfvalgreptmp <- dfvalgrep1
           }
-        }
 
-        # We add a column with the counter
-        dfvalgreptmp$i <- rep(i,nrow(dfvalgreptmp))
+          # If there is no match result look in the id
+          if(nrow(dfvalgreptmp) == 0){
+            if(origin == "tablepx"){
+              dfvalgreptmp <- subset(dfvalfilter, grepl(paste0("^",f,"$"), dfvalfilter$Codigo))
 
-        # Transform the filter in a the format used by the API
-        if(nchar(f) > 0){
+            }else if(origin == "tablepxid"){
+              dfvalgreptmp <- subset(dfvalfilter, grepl(paste0("^",f,"$"), c(dfvalfilter$Codigo, dfvalfilter$Id)))
 
-          # When grep found something
-          if(nrow(dfvalgreptmp) > 0){
+            }else{
+              dfvalgreptmp <- subset(dfvalfilter, grepl(paste0("^",f,"$"), dfvalfilter$Id))
+            }
+          }
 
-            # We go through all the matches
-            for(r in 1:nrow(dfvalgreptmp)){
-              if(origin == "tablepx"){
-                # Variable code
-                var <- dfvalgreptmp$Variable.Codigo[r]
+          # We add a column with the counter
+          dfvalgreptmp$i <- rep(i,nrow(dfvalgreptmp))
 
-                # Value code
-                filterout[[var]] <- dfvalgreptmp$Codigo[r]
+          # Transform the filter in a the format used by the API
+          if(nchar(f) > 0){
 
-              }else if(origin == "tablepxid"){
-                # Variable id
-                var <- dfvalgreptmp$Variable.Id[r]
+            # When grep found something
+            if(nrow(dfvalgreptmp) > 0){
 
-                # Value id
-                filterout[[var]] <- dfvalgreptmp$Id[r]
+              # We go through all the matches
+              for(r in 1:nrow(dfvalgreptmp)){
+                if(origin == "tablepx"){
+                  # Variable code
+                  var <- dfvalgreptmp$Variable.Codigo[r]
 
-              }else{
-                # Variable id
-                var <- dfvalgreptmp$Fk_Variable[r]
+                  # Value code
+                  filterout[[var]] <- dfvalgreptmp$Codigo[r]
 
-                # Value id
-                filterout[[var]] <- dfvalgreptmp$Id[r]
+                }else if(origin == "tablepxid"){
+                  # Variable id
+                  var <- dfvalgreptmp$Variable.Id[r]
 
-                if(exists("dfvalgrep") && is.data.frame(get("dfvalgrep")) ){
+                  # Value id
+                  filterout[[var]] <- dfvalgreptmp$Id[r]
 
-                  # If the variable id has been used in the filter, set the same counter
-                  if(is.element(var, dfvalgrep$Fk_Variable)){
-                    i <- dfvalgrep[dfvalgrep$Fk_Variable == var,]$i[1]
-                    dfvalgreptmp$i[r] <- i
-                  }else{
-                    if(nrow(dfvalgrep) > 0){
-                      i <- max(dfvalgrep$i) + 1
+                }else{
+                  # Variable id
+                  var <- dfvalgreptmp$Fk_Variable[r]
+
+                  # Value id
+                  filterout[[var]] <- dfvalgreptmp$Id[r]
+
+                  if(exists("dfvalgrep") && is.data.frame(get("dfvalgrep")) ){
+
+                    # If the variable id has been used in the filter, set the same counter
+                    if(is.element(var, dfvalgrep$Fk_Variable)){
+                      i <- dfvalgrep[dfvalgrep$Fk_Variable == var,]$i[1]
+                      dfvalgreptmp$i[r] <- i
+                    }else{
+                      if(nrow(dfvalgrep) > 0){
+                        i <- max(dfvalgrep$i) + 1
+                      }
                     }
                   }
                 }
+
+                # Check the filter comes from a table or a series
+                parurl <- if(is.element("idtable",parnames)) "tv" else paste0("g", i)
+
+                # Build the filter with the format of the API
+                tmp <- paste0(parurl, "=", var, ":", filterout[[var]])
+
+                # Vector with all the values in the format of the API
+                val <- append(val, tmp)
+
+                # List with all the values
+                lval <- append(lval, list(paste0(var, ":", filterout[[var]])))
+                names(lval)[length(lval)] <- parurl
               }
+            }
+          }else{
+            # Case when the value introduced is and empty character ""
+            if(length(varid) == 1){
+              # value set to ""
+              filterout[[varid]] <- f
 
               # Check the filter comes from a table or a series
               parurl <- if(is.element("idtable",parnames)) "tv" else paste0("g", i)
 
               # Build the filter with the format of the API
-              tmp <- paste0(parurl, "=", var, ":", filterout[[var]])
+              tmp <- paste0(parurl, "=", varid, ":", filterout[[varid]])
 
               # Vector with all the values in the format of the API
               val <- append(val, tmp)
 
               # List with all the values
-              lval <- append(lval, list(paste0(var, ":", filterout[[var]])))
+              lval <- append(lval, list(paste0(varid, ":", filterout[[varid]])))
               names(lval)[length(lval)] <- parurl
             }
           }
-        }else{
-          # Case when the value introduced is and empty character ""
-          if(length(varid) == 1){
-            # value set to ""
-            filterout[[varid]] <- f
 
-            # Check the filter comes from a table or a series
-            parurl <- if(is.element("idtable",parnames)) "tv" else paste0("g", i)
-
-            # Build the filter with the format of the API
-            tmp <- paste0(parurl, "=", varid, ":", filterout[[varid]])
-
-            # Vector with all the values in the format of the API
-            val <- append(val, tmp)
-
-            # List with all the values
-            lval <- append(lval, list(paste0(varid, ":", filterout[[varid]])))
-            names(lval)[length(lval)] <- parurl
+          if (exists("dfvalgrep") && is.data.frame(get("dfvalgrep"))){
+            dfvalgrep <- rbind(dfvalgrep,dfvalgreptmp)
+          }else{
+            dfvalgrep <- dfvalgreptmp
           }
-        }
 
-        if (exists("dfvalgrep") && is.data.frame(get("dfvalgrep"))){
-          dfvalgrep <- rbind(dfvalgrep,dfvalgreptmp)
-        }else{
-          dfvalgrep <- dfvalgreptmp
-        }
+          if(addons$verbose){
+            cat(sprintf("- Processing filter: %s%%        \r", round(50 + j/sum(lengths(filter))*50,0)))
+          }
 
-        if(addons$verbose){
-          cat(sprintf("- Processing filter: %s%%        \r", round(50 + j/sum(lengths(filter))*50,0)))
+          i <- i + 1
+          j <- j + 1
         }
-
-        i <- i + 1
-        j <- j + 1
       }
-    # When there are no shortcuts in the filter
+      # When there are no shortcuts in the filter
     }else{
       # Check the filter comes from a table or a series
       parurl <- if(is.element("idtable",parnames)) "tv" else paste0("g", i)
@@ -682,14 +690,14 @@ check_parameters <- function(parameters, addons, definition){
 
       if(!is.null(val)){
         r <- switch (x,
-                "date" = check_dates(val, addons$verbose),
-                "p" = check_periodicity(val[[1]], val[[2]], addons$verbose),
-                "nult" = check_nlast(val, addons$verbose),
-                "det" = check_det(val, addons$verbose),
-                "tip" = check_tip(val, addons$verbose),
-                "geo" = check_geo(val, addons$verbose),
-                "page" = check_page(val, addons$verbose),
-                "filter" = check_filter(val, addons$verbose, definition)
+                     "date" = check_dates(val, addons$verbose),
+                     "p" = check_periodicity(val[[1]], val[[2]], addons$verbose),
+                     "nult" = check_nlast(val, addons$verbose),
+                     "det" = check_det(val, addons$verbose),
+                     "tip" = check_tip(val, addons$verbose),
+                     "geo" = check_geo(val, addons$verbose),
+                     "page" = check_page(val, addons$verbose),
+                     "filter" = check_filter(val, addons$verbose, definition)
         )
         # Check results to return
         result <- append(result, r)
@@ -710,11 +718,11 @@ check_addons <- function(parameters, addons, definition){
 
     if(!is.null(val)){
       r <- switch (x,
-              "validate" = check_islogical(x, val),
-              "verbose" = check_islogical(x, val),
-              "unnest" = check_islogical(x, val),
-              "metanames"= check_extractmetadata(x, val, parameters$tip),
-              "metacodes"= check_extractmetadata(x, val, parameters$tip)
+                   "validate" = check_islogical(x, val),
+                   "verbose" = check_islogical(x, val),
+                   "unnest" = check_islogical(x, val),
+                   "metanames"= check_extractmetadata(x, val, parameters$tip),
+                   "metacodes"= check_extractmetadata(x, val, parameters$tip)
       )
       # Check results to return
       result <- append(result, r)
@@ -1196,7 +1204,7 @@ check_filter <- function(parameter, verbose, definition){
   df <- get_filter_values(parameter, definition$lang, shortcut = TRUE, verbose = verbose, progress = FALSE)
 
   # Make sure the response is valid or null
-  if(!check_result_status(df$values)){
+  if(check_result(df$values)){
 
     # The filter comes from a px table
     if(df$origin == "tablepx"){
@@ -1212,7 +1220,7 @@ check_filter <- function(parameter, verbose, definition){
       result <- check$result
       shortcut <- check$shortcut
 
-    # The filter comes from a tempus table
+      # The filter comes from a tempus table
     }else if(df$origin == "tablet3"){
       check <- check_table_tempus_filter(parameter, verbose, df$values)
 
@@ -1584,7 +1592,7 @@ check_shortcut <- function(filter, definition){
           result <- TRUE
         }
 
-      # Tempus table
+        # Tempus table
       }else{
         # There are shortcuts in the filter
         if(sum(is.element(tolower(names(filter)), c(names(shortcuts_filter), shortcut_wrapper))) > 0 ){
@@ -1592,7 +1600,7 @@ check_shortcut <- function(filter, definition){
         }
       }
 
-    # Tempus series
+      # Tempus series
     }else{
       # There are shortcuts in the filter
       if(sum(is.element(tolower(names(filter)), c(names(shortcuts_filter), shortcut_wrapper))) > 0 ){
@@ -1636,7 +1644,8 @@ unnest_data <- function(datain){
     sel <- tolower(names(datain)) != "data" & tolower(names(datain)) != "notas"
 
     # Dataframe header without the data and notas columns
-    dataout <- datain[c(),sel]
+    dataout <- as.data.frame(datain[c(),sel])
+    names(dataout) <- names(datain)[sel]
 
     # Data Dataframes of the list not empty
     datasel <- lengths(datain$Data) > 0
@@ -1649,14 +1658,21 @@ unnest_data <- function(datain){
 
     # Go through all the dataframes with data
     if(length(datacol) > 0){
+      # index of the dataframe with lower number of data columns
+      ind <- which.min(lengths(datacol))
+
+      # Data columns
+      col_data <-   as.data.frame(datacol[[ind]][c(),])
+      names(col_data) <- names(datacol[[ind]])
+
       # Adding Data column to the header
-      dataout <- cbind(dataout,datacol[[1]][c(),])
+      dataout <- cbind(dataout,col_data)
 
       # Repeat each row by the number of data values
       tmp <- datain[rep(seq_len(nrow(datain)), times = sapply(datain$Data, nrow)), sel]
 
-      # Unique dataframe of data
-      data <- do.call(rbind, datain$Data)
+      # Unique dataframe of data normalizing the data columns
+      data <- do.call(rbind, lapply(datain$Data, function(x) if (length(x) > 0) subset(x, select = names(col_data))))
 
       # Adding data
       dataout <- cbind(tmp,data)
@@ -1675,7 +1691,7 @@ unnest_data <- function(datain){
         ind <- which.max(lapply(datacol, nrow))
 
         # Dataframe with values
-        data <- datacol[[ind]]
+        data <- datacol[[ind]][names(col_data)]
 
         # Change value for NA
         data$Valor <- NA
@@ -1870,7 +1886,7 @@ extract_metadata <- function(datain, request){
           dataout <- cbind(dataout, dfcodes)
         }
       }
-    # Case two: tempus table
+      # Case two: tempus table
     }else{
 
       if(request$addons$metacodes){
@@ -1900,7 +1916,7 @@ extract_metadata <- function(datain, request){
         dataout <- cbind(dataout, dfcodes)
       }
     }
-  # Series
+    # Series
   }else{
 
     # Number of variables in metadata information
@@ -1917,7 +1933,7 @@ extract_metadata <- function(datain, request){
       varname <- append(varname,
                         as.data.frame(unique(do.call(rbind,
                                                      lapply(metadata, '[',c(i),c("Variable.Nombre"))))))
-      }
+    }
 
     if(request$addons$metacodes){
       metacols <- append(metacols, "Id")
@@ -2002,7 +2018,10 @@ get_metadata_variable_values_table <- function(idTable, filter = NULL, verbose, 
         }
 
         df <- get_metadata_table_values(idTable = idTable, idGroup = g, validate = FALSE, lang = lang, verbose = verbose)
-        df <- subset(df, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
+
+        if(!is.null(df)){
+          df <- subset(df, select = c("Id", "Fk_Variable", "Nombre", "Codigo"))
+        }
 
         if (exists("dfvalues") && is.data.frame(get("dfvalues"))){
           dfvalues <- rbind(dfvalues,df)
@@ -2044,7 +2063,6 @@ get_metadata_variable_values_operation <- function(operation, verbose, validate,
 
   return(list(origin = "series", values = dfvalues))
 }
-
 
 
 
